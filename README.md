@@ -40,6 +40,9 @@ python3 sysstatcli.py 60 # It will update every 60 seconds
 ```
 
 ### Sample Output
+
+![sysstatcli2](https://github.com/user-attachments/assets/4c7bc675-1e46-42c8-aa8f-619f6f7ea39e)
+
 ```
 OS: Linux Mint 22.1 - Kernel version: 6.11. 0-19-generic
 Hostname: hal9001c - User: axel
@@ -132,6 +135,9 @@ python3 sysstatcli.py 60  # Se actualizará cada 60 segundos
 ```
 
 ### Ejemplo de salida
+
+![sysstatcli2](https://github.com/user-attachments/assets/4c7bc675-1e46-42c8-aa8f-619f6f7ea39e)
+
 ```
 OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
 Hostname: hal9001c - User: axel
