@@ -69,3 +69,20 @@ Cualquier mejora, corrección o sugerencia es bienvenida. ¡Suma tu aporte a est
 
 ## Licencia
 Este proyecto se distribuye bajo la licencia **GPLv3**. ¡Úsalo, modifícalo y compártelo libremente!
+
+🚀 Mejoras y funcionalidades futuras
+Estamos buscando colaboradores para seguir mejorando SysStatCLI. Estas son algunas ideas para futuras versiones:
+
+1️⃣ Agregar alertas sonoras: Emitir un BEEP cuando algún parámetro crítico esté en rojo (por ejemplo, alta temperatura, uso excesivo de CPU o disco lleno).
+
+2️⃣ Registro y análisis de datos:
+
+Guardar el estado del sistema en un archivo de registro (log) con marcas de tiempo.
+Implementar una opción para generar gráficos con la evolución del uso de CPU, memoria, temperatura, etc.
+3️⃣ Versión con GUI:
+
+Crear una interfaz gráfica en GTK para visualizar los datos de manera más amigable.
+4️⃣ Ejecución independiente:
+
+Compilar el script en un ejecutable para que funcione sin necesidad de Python instalado.
+Si te interesa contribuir, ¡abre un issue o haz un pull request! 🤝
