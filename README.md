@@ -40,8 +40,8 @@ python3 sysstatcli.py 60  # Se actualizará cada 60 segundos
 
 ### Ejemplo de salida
 ```
-OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
-Hostname: hal9001c - User: axel
+OS: **Linux Mint 22.1** - Kernel version: **6.11.0-19-generic**
+Hostname: **hal9001c** - User: **axel**
 Uptime: 1 day, 3:05:17 - Time and date: 14:42:33 13/03/2025
 CPU used: 2% (CPU0: 3% - CPU1: 1% - CPU2: 1% - CPU3: 3%)
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
