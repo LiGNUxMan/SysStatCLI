@@ -21,7 +21,6 @@
 - **Wi-Fi Card Temperature**: Reports the temperature of the wireless network adapter.
 - **Battery Status**: Indicates the charge percentage and whether the device is connected to power or discharging (only if the battery is not at 100%).
 - **Autorun**: Can run continuously at a frequency determined by the user.
-- **Audible alerts**: Beeps if any parameter is in a critical state.
 
 ## Installation and Use
 
@@ -88,6 +87,7 @@ Create a GTK graphical interface to display the data in a more user-friendly way
 
 4️⃣ Standalone Execution:
 Compile the script into an executable so it runs without Python.
+
 If you're interested in contributing, open an issue or make a pull request! 🤝
 
 # SysStatCLI (System Status CLI)
@@ -113,7 +113,6 @@ If you're interested in contributing, open an issue or make a pull request! 🤝
 - **Temperatura de la tarjeta WiFi**: Reporta la temperatura del adaptador de red inalámbrico.
 - **Estado de la batería**: Indica el porcentaje de carga y si el equipo está conectado a la corriente o descargándose (solo si la batería no está al 100%).
 - **Ejecución automática**: Puede ejecutarse en modo continuo con una frecuencia determinada por el usuario.
-- **Alertas auditivas**: Emite un pitido si algún parámetro se encuentra en estado crítico.
 
 ## Instalación y Uso
 
@@ -180,4 +179,5 @@ Crear una interfaz gráfica en GTK para visualizar los datos de manera más amig
 
 4️⃣ Ejecución independiente:
 Compilar el script en un ejecutable para que funcione sin necesidad de Python instalado.
+
 Si te interesa contribuir, ¡abre un issue o haz un pull request! 🤝
