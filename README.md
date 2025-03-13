@@ -59,7 +59,7 @@ WIFI signal: 57% - Speed: 0.0Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
 WIFI temperature: 41°C
 Battery: 47% - Mode: Discharging
 ███████████████░░░░░░░░░░░░░░░░░
-Ejecuciones: 118 / Próxima ejecución en 17/60 segundos...
+Runs: 118 /Next run in 17/60 seconds...
 ```
 
 ## Contribuciones
