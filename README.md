@@ -64,7 +64,7 @@ Ejecuciones: 118 / Próxima ejecución en 17/60 segundos...
 Cualquier mejora, corrección o sugerencia es bienvenida. ¡Suma tu aporte a este proyecto!
 
 ## Autor
-- **Axel O'BRIEN (LiGNUxMan)** - [GitHub Profile](https://github.com/tu_usuario)
+- **Axel O'BRIEN (LiGNUxMan)** - [GitHub Profile](https://github.com/LiGNUxMan/)
 - **ChatGPT** - Asistencia en desarrollo
 
 ## Licencia
