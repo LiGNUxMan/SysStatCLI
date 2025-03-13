@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 20250312a 1.25.0
+# SysStatCLI (System Status CLI) Version 20250312a 1.25.0a
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -435,7 +435,7 @@ if __name__ == "__main__":
                 
                 # Cuenta regresiva
                 for i in range(interval, 0, -1):
-                    sys.stdout.write(f"\rEjecuciones: {count} / Próxima ejecución en {i}/{interval} segundos... ")
+                    sys.stdout.write(f"\rRuns: {count} / Next run in {i}/{interval} seconds... ")
                     sys.stdout.flush()
                     time.sleep(1)
 
