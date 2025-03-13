@@ -1,5 +1,7 @@
 # SysStatCLI (System Status CLI)
 
+## English
+
 ## Description
 
 **SysStatCLI** is a command-line tool written in Python for real-time system status monitoring in Linux. It provides detailed information on CPU usage, RAM, disk temperature, and Wi-Fi, among other parameters, in a visually organized and color-coded manner for easy interpretation.
@@ -89,6 +91,8 @@ Compile the script into an executable so it runs without Python.
 If you're interested in contributing, open an issue or make a pull request! 🤝
 
 # SysStatCLI (System Status CLI)
+
+## Castellano
 
 ## Descripción
 
