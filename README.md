@@ -76,9 +76,9 @@ sensors
 ```
 Searching for the **"nvme-pci-0100"** → **"Composite:"** devices. Then, the data is wiped, leaving only the temperature.
 
-nvme-pci-0100
-Adapter: PCI adapter
-Composite:    +31.9°C
+  nvme-pci-0100
+  Adapter: PCI adapter
+  Composite:    +31.9°C
 
 Configured Colors:
 
