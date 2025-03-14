@@ -74,7 +74,11 @@ In my case, I have an drive **M.2 NVMe** and I get the temperature with the comm
 ```bash
 sensors
 ```
-Searching for the **"nvme-pci-0100"** or **"Composite:"** devices. Then, the data is wiped, leaving only the temperature.
+Searching for the **"nvme-pci-0100"** → **"Composite:"** devices. Then, the data is wiped, leaving only the temperature.
+
+nvme-pci-0100
+Adapter: PCI adapter
+Composite:    +31.9°C
 
 Configured Colors:
 
@@ -236,7 +240,11 @@ En mi caso, tengo un disco **M.2 NVMe** y obtengo la temperatura con el comando:
 ```bash
 sensors
 ```
-Buscando los dispositivos **"nvme-pci-0100"** o **"Composite:"**. Luego, se limpian los datos dejando solo la temperatura.
+Buscando los dispositivos **"nvme-pci-0100"** → **"Composite:"**. Luego, se limpian los datos dejando solo la temperatura.
+
+nvme-pci-0100
+Adapter: PCI adapter
+Composite:    +31.9°C
 
 Colores configurados:
 
