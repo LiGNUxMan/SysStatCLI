@@ -45,28 +45,28 @@ This script was written and tested on an HP Pavilion x360 Convertible 15-br0xx (
 
 **CPU frequency:** The processor frequency colors. In my case, it's set to:
 
-0.4 - 0.8GHz = Normal
-0.8 - 2.5GHz = Yellow
-2.5 - 3.1GHz = Orange (Turbo)
-3.1GHz = Red (Maximum)
+- 0.4 - 0.8GHz = Normal
+- 0.8 - 2.5GHz = Yellow
+- 2.5 - 3.1GHz = Orange (Turbo)
+- 3.1GHz = Red (Maximum)
 
 **CPU temperature:**
 
 In my case, I get the CPU temperature by reading the file "/sys/class/thermal/thermal_zone0/temp". In your case, you'll need to check if your PC's CPU temperature is located in that file or in another file or device.
 You'll also need to adjust the color according to your needs. In my case it's:
 
-<35 = Normal
-35 - 40 = Yellow
-40 - 60 = Orange
->60 = Red
+- <35 = Normal
+- 35 - 40 = Yellow
+- 40 - 60 = Orange
+- >60 = Red
 
 **Disk temperature:**
 
 In my case, I have an M.2 NVME drive, and I get the temperature by calling the "sensors" command, capturing the output, and searching for the "nvme-pci-0100" / "Composite:" device. The data is then cleared, leaving only the temperature.
 
-<50 = Normal
-50 - 70 = Yellow
->70 = Red
+- <50 = Normal
+- 50 - 70 = Yellow
+- >70 = Red
 
 On my PC, the Wi-Fi device is called "wlp3s0." From there, I get the data needed to display it on the screen. If it's called something else, you'll have to modify the script. Run the "iwconfig" command and search for the name of the Wi-Fi network card you want to display.
 
