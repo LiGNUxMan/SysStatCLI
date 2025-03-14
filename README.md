@@ -1,4 +1,4 @@
-# SysStatCLI (System Status CLI)
+# SysStatCLI (System Status CLI) Version 20250312a 1.25.0a
 
 ## English
 
@@ -39,40 +39,67 @@ To run it continuously every *X* seconds:
 python3 sysstatcli.py 60 # It will update every 60 seconds
 ```
 
-### IMPORTANT NOTE:
+---
+## ⚠️ IMPORTANT NOTE
 
-This script was written and tested on an HP Pavilion x360 Convertible 15-br0xx (103C_5335KV HP Pavilion) notebook. For it to work on your PC, notebook, server, etc., you'll likely need to make some adjustments to some parameters:
+This script was written and tested on an notebook **HP Pavilion x360 Convertible 15-br0xx** *(103C_5335KV HP Pavilion)*. Surely, for it to work on your PC, notebook, server, etc., you'll have to make some adjustments to certain parameters:
 
-**CPU frequency:** The processor frequency colors. In my case, it's set to:
+### 🎨 CPU frequency:
 
-- 0.4 - 0.8GHz = Normal
-- 0.8 - 2.5GHz = Yellow
-- 2.5 - 3.1GHz = Orange (Turbo)
-- 3.1GHz = Red (Maximum)
+In my case, the processor frequency is set with the following colors:
 
-**CPU temperature:**
+- **0.4 - 0.8 GHz** → 🟢 Normal
+- **0.8 - 2.5 GHz** → 🟡 Yellow
+- **2.5 - 3.1 GHz** → 🟠 Orange *(Turbo)*
+- **3.1 GHz** → 🔴 Red *(Maximum)*
 
-In my case, I get the CPU temperature by reading the file "/sys/class/thermal/thermal_zone0/temp". In your case, you'll need to check if your PC's CPU temperature is located in that file or in another file or device.
-You'll also need to adjust the color according to your needs. In my case it's:
+### 🌡️ CPU temperature:
 
-- <35 = Normal
-- 35 - 40 = Yellow
-- 40 - 60 = Orange
-- >60 = Red
+The CPU temperature is obtained by reading the file:
+```bash
+/sys/class/thermal/thermal_zone0/temp
+```
+If it's not there in your case, you'll need to check where it's available on your system.
 
-**Disk temperature:**
+Configured colors:
 
-In my case, I have an M.2 NVME drive, and I get the temperature by calling the "sensors" command, capturing the output, and searching for the "nvme-pci-0100" / "Composite:" device. The data is then cleared, leaving only the temperature.
+- **< 35°C** → 🟢 Normal
+- **35 - 40°C** → 🟡 Yellow
+- **40 - 60°C** → 🟠 Orange
+- **> 60°C** → 🔴 Red
 
-- <50 = Normal
-- 50 - 70 = Yellow
-- >70 = Red
+### 💾 Disk temperature:
 
-On my PC, the Wi-Fi device is called "wlp3s0." From there, I get the data needed to display it on the screen. If it's called something else, you'll have to modify the script. Run the "iwconfig" command and search for the name of the Wi-Fi network card you want to display.
+In my case, I have an **M.2 NVMe drive** and I get the temperature with the command:
+```bash
+sensors
+```
+Searching for the **"nvme-pci-0100"** or **"Composite:"** devices. Then, the data is wiped, leaving only the temperature.
 
-**Battery:**
+Configured Colors:
 
-In my particular case, the battery data is located in "/sys/class/power_supply/BAT0/", but you might need to make minor adjustments because it could be in BAT1 or somewhere else.
+- **< 50°C** → 🟢 Normal
+- **50 - 70°C** → 🟡 Yellow
+- **> 70°C** → 🔴 Red
+
+### 📶 WiFi Card Configuration:
+
+On my PC, the WiFi device is called **"wlp3s0"**. To get its name on your computer, run the command:
+```bash
+iwconfig
+```
+If it's named differently, you'll need to modify the script accordingly.
+
+### 🔋 Battery:
+
+The battery data in my case is located at:
+```bash
+/sys/class/power_supply/BAT0/
+```
+In your case, it could be in **BAT1** or another location. Check and adjust as needed.
+
+⚙️ *If you need to adapt the script, review these parameters and adjust them according to your equipment.*
+---
 
 ### Sample Output
 
@@ -132,7 +159,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 **If you're interested in contributing, open an issue or make a pull request! 🤝**
 
 
-# SysStatCLI (System Status CLI)
+# SysStatCLI (System Status CLI) Version 20250312a 1.25.0a
 
 ## Castellano
 
@@ -173,40 +200,67 @@ Para ejecutarlo de forma continua cada *X* segundos:
 python3 sysstatcli.py 60  # Se actualizará cada 60 segundos
 ```
 
-### NOTA IMPORTANTE:
+---
+## ⚠️ NOTA IMPORTANTE
 
-Este script esta hecho y probado en una notebook HP Pavilion x360 Convertible 15-br0xx (103C_5335KV HP Pavilion). Seguramente para que funcione en tu PC, notebook, server. etc. tendrás que hacer algunos ajustes en algunos parámetros que son:
+Este script está hecho y probado en una notebook **HP Pavilion x360 Convertible 15-br0xx** *(103C_5335KV HP Pavilion)*. Seguramente, para que funcione en tu PC, notebook, servidor, etc., tendrás que hacer algunos ajustes en ciertos parámetros:
 
-**CPU frequency:** Los colores de la frecuencia del procesador. En mi caso esta ajustado para:
+### 🎨 CPU frequency:
 
-0,4 - 0,8GHz = Normal
-0,8 - 2,5GHz = Amarillo
-2,5 - 3,1GHz = Naranja (Turbo)
-3,1GHz = Rojo (maximo)
+En mi caso, la frecuencia del procesador está ajustada con los siguientes colores:
 
-**CPU temperature:**
+- **0,4 - 0,8 GHz** → 🟢 Normal
+- **0,8 - 2,5 GHz** → 🟡 Amarillo
+- **2,5 - 3,1 GHz** → 🟠 Naranja *(Turbo)*
+- **3,1 GHz** → 🔴 Rojo *(Máximo)*
 
-En mi caso la temperatura del CPU la obtengo leyendo el archivo "/sys/class/thermal/thermal_zone0/temp". En tu caso tendrás que ver si en tu PC la temperatura del CPU se encuentra en ese archivo o en otro archivo o dispositivo.
-Ademas tendrás que ajustar el color de acuerdo a tu conveniencia. En mi caso es:
+### 🌡️ CPU temperature:
 
-<35 = Normal
-35 - 40 = Amarillo
-40 - 60 = Naranja
->60 = Rojo
+La temperatura del CPU se obtiene leyendo el archivo:
+```bash
+/sys/class/thermal/thermal_zone0/temp
+```
+Si en tu caso no se encuentra allí, deberás revisar dónde está disponible en tu sistema.
 
-**Disk temperature:**
+Colores configurados:
 
-En mi caso tengo un disco M.2 NVME y obtengo la temperatura llamando al comando "sensors" y capturando la salida y buscando el dispositivo "nvme-pci-0100" / "Composite:" Luego se limpian los datos dejando solo la temperatura.
+- **< 35°C** → 🟢 Normal
+- **35 - 40°C** → 🟡 Amarillo
+- **40 - 60°C** → 🟠 Naranja
+- **> 60°C** → 🔴 Rojo
 
-<50 = Normal
-50 - 70 = Amarillo
->70 = Rojo
+### 💾 Disk temperature:
 
-En mi PC el dispositivo Wifi se llama "wlp3s0" Y de ahí obtengo los datos necesarios para mostrar en pantalla, si en tu caso se llama diferente tendrás que modificar el script, ejecuta el comando "iwconfig" y busca como se llama la placa de red Wifi que deseas mostrar.
+En mi caso, tengo un **disco M.2 NVMe** y obtengo la temperatura con el comando:
+```bash
+sensors
+```
+Buscando los dispositivos **"nvme-pci-0100"** o **"Composite:"**. Luego, se limpian los datos dejando solo la temperatura.
 
-**Battery:**
+Colores configurados:
 
-En mi caso particular los datos de la batería se encuentran en "/sys/class/power_supply/BAT0/", pero tu a lo mejor tendrías que hacer pequeños ajustes porque puede estar en BAT1 o algún otro lugar.
+- **< 50°C** → 🟢 Normal
+- **50 - 70°C** → 🟡 Amarillo
+- **> 70°C** → 🔴 Rojo
+
+### 📶 Configuración de la Placa WiFi:
+
+En mi PC, el dispositivo WiFi se llama **"wlp3s0"**. Para obtener su nombre en tu equipo, ejecuta el comando:
+```bash
+iwconfig
+```
+Si se llama diferente, tendrás que modificar el script en consecuencia.
+
+### 🔋 Battery:
+
+Los datos de la batería en mi caso se encuentran en:
+```bash
+/sys/class/power_supply/BAT0/
+```
+En tu caso, podría estar en **BAT1** u otra ubicación. Verifica y ajusta según sea necesario.
+
+⚙️ *Si necesitas adaptar el script, revisa estos parámetros y ajústalos según tu equipo.*
+---
 
 ### Ejemplo de salida
 
