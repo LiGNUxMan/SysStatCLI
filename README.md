@@ -70,7 +70,7 @@ Configured colors:
 
 ### 💾 Disk temperature:
 
-In my case, I have an **M.2 NVMe drive** and I get the temperature with the command:
+In my case, I have an drive **M.2 NVMe** and I get the temperature with the command:
 ```bash
 sensors
 ```
@@ -232,7 +232,7 @@ Colores configurados:
 
 ### 💾 Disk temperature:
 
-En mi caso, tengo un **disco M.2 NVMe** y obtengo la temperatura con el comando:
+En mi caso, tengo un disco **M.2 NVMe** y obtengo la temperatura con el comando:
 ```bash
 sensors
 ```
