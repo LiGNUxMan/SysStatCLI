@@ -158,6 +158,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 **If you're interested in contributing, open an issue or make a pull request! 🤝**
 
+
 ---
 # SysStatCLI (System Status CLI) v20250312a 1.25.0a
 
