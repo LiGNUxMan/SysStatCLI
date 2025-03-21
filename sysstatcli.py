@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 20250312a 1.25.0a
+# SysStatCLI (System Status CLI) Version 1.28.20250321b
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
-# axel@hal9001c:~$ python3 ~/Aplicaciones/conky-cli/conky-cli_0.14.0beta.py
+# axel@hal9001c:~$ python3 ~/Aplicaciones/sysstatcli.py
 # 
 # 
 # OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
@@ -21,12 +21,13 @@
 # Disk used: 43% (201.18GB / 467.91GB)
 # █████████████░░░░░░░░░░░░░░░░░░░
 # Disk temperature: 32°C
+# LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
 # WIFI signal: 57% - Speed: 97.6Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
 # ██████████████████░░░░░░░░░░░░░░
 # WIFI temperature: 42°C
 # Battery: 47% - Mode: Discharging
 # ██████████████░░░░░░░░░░░░░░░░░
-# Ejecuciones: 4 / Próxima ejecución en 3/10 segundos...
+# Ejecuciones: 4 / Próxima ejecución en 3/60 segundos...
 # 
 #
 
@@ -107,11 +108,7 @@ def get_cpu_usage():
         return f"{color}{BOLD}{usage:.0f}%{RESET}", color  # Retorna el texto formateado y el color
 
     uso_nucleos = psutil.cpu_percent(interval=1,percpu=True) # Hace una pausa de 1seg para obtener el uso de CPU
-#    uso_nucleos_05 = psutil.cpu_percent(interval=0.5,percpu=True) # Luego borrar esta linea
     promedio_uso = sum(uso_nucleos) / len(uso_nucleos)
-#    promedio_uso_05 = sum(uso_nucleos_05) / len(uso_nucleos_05) # Luego borrar esta linea
-
-#    print(f"{YELLOW}1={promedio_uso, uso_nucleos} 0,5={promedio_uso_05, uso_nucleos_05}{RESET}") # Luego borrar esta linea
 
     uso_promedio_str, color_barra = get_colored_usage(promedio_uso)
 
@@ -145,13 +142,13 @@ def get_cpu_frequency():
         elif cur_freq > 0.8: # elif cur_freq > min_freq:
             color = YELLOW
         
-        print(f"CPU frequency: {color}{BOLD}{cur_freq:}GHz{RESET} - Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
+        print(f"CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
     except FileNotFoundError:
         print(f"CPU frequency: {RED}{BOLD}Unknown{RESET} - Scaling governor: {BOLD}{scaling_governor}{RESET}")
 
 # CPU temperature: 39°C
 def get_cpu_temperature():
-    """Obtiene la temperatura del CPU desde "acpitz" y la imprime con colores según el nivel."""
+    """Obtiene la temperatura del CPU desde "/sys/class/thermal/thermal_zone0/temp" y la imprime con colores según el nivel."""
     try:
         with open("/sys/class/thermal/thermal_zone0/temp") as f:
             temp = int(f.read().strip()) / 1000
@@ -162,29 +159,10 @@ def get_cpu_temperature():
             color = ORANGE
         elif temp > 35:
             color = YELLOW
+
         print(f"CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
     except FileNotFoundError:
         print(f"CPU temperature: {RED}{BOLD}Unknown{RESET}")
-
-# Load average: 1.97 1.22 0.98
-def get_load_average():
-    """Obtiene el Load Average y lo imprime con colores según la cantidad de núcleos."""
-    cpu_count = os.cpu_count()
-    load1, load5, load15 = os.getloadavg()
-    
-    def color_load(value):
-        if value >= cpu_count:
-            return f"{RED}{value:.2f}{RESET}"
-        elif value >= cpu_count * 0.75:
-            return f"{YELLOW}{value:.2f}{RESET}"
-        else:
-            return f"{value:.2f}"
-    
-    load1_str = color_load(load1)
-    load5_str = color_load(load5)
-    load15_str = color_load(load15)
-    
-    print(f"Load average: {BOLD}{load1_str}{RESET} {BOLD}{load5_str}{RESET} {BOLD}{load15_str}{RESET}")
 
 # RAM used: 32% (4.89GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
 # ██████████░░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -261,6 +239,26 @@ def get_process_count():
     except FileNotFoundError:
         print(f"Processes: {RED}{BOLD}Unknown{RESET}")
 
+# Load average: 1.97 1.22 0.98
+def get_load_average():
+    """Obtiene el Load Average y lo imprime con colores según la cantidad de núcleos."""
+    cpu_count = os.cpu_count()
+    load1, load5, load15 = os.getloadavg()
+    
+    def color_load(value):
+        if value >= cpu_count:
+            return f"{RED}{value:.2f}{RESET}"
+        elif value >= cpu_count * 0.75:
+            return f"{YELLOW}{value:.2f}{RESET}"
+        else:
+            return f"{value:.2f}"
+    
+    load1_str = color_load(load1)
+    load5_str = color_load(load5)
+    load15_str = color_load(load15)
+    
+    print(f"Load average: {BOLD}{load1_str}{RESET} {BOLD}{load5_str}{RESET} {BOLD}{load15_str}{RESET}")
+
 # Disk used: 43% (201.18GB / 467.91GB)
 # █████████████░░░░░░░░░░░░░░░░░░░
 def get_disk_usage():
@@ -316,6 +314,39 @@ def get_nvme_temperature():
 
     except Exception as e:
         print(f"Disk temperature: {RED}{BOLD}Error: {str(e)}{RESET}") # print(f"NVMe Temp: {RED}{BOLD}Error: {str(e)}{RESET}")
+
+# LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
+def get_lan_info():
+    iface = "enxc025e92940b8"  # Nombre de tu interfaz de red cableada
+    stats = psutil.net_if_stats().get(iface)
+    addrs = psutil.net_if_addrs().get(iface)
+    
+    # Si la interfaz no existe o no está activa, no mostrar nada
+    if not stats or not stats.isup:
+        return ""
+    
+    # Buscar una dirección IPv4 en la interfaz
+    ip_address = None
+    if addrs:
+        for addr in addrs:
+            if addr.family == socket.AF_INET:
+                ip_address = addr.address
+                break
+    if not ip_address:
+        return ""
+    
+    # Obtener velocidad (en Mb/s) y modo dúplex
+    speed = stats.speed  # En Mb/s
+    duplex = stats.duplex
+    if duplex == psutil.NIC_DUPLEX_FULL:
+        duplex_str = "Full"
+    elif duplex == psutil.NIC_DUPLEX_HALF:
+        duplex_str = "Half"
+    else:
+        duplex_str = "Unknown"
+    
+    # Devolver la salida formateada
+    print(f"LAN speed: {BOLD}{speed}Mb/s{RESET} ({BOLD}{duplex_str}{RESET}) - IP: {BOLD}{ip_address}{RESET}")
 
 # WIFI signal: 57% - Speed: 97.6Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
 # ██████████████████░░░░░░░░░░░░░░
@@ -421,6 +452,7 @@ def main():
     get_load_average()
     get_disk_usage()
     get_nvme_temperature()
+    get_lan_info()
     get_wifi_info()
     get_battery_info()
 
@@ -435,6 +467,7 @@ if __name__ == "__main__":
                 
                 # Cuenta regresiva
                 for i in range(interval, 0, -1):
+                    # sys.stdout.write("\r" + " " * 40 + "\r") # Borra la línea
                     sys.stdout.write(f"\rRuns: {count} / Next run in {i}/{interval} seconds... ")
                     sys.stdout.flush()
                     time.sleep(1)
