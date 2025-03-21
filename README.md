@@ -125,8 +125,8 @@ Load average: 1.24 1.47 1.14
 Disk used: 43% (201.20GB / 467.91GB)
 █████████████░░░░░░░░░░░░░░░░░░░
 Disk temperature: 32°C
-WIFI signal: 57% - Speed: 0.0Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
 LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
+WIFI signal: 57% - Speed: 0.0Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
 ██████████████████░░░░░░░░░░░░░░
 WIFI temperature: 41°C
 Battery: 47% - Mode: Discharging
