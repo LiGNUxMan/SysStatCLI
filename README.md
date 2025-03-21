@@ -1,4 +1,4 @@
-# SysStatCLI (System Status CLI) v20250312a 1.25.0a
+# SysStatCLI (System Status CLI) v1.28.20250321b
 
 ## 🇺🇸🇬🇧 English
 
@@ -17,6 +17,7 @@
 - **Processes**: Reports the total number of processes and their status (running, suspended, inactive, etc.).
 - **System Load**: Displays the load average over 1, 5, and 15 minutes.
 - **Disk Usage**: Indicates the percentage of occupied storage and the temperature of the NVMe drive.
+- **Wired Connection Status**: Displays the connection speed and IP address.
 - **Wi-Fi Connection Status**: Displays the signal quality, connection speed, the network you are connected to, and the IP address.
 - **Wi-Fi Card Temperature**: Reports the temperature of the wireless network adapter.
 - **Battery Status**: Indicates the charge percentage and whether the device is connected to power or discharging (only if the battery is not at 100%).
@@ -125,6 +126,7 @@ Disk used: 43% (201.20GB / 467.91GB)
 █████████████░░░░░░░░░░░░░░░░░░░
 Disk temperature: 32°C
 WIFI signal: 57% - Speed: 0.0Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
+LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
 ██████████████████░░░░░░░░░░░░░░
 WIFI temperature: 41°C
 Battery: 47% - Mode: Discharging
@@ -145,9 +147,7 @@ This project is distributed under the **GPLv3** license. Feel free to use, modif
 ## 🚀 Future Improvements and Features
 We're looking for contributors to continue improving SysStatCLI. Here are some ideas for future versions:
 
-1️⃣ Display the wired network card parameters.
-
-2️⃣ Add audible alerts: Emit a BEEP when a critical parameter is red (e.g., high temperature, excessive CPU usage, or full disk).
+1️⃣ Add audible alerts: Emit a BEEP when a critical parameter is red (e.g., high temperature, excessive CPU usage, or full disk).
 
 3️⃣ Data logging and analysis:
 Save the system status to a log file with timestamps.
@@ -164,7 +164,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 
 ---
-# SysStatCLI (System Status CLI) v20250312a 1.25.0a
+# SysStatCLI (System Status CLI) v1.28.20250321b
 
 ## 🇪🇸 Español
 
@@ -183,6 +183,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 - **Procesos**: Reporta la cantidad total de procesos y su estado (ejecución, suspensión, inactivos, etc.).
 - **Carga del sistema**: Muestra el promedio de carga en 1, 5 y 15 minutos.
 - **Uso del disco**: Indica el porcentaje de almacenamiento ocupado y la temperatura del disco NVMe.
+- **Estado de la conexión cableada**: Muestra la velocidad de conexión y la dirección IP.
 - **Estado de la conexión WiFi**: Muestra la calidad de la señal, la velocidad de conexión, la red a la que está conectado y la dirección IP.
 - **Temperatura de la tarjeta WiFi**: Reporta la temperatura del adaptador de red inalámbrico.
 - **Estado de la batería**: Indica el porcentaje de carga y si el equipo está conectado a la corriente o descargándose (solo si la batería no está al 100%).
@@ -290,6 +291,7 @@ Load average: 1.24 1.47 1.14
 Disk used: 43% (201.20GB / 467.91GB)
 █████████████░░░░░░░░░░░░░░░░░░░
 Disk temperature: 32°C
+LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
 WIFI signal: 57% - Speed: 0.0Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
 ██████████████████░░░░░░░░░░░░░░
 WIFI temperature: 41°C
@@ -311,9 +313,7 @@ Este proyecto se distribuye bajo la licencia **GPLv3**. ¡Úsalo, modifícalo y 
 ## 🚀 Mejoras y funcionalidades futuras
 Estamos buscando colaboradores para seguir mejorando SysStatCLI. Estas son algunas ideas para futuras versiones:
 
-1️⃣ Mostrar los parametros de la placa de red cableada.
-
-2️⃣ Agregar alertas sonoras: Emitir un BEEP cuando algún parámetro crítico esté en rojo (por ejemplo, alta temperatura, uso excesivo de CPU o disco lleno).
+1️⃣ Agregar alertas sonoras: Emitir un BEEP cuando algún parámetro crítico esté en rojo (por ejemplo, alta temperatura, uso excesivo de CPU o disco lleno).
 
 3️⃣ Registro y análisis de datos:
 Guardar el estado del sistema en un archivo de registro (log) con marcas de tiempo.
