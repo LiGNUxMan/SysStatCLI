@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 1.28.20250321b
+# SysStatCLI (System Status CLI) Version 1.28.20250321c
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -81,7 +81,6 @@ def get_system_info():
 
     print(f"OS: {BOLD}{os_name}{RESET} - Kernel version: {BOLD}{kernel_version}{RESET}")
     print(f"Hostname: {BOLD}{hostname}{RESET} - User: {BOLD}{username}{RESET}")
-
 
 # Uptime: 1 day, 3:37:09 - Time and date: 15:14:25 13/03/2025
 def get_uptime_and_time():
@@ -411,31 +410,32 @@ def get_wifi_info():
 # Battery: 47% - Mode: Discharging
 # ███████████████░░░░░░░░░░░░░░░░░
 def get_battery_info():
-    try:
+    try:        
         base_path = "/sys/class/power_supply/BAT0/"
-        # Leer el porcentaje de batería
-        with open(os.path.join(base_path, "capacity"), "r") as f:
-            battery_percent = int(f.read().strip())
 
         # Leer el estado de la batería
         with open(os.path.join(base_path, "status"), "r") as f:
             battery_mode = f.read().strip()
 
         if battery_mode == "Full":
-            return ""  # No mostrar si está llena
-
-        # Aplicar color al porcentaje
-        if battery_percent > 25:
-            color = RESET  # Blanco
-        elif battery_percent > 10:
-            color = YELLOW  # Amarillo
+            return ""  # No hacer nada
         else:
-            color = RED  # Rojo
+            # Leer el porcentaje de batería
+            with open(os.path.join(base_path, "capacity"), "r") as f:
+                battery_percent = int(f.read().strip())
 
-        barra_battery = barra_progreso(battery_percent, color=color)
+            # Aplicar color al porcentaje
+            if battery_percent > 25:
+                color = RESET  # Blanco
+            elif battery_percent > 10:
+                color = YELLOW  # Amarillo
+            else:
+                color = RED  # Rojo
 
-        print(f"Battery: {color}{BOLD}{battery_percent}%{RESET} - Mode: {BOLD}{battery_mode}{RESET}")
-        print(barra_battery)
+            barra_battery = barra_progreso(battery_percent, color=color)
+
+            print(f"Battery: {color}{BOLD}{battery_percent}%{RESET} - Mode: {BOLD}{battery_mode}{RESET}")
+            print(barra_battery)
 
     except Exception as e:
         print(f"Battery: Error: {e}")
