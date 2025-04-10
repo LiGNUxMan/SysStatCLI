@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 1.28.20250321c
+# SysStatCLI (System Status CLI) Version 1.37.20250409c
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -18,16 +18,17 @@
 # ██████████░░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 # Processes: 265 (running=1, sleeping=199, idle=65, stopped=0, zombie=0, other=0)
 # Load average: 1.97 1.22 0.98
-# Disk used: 43% (201.18GB / 467.91GB)
+# Disk used: 43% (202.91GB / 467.91GB) - Read: 8.63MB/s - Write: 0.72MB/s
 # █████████████░░░░░░░░░░░░░░░░░░░
 # Disk temperature: 32°C
 # LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
-# WIFI signal: 57% - Speed: 97.6Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
-# ██████████████████░░░░░░░░░░░░░░
+# WIFI lan: OBRIEN 5 - IP: 192.168.0.208
+# WIFI signal: 71% - Speed: 325.0Mb/s - Download: 4.57MB/s - Upload: 0.93MB/s
+# ██████████████████████░░░░░░░░░░
 # WIFI temperature: 42°C
 # Battery: 47% - Mode: Discharging
 # ██████████████░░░░░░░░░░░░░░░░░
-# Ejecuciones: 4 / Próxima ejecución en 3/60 segundos...
+# Runs: 3384 / Next run in 10/60 seconds...
 # 
 #
 
@@ -38,7 +39,7 @@ import socket
 import subprocess
 import sys
 import time
-from datetime import timedelta # Linea agregada para el uptime de mem_info3_root
+from datetime import timedelta # Linea agregada para el uptime
 
 # Letra normal, bold, amarilla y roja
 BOLD = "\033[1m" #
@@ -49,6 +50,17 @@ GREEN = "\033[92m" #
 ORANGE = "\033[38;5;214m" # naranja intenso.
 YELLOW = "\033[33m" #
 RED = "\033[31m" #
+
+# Variables globales inicializacion
+# Se toman estos valores al comienzo de scrpt porque luego seran tomados nuevamente para hacer comparativas
+cpu_times_start = psutil.cpu_times(percpu=True)
+cpu_time_start = time.time()
+disk_io_start = psutil.disk_io_counters()
+disk_time_start = time.time()
+wifi_interface = "wlp3s0" #Nombre de la interfaz WIFI
+wifi_io_start = psutil.net_io_counters(pernic=True).get(wifi_interface)
+wifi_time_start = time.time()
+time.sleep(1)  # Pausa de 1 seg. Para mejorar la exactitud de los datos en una sola ejeucuion o la primera del bucle
 
 # Función para generar barra de progreso
 def barra_progreso(valor, total=100, ancho=32, color=RESET):
@@ -93,30 +105,44 @@ def get_uptime_and_time():
 # CPU used: 39% (CPU0: 38% - CPU1: 36% - CPU2: 41% - CPU3: 40%)
 # ████████████░░░░░░░░░░░░░░░░░░░░
 def get_cpu_usage():
+    global cpu_times_start, cpu_time_start
 
+    cpu_times_current = psutil.cpu_times(percpu=True)
+    cpu_time_current = time.time()
+
+    cpu_time_interval = cpu_time_current - cpu_time_start
+#    if cpu_time_interval == 0:
+#        return
+  
     def get_colored_usage(usage):
-        """Devuelve el porcentaje con color según el nivel de uso."""
         if usage < 33:
-            color = RESET  # Normal
+            color = RESET
         elif usage < 66:
-            color = YELLOW  # Amarillo
+            color = YELLOW
         elif usage < 99:
-            color = ORANGE  # Amarillo
+            color = ORANGE
         else:
-            color = RED  # Rojo
-        return f"{color}{BOLD}{usage:.0f}%{RESET}", color  # Retorna el texto formateado y el color
+            color = RED
+        return f"{color}{BOLD}{usage:.0f}%{RESET}", color
 
-    uso_nucleos = psutil.cpu_percent(interval=1,percpu=True) # Hace una pausa de 1seg para obtener el uso de CPU
+    uso_nucleos = []
+    for start, current in zip(cpu_times_start, cpu_times_current):
+        total_diff = sum(current) - sum(start)
+        idle_diff = current.idle - start.idle
+        uso = 100 * (1 - idle_diff / total_diff) if total_diff else 0.0
+        uso_nucleos.append(uso)
+
     promedio_uso = sum(uso_nucleos) / len(uso_nucleos)
-
     uso_promedio_str, color_barra = get_colored_usage(promedio_uso)
 
-    # Formatear el uso de cada núcleo con colores
     uso_nucleos_str = " - ".join([f"{ITALIC}CPU{i}{RESET}: {get_colored_usage(uso)[0]}" for i, uso in enumerate(uso_nucleos)])
 
-    # Mostrar la salida formateada con el promedio en color y barra de progreso
     print(f"CPU used: {uso_promedio_str} ({uso_nucleos_str})")
     print(barra_progreso(promedio_uso, color=color_barra))
+
+    # Actualizar para la siguiente lectura
+    cpu_times_start = cpu_times_current
+    cpu_time_start = cpu_time_current
  
 # CPU frequency: 0.8GHz - Scaling governor: powersave
 def get_cpu_frequency():
@@ -147,10 +173,15 @@ def get_cpu_frequency():
 
 # CPU temperature: 39°C
 def get_cpu_temperature():
-    """Obtiene la temperatura del CPU desde "/sys/class/thermal/thermal_zone0/temp" y la imprime con colores según el nivel."""
+    """Obtiene la temperatura del CPU usando psutil, con fallback a "/sys/class/thermal/thermal_zone0/temp"."""
     try:
-        with open("/sys/class/thermal/thermal_zone0/temp") as f:
-            temp = int(f.read().strip()) / 1000
+        temps = psutil.sensors_temperatures()
+        if "coretemp" in temps:
+            temp = temps["coretemp"][0].current  # Obtiene la primera lectura de temperatura
+        else:
+            with open("/sys/class/thermal/thermal_zone0/temp") as f:
+                temp = int(f.read().strip()) / 1000
+        
         color = RESET
         if temp > 60:
             color = RED
@@ -158,9 +189,9 @@ def get_cpu_temperature():
             color = ORANGE
         elif temp > 35:
             color = YELLOW
-
+        
         print(f"CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
-    except FileNotFoundError:
+    except Exception:
         print(f"CPU temperature: {RED}{BOLD}Unknown{RESET}")
 
 # RAM used: 32% (4.89GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
@@ -258,7 +289,7 @@ def get_load_average():
     
     print(f"Load average: {BOLD}{load1_str}{RESET} {BOLD}{load5_str}{RESET} {BOLD}{load15_str}{RESET}")
 
-# Disk used: 43% (201.18GB / 467.91GB)
+# Disk used: 43% (202.91GB / 467.91GB) - Read: 8.63MB/s - Write: 0.72MB/s
 # █████████████░░░░░░░░░░░░░░░░░░░
 def get_disk_usage():
     """Obtiene el uso del disco y lo imprime con  con colores según el nivel."""
@@ -273,9 +304,29 @@ def get_disk_usage():
     elif percent >= 80: # 80
         color = YELLOW
 
+    # Obriene la velocidad de lectura y escritura
+    global disk_io_start, disk_time_start
+
+    disk_io_current = psutil.disk_io_counters()
+    disk_time_current = time.time()
+
+    disk_time_interval = disk_time_current - disk_time_start
+#    if disk_time_interval == 0:
+#        return
+
+    disk_read_diff = disk_io_current.read_bytes - disk_io_start.read_bytes
+    disk_write_diff = disk_io_current.write_bytes - disk_io_start.write_bytes
+
+    disk_read_speed = disk_read_diff / (1024 * 1024 * disk_time_interval) # MB/s
+    disk_write_speed = disk_write_diff / (1024 * 1024 * disk_time_interval) # MB/s
+
+    # Se toman estos valores nuevamente porque luego seran tomados nuevamente para hacer comparativas
+    disk_io_start = disk_io_current
+    disk_time_start = disk_time_current
+
     barra_disk = barra_progreso(percent, color=color)
 
-    print(f"Disk used: {color}{BOLD}{percent:.0f}%{RESET} ({BOLD}{used:.2f}GB / {total:.2f}GB{RESET})")
+    print(f"Disk used: {color}{BOLD}{percent:.0f}%{RESET} ({BOLD}{used:.2f}GB / {total:.2f}GB{RESET}) - Read: {BOLD}{disk_read_speed:.2f}MB/s{RESET} - Write: {BOLD}{disk_write_speed:.2f}MB/s{RESET}")
     print(barra_disk)
 
 # Disk temperature: 32°C
@@ -347,25 +398,27 @@ def get_lan_info():
     # Devolver la salida formateada
     print(f"LAN speed: {BOLD}{speed}Mb/s{RESET} ({BOLD}{duplex_str}{RESET}) - IP: {BOLD}{ip_address}{RESET}")
 
-# WIFI signal: 57% - Speed: 97.6Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
-# ██████████████████░░░░░░░░░░░░░░
+# WIFI lan: OBRIEN 5 - IP: 192.168.0.208
+# WIFI signal: 71% - Speed: 325.0Mb/s - Download: 4.57MB/s - Upload: 0.93MB/s
+# ██████████████████████░░░░░░░░░░
 # WIFI temperature: 42°C
 def get_wifi_info():
-    """Obtiene la información de la red WiFi."""
+    """Obtiene la información de la red WiFi y tráfico."""
+    # time.sleep(10) # Pausa de 10 segundos
+    global wifi_io_start, wifi_time_start
     try:
         # Obtener información de la red WiFi
-        output = subprocess.run(["iwconfig", "wlp3s0"], capture_output=True, text=True).stdout
+        output = subprocess.run(["iwconfig", wifi_interface], capture_output=True, text=True).stdout
         if "no wireless extensions" in output or "Not-Associated" in output:
             return  # No mostrar nada si no hay WiFi conectado
-        
+
         # Extraer información relevante
         ssid_match = re.search(r'ESSID:"(.*?)"', output)
         quality_match = re.search(r'Link Quality=(\d+)/(\d+)', output)
-        signal_match = re.search(r'Signal level=(-?\d+) dBm', output)
         speed_match = re.search(r'Bit Rate=(\d+\.?\d*) Mb/s', output)
-        ip_output = subprocess.run(["ip", "-4", "addr", "show", "wlp3s0"], capture_output=True, text=True).stdout
+        ip_output = subprocess.run(["ip", "-4", "addr", "show", wifi_interface], capture_output=True, text=True).stdout
         ip_match = re.search(r'inet\s(\d+\.\d+\.\d+\.\d+)', ip_output)
-        
+
         # Procesar valores
         ssid = ssid_match.group(1) if ssid_match else "Unknown"
         quality = int(quality_match.group(1)) if quality_match else 0
@@ -373,7 +426,23 @@ def get_wifi_info():
         signal_percent = (quality / max_quality) * 100 if quality_match else 0
         speed = float(speed_match.group(1)) if speed_match else 0.0
         ip = ip_match.group(1) if ip_match else "Unknown"
-        
+
+        # Calcular tráfico de red WiFi
+        wifi_io_current = psutil.net_io_counters(pernic=True).get(wifi_interface)
+        wifi_time_current = time.time()
+        interval = wifi_time_current - wifi_time_start
+
+        download_speed = upload_speed = 0
+        if wifi_io_start and wifi_io_current and interval > 0:
+            bytes_recv_diff = wifi_io_current.bytes_recv - wifi_io_start.bytes_recv
+            bytes_sent_diff = wifi_io_current.bytes_sent - wifi_io_start.bytes_sent
+            download_speed = bytes_recv_diff / (1024 * 1024 * interval)
+            upload_speed = bytes_sent_diff / (1024 * 1024 * interval)
+
+        # Guardar nuevos valores para la siguiente medición
+        wifi_io_start = wifi_io_current
+        wifi_time_start = wifi_time_current
+
         # Definir color de la señal WiFi
         if signal_percent < 40:
             color = RED
@@ -381,19 +450,16 @@ def get_wifi_info():
             color = YELLOW
         else:
             color = RESET
-        
-        # Construir salida de WiFi
-        wifi_info = (f"WIFI signal: {color}{BOLD}{signal_percent:.0f}%{RESET} - "
-            f"Speed: {BOLD}{speed:.1f}Mb/s{RESET} - "
-            f"Lan: {BOLD}{ssid}{RESET} - "
-            f"IP: {BOLD}{ip}{RESET}\n"
-            f"{barra_progreso(signal_percent, color=color)}")
-        
+
+        print(f"WIFI lan: {BOLD}{ssid}{RESET} - IP: {BOLD}{ip}{RESET}")
+        print(f"WIFI signal: {color}{BOLD}{signal_percent:.0f}%{RESET} - Speed: {BOLD}{speed:.1f}Mb/s{RESET} - Download: {BOLD}{download_speed:.2f}MB/s{RESET} - Upload: {BOLD}{upload_speed:.2f}MB/s{RESET}")
+        print(f"{barra_progreso(signal_percent, color=color)}")
+
         # Obtener temperatura de la placa WiFi
         temp_output = subprocess.run(["sensors"], capture_output=True, text=True).stdout
         temp_match = re.search(r'iwlwifi_1-virtual-0.*?temp1:\s*\+(\d+\.\d+)°C', temp_output, re.DOTALL)
         temperature = float(temp_match.group(1)) if temp_match else None
-        
+
         if temperature is not None:
             if temperature > 70:
                 temp_color = RED
@@ -401,9 +467,9 @@ def get_wifi_info():
                 temp_color = YELLOW
             else:
                 temp_color = RESET
-            wifi_info += f"\nWIFI temperature: {temp_color}{BOLD}{temperature:.0f}°C{RESET}"
-        
-        print(wifi_info)
+
+            print(f"WIFI temperature: {temp_color}{BOLD}{temperature:.0f}°C{RESET}")
+
     except Exception as e:
         pass  # No mostrar nada en caso de error
 
@@ -440,7 +506,6 @@ def get_battery_info():
     except Exception as e:
         print(f"Battery: Error: {e}")
 
-# Repetición automática
 def main():
     get_system_info()
     get_uptime_and_time()
@@ -455,14 +520,17 @@ def main():
     get_lan_info()
     get_wifi_info()
     get_battery_info()
+#    print("\a")
+#    subprocess.run(["beep"])
 
+# Repetición automática
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         try:
             interval = int(sys.argv[1])
             count = 1  # Inicializa el contador
             while True:
-                os.system('clear')
+                os.system('clear') # Borra la pantalla
                 main()
                 
                 # Cuenta regresiva
