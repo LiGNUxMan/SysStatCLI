@@ -1,4 +1,4 @@
-# SysStatCLI (System Status CLI) v1.28.20250321b
+# SysStatCLI (System Status CLI) v1.37.20250409c
 
 ## 🇺🇸🇬🇧 English
 
@@ -9,17 +9,17 @@
 ## Features
 
 - **System Information**: Displays the operating system name, kernel version, hostname, and current user.
-- **Uptime**: Indicates how long the system has been powered on.
+- **Uptime**: Indicates how long the system has been on and the time and day of the power failure.
 - **CPU Utilization**: Displays the total percentage of processor utilization and individual core utilization.
 - **CPU Frequency**: Reports the CPU speed in GHz and the active scaling mode.
-- **CPU Temperature**: Reports the processor temperature with color-coded heatsinks.
-- **RAM and SWAP Memory**: Indicates the percentage of RAM and SWAP usage with progress bars.
+- **CPU Temperature**: It reports the processor temperature and changes color depending on the level.
+- **RAM and SWAP Memory**: It shows the percentage of RAM and SWAP usage with colors and progress bars.
 - **Processes**: Reports the total number of processes and their status (running, suspended, inactive, etc.).
 - **System Load**: Displays the load average over 1, 5, and 15 minutes.
-- **Disk Usage**: Indicates the percentage of occupied storage and the temperature of the NVMe drive.
+- **Disk**: Indicates the percentage of storage occupied in % and GB and the total capacity in GB, as well as the data read and written in MB/s and the temperature.
 - **Wired Connection Status**: Displays the connection speed and IP address.
-- **Wi-Fi Connection Status**: Displays the signal quality, connection speed, the network you are connected to, and the IP address.
-- **Wi-Fi Card Temperature**: Reports the temperature of the wireless network adapter.
+- **Wi-Fi Connection Status**: It shows the network you are connected to and the IP address, signal quality, connection speed, downloaded and uploaded data in MB/s
+- **Wi-Fi Card Temperature**: Reports the temperature of the wireless network adapter and changes color based on the temperature level.
 - **Battery Status**: Indicates the charge percentage and whether the device is connected to power or discharging (only if the battery is not at 100%).
 - **Autorun**: Can run continuously at a frequency determined by the user.
 
@@ -108,30 +108,28 @@ In your case, it could be in **BAT1** or another location. Check and adjust as n
 
 ### Sample Output
 
-![sysstatcli2](https://github.com/user-attachments/assets/4c7bc675-1e46-42c8-aa8f-619f6f7ea39e)
+![Captura de pantalla de 2025-04-09 21-58-52](https://github.com/user-attachments/assets/7abc9a28-5df7-4128-aa1a-60b339eb9a55)
 
 ```
-OS: Linux Mint 22.1 - Kernel version: 6.11. 0-19-generic
+OS: Linux Mint 22.1 - Kernel version: 6.11.0-21-generic
 Hostname: hal9001c - User: axel
-Uptime: 1 day, 3:05:17 - Time and date: 14:42:33 03/13/2025
-CPU used: 2% (CPU0: 3% - CPU1: 1% - CPU2: 1% - CPU3: 3%)
-░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-CPU frequency: 1.0GHz - Scaling governor: powersave
-CPU temperature: 37°C
-RAM used: 34% (5.28GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
-██████████░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-Processes: 269 (running=1, sleeping=201, idle=67, stopped=0, zombie=0, other=0)
-Load average: 1.24 1.47 1.14
-Disk used: 43% (201.20GB / 467.91GB)
+Uptime: 14 days, 10:11:59 - Time and date: 21:58:13 09/04/2025
+CPU used: 35% (CPU0: 36% - CPU1: 34% - CPU2: 33% - CPU3: 34%)
+███████████░░░░░░░░░░░░░░░░░░░░░
+CPU frequency: 0.80GHz - Scaling governor: powersave
+CPU temperature: 38°C
+RAM used: 36% (5.52GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
+███████████░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+Processes: 262 (running=2, sleeping=193, idle=67, stopped=0, zombie=0, other=0)
+Load average: 2.61 1.41 0.92
+Disk used: 43% (202.95GB / 467.91GB) - Read: 0.00MB/s - Write: 0.20MB/s
 █████████████░░░░░░░░░░░░░░░░░░░
-Disk temperature: 32°C
-LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
-WIFI signal: 57% - Speed: 0.0Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
-██████████████████░░░░░░░░░░░░░░
+Disk temperature: 33°C
+WIFI lan: OBRIEN 5 - IP: 192.168.0.208
+WIFI signal: 54% - Speed: 130.0Mb/s - Download: 0.21MB/s - Upload: 0.01MB/s
+█████████████████░░░░░░░░░░░░░░░
 WIFI temperature: 41°C
-Battery: 47% - Mode: Discharging
-███████████████░░░░░░░░░░░░░░░░░
-Runs: 118 / Next run in 17/60 seconds...
+Runs: 26 / Next run in 22/60 seconds...
 ```
 
 ## Contributions
@@ -164,7 +162,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 
 ---
-# SysStatCLI (System Status CLI) v1.28.20250321b
+# SysStatCLI (System Status CLI) v1.37.20250409c
 
 ## 🇪🇸 Español
 
@@ -175,17 +173,17 @@ Compile the script into an executable so that it runs without the need for Pytho
 ## Características
 
 - **Información del sistema**: Muestra el nombre del sistema operativo, la versión del kernel, el nombre de host y el usuario actual.
-- **Tiempo de actividad (Uptime)**: Indica cuánto tiempo ha estado encendido el sistema.
+- **Tiempo de actividad (Uptime)**: Indica cuánto tiempo ha estado encendido el sistema y la hora y dia del mismo.
 - **Uso del CPU**: Muestra el porcentaje total de uso del procesador y el uso individual de cada núcleo.
 - **Frecuencia del CPU**: Reporta la velocidad del CPU en GHz y el modo de escalado activo.
-- **Temperatura del CPU**: Informa la temperatura del procesador con colores según el nivel de calor.
-- **Memoria RAM y SWAP**: Indica el porcentaje de uso de la RAM y la SWAP con barras de progreso.
+- **Temperatura del CPU**: Informa la temperatura del procesador y cambia de color segun el nivel.
+- **Memoria RAM y SWAP**: Indica el porcentaje de uso de la RAM y la SWAP con colores y barras de progreso.
 - **Procesos**: Reporta la cantidad total de procesos y su estado (ejecución, suspensión, inactivos, etc.).
 - **Carga del sistema**: Muestra el promedio de carga en 1, 5 y 15 minutos.
-- **Uso del disco**: Indica el porcentaje de almacenamiento ocupado y la temperatura del disco NVMe.
+- **Disco**: Indica el porcentaje de almacenamiento ocupado en % y GB y la capacidad total en GB, ademas de los datos leidos y escritos en MB/s y la temperatura.
 - **Estado de la conexión cableada**: Muestra la velocidad de conexión y la dirección IP.
 - **Estado de la conexión WiFi**: Muestra la calidad de la señal, la velocidad de conexión, la red a la que está conectado y la dirección IP.
-- **Temperatura de la tarjeta WiFi**: Reporta la temperatura del adaptador de red inalámbrico.
+- **Temperatura de la tarjeta WiFi**: Reporta la temperatura del adaptador de red inalámbrico y cambia de color segun el nivel del la misma.
 - **Estado de la batería**: Indica el porcentaje de carga y si el equipo está conectado a la corriente o descargándose (solo si la batería no está al 100%).
 - **Ejecución automática**: Puede ejecutarse en modo continuo con una frecuencia determinada por el usuario.
 
@@ -274,30 +272,28 @@ En tu caso, podría estar en **BAT1** u otra ubicación. Verifica y ajusta segú
 
 ### Ejemplo de salida
 
-![sysstatcli2](https://github.com/user-attachments/assets/4c7bc675-1e46-42c8-aa8f-619f6f7ea39e)
+![Captura de pantalla de 2025-04-09 21-58-52](https://github.com/user-attachments/assets/68837b9a-6b9d-4919-bd8c-061a3f14464b)
 
 ```
-OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
+OS: Linux Mint 22.1 - Kernel version: 6.11.0-21-generic
 Hostname: hal9001c - User: axel
-Uptime: 1 day, 3:05:17 - Time and date: 14:42:33 13/03/2025
-CPU used: 2% (CPU0: 3% - CPU1: 1% - CPU2: 1% - CPU3: 3%)
-░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-CPU frequency: 1.0GHz - Scaling governor: powersave
-CPU temperature: 37°C
-RAM used: 34% (5.28GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
-██████████░░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-Processes: 269 (running=1, sleeping=201, idle=67, stopped=0, zombie=0, other=0)
-Load average: 1.24 1.47 1.14
-Disk used: 43% (201.20GB / 467.91GB)
+Uptime: 14 days, 10:11:59 - Time and date: 21:58:13 09/04/2025
+CPU used: 35% (CPU0: 36% - CPU1: 34% - CPU2: 33% - CPU3: 34%)
+███████████░░░░░░░░░░░░░░░░░░░░░
+CPU frequency: 0.80GHz - Scaling governor: powersave
+CPU temperature: 38°C
+RAM used: 36% (5.52GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
+███████████░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+Processes: 262 (running=2, sleeping=193, idle=67, stopped=0, zombie=0, other=0)
+Load average: 2.61 1.41 0.92
+Disk used: 43% (202.95GB / 467.91GB) - Read: 0.00MB/s - Write: 0.20MB/s
 █████████████░░░░░░░░░░░░░░░░░░░
-Disk temperature: 32°C
-LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
-WIFI signal: 57% - Speed: 0.0Mb/s - Lan: OBRIEN 5 - IP: 192.168.0.208
-██████████████████░░░░░░░░░░░░░░
+Disk temperature: 33°C
+WIFI lan: OBRIEN 5 - IP: 192.168.0.208
+WIFI signal: 54% - Speed: 130.0Mb/s - Download: 0.21MB/s - Upload: 0.01MB/s
+█████████████████░░░░░░░░░░░░░░░
 WIFI temperature: 41°C
-Battery: 47% - Mode: Discharging
-███████████████░░░░░░░░░░░░░░░░░
-Runs: 118 / Next run in 17/60 seconds...
+Runs: 26 / Next run in 22/60 seconds...
 ```
 
 ## Contribuciones
