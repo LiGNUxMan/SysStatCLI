@@ -108,28 +108,28 @@ In your case, it could be in **BAT1** or another location. Check and adjust as n
 
 ### Sample Output
 
-![Captura de pantalla de 2025-04-09 21-58-52](https://github.com/user-attachments/assets/7abc9a28-5df7-4128-aa1a-60b339eb9a55)
+![Captura de pantalla de 2025-04-09 22-10-53](https://github.com/user-attachments/assets/45ef972c-49c5-4a3a-a7e0-6666315bb865)
 
 ```
 OS: Linux Mint 22.1 - Kernel version: 6.11.0-21-generic
 Hostname: hal9001c - User: axel
-Uptime: 14 days, 10:11:59 - Time and date: 21:58:13 09/04/2025
-CPU used: 35% (CPU0: 36% - CPU1: 34% - CPU2: 33% - CPU3: 34%)
-███████████░░░░░░░░░░░░░░░░░░░░░
-CPU frequency: 0.80GHz - Scaling governor: powersave
-CPU temperature: 38°C
-RAM used: 36% (5.52GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
+Uptime: 14 days, 10:24:21 - Time and date: 22:10:35 09/04/2025
+CPU used: 39% (CPU0: 88% - CPU1: 19% - CPU2: 30% - CPU3: 18%)
+████████████░░░░░░░░░░░░░░░░░░░░
+CPU frequency: 3.10GHz - Scaling governor: powersave
+CPU temperature: 62°C
+RAM used: 37% (5.72GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
 ███████████░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-Processes: 262 (running=2, sleeping=193, idle=67, stopped=0, zombie=0, other=0)
-Load average: 2.61 1.41 0.92
-Disk used: 43% (202.95GB / 467.91GB) - Read: 0.00MB/s - Write: 0.20MB/s
+Processes: 258 (running=2, sleeping=192, idle=63, stopped=0, zombie=0, other=1)
+Load average: 2.37 2.28 1.74
+Disk used: 43% (202.94GB / 467.91GB) - Read: 0.00MB/s - Write: 0.00MB/s
 █████████████░░░░░░░░░░░░░░░░░░░
-Disk temperature: 33°C
+Disk temperature: 32°C
 WIFI lan: OBRIEN 5 - IP: 192.168.0.208
-WIFI signal: 54% - Speed: 130.0Mb/s - Download: 0.21MB/s - Upload: 0.01MB/s
+WIFI signal: 54% - Speed: 117.0Mb/s - Download: 0.00MB/s - Upload: 0.00MB/s
 █████████████████░░░░░░░░░░░░░░░
-WIFI temperature: 41°C
-Runs: 26 / Next run in 22/60 seconds...
+WIFI temperature: 40°C
+Runs: 1 / Next run inin 42/60 seconds...
 ```
 
 ## Contributions
@@ -272,28 +272,28 @@ En tu caso, podría estar en **BAT1** u otra ubicación. Verifica y ajusta segú
 
 ### Ejemplo de salida
 
-![Captura de pantalla de 2025-04-09 21-58-52](https://github.com/user-attachments/assets/68837b9a-6b9d-4919-bd8c-061a3f14464b)
+![Captura de pantalla de 2025-04-09 22-10-53](https://github.com/user-attachments/assets/42b90bc9-e4cc-4c90-bcad-1ba8ef2024d3)
 
 ```
 OS: Linux Mint 22.1 - Kernel version: 6.11.0-21-generic
 Hostname: hal9001c - User: axel
-Uptime: 14 days, 10:11:59 - Time and date: 21:58:13 09/04/2025
-CPU used: 35% (CPU0: 36% - CPU1: 34% - CPU2: 33% - CPU3: 34%)
-███████████░░░░░░░░░░░░░░░░░░░░░
-CPU frequency: 0.80GHz - Scaling governor: powersave
-CPU temperature: 38°C
-RAM used: 36% (5.52GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
+Uptime: 14 days, 10:24:21 - Time and date: 22:10:35 09/04/2025
+CPU used: 39% (CPU0: 88% - CPU1: 19% - CPU2: 30% - CPU3: 18%)
+████████████░░░░░░░░░░░░░░░░░░░░
+CPU frequency: 3.10GHz - Scaling governor: powersave
+CPU temperature: 62°C
+RAM used: 37% (5.72GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
 ███████████░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-Processes: 262 (running=2, sleeping=193, idle=67, stopped=0, zombie=0, other=0)
-Load average: 2.61 1.41 0.92
-Disk used: 43% (202.95GB / 467.91GB) - Read: 0.00MB/s - Write: 0.20MB/s
+Processes: 258 (running=2, sleeping=192, idle=63, stopped=0, zombie=0, other=1)
+Load average: 2.37 2.28 1.74
+Disk used: 43% (202.94GB / 467.91GB) - Read: 0.00MB/s - Write: 0.00MB/s
 █████████████░░░░░░░░░░░░░░░░░░░
-Disk temperature: 33°C
+Disk temperature: 32°C
 WIFI lan: OBRIEN 5 - IP: 192.168.0.208
-WIFI signal: 54% - Speed: 130.0Mb/s - Download: 0.21MB/s - Upload: 0.01MB/s
+WIFI signal: 54% - Speed: 117.0Mb/s - Download: 0.00MB/s - Upload: 0.00MB/s
 █████████████████░░░░░░░░░░░░░░░
-WIFI temperature: 41°C
-Runs: 26 / Next run in 22/60 seconds...
+WIFI temperature: 40°C
+Runs: 1 / Next run in 42/60 seconds...
 ```
 
 ## Contribuciones
