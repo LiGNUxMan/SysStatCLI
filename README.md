@@ -22,6 +22,7 @@
 - **Wi-Fi Card Temperature**: Reports the temperature of the wireless network adapter and changes color based on the temperature level.
 - **Battery Status**: Indicates the charge percentage and whether the device is connected to power or discharging (only if the battery is not at 100%).
 - **Autorun**: Can run continuously at a frequency determined by the user.
+- **Script information**: Execution time, execution speed, completed loops or cycles, and time to next exercise.
 
 ## Installation and Use
 
@@ -231,8 +232,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 - **Temperatura de la tarjeta WiFi**: Reporta la temperatura del adaptador de red inalámbrico y cambia de color segun el nivel del la misma.
 - **Estado de la batería**: Indica el porcentaje de carga y si el equipo está conectado a la corriente o descargándose (solo si la batería no está al 100%).
 - **Ejecución automática**: Puede ejecutarse en modo continuo con una frecuencia determinada por el usuario.
-- **Información del script: Tiempo de ejecución, velocidad de ejecución, bucles o ciclos completados y tiempo para la próxima ejercicio.
-- **Script information: Execution time, execution speed, completed loops or cycles, and time to next exercise.
+- **Información del script**: Tiempo de ejecución, velocidad de ejecución, bucles o ciclos completados y tiempo para la próxima ejercicio.
 
 ## Instalación y Uso
 
