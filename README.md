@@ -286,12 +286,13 @@ python3 sysstatcli.py -s -b 10
 ```
 > Ejecuta cada 10 segundos, omitiendo datos del sistema y batería.
 ```
-
+```
 ## 🆘 Ayuda
 
 ```bash
 python3 sysstatcli.py -h
 ```
+
 O también: `--help` o `-help`
 
 ---
