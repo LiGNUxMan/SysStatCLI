@@ -100,12 +100,11 @@ In my case, the processor frequency is set with the following colors:
 
 ### 🌡️ CPU temperature:
 
-The CPU temperature is obtained by reading the file:
+The CPU temperature can be found using psutil /coretemp, you can also get it by reading the file:
 ```bash
 /sys/class/thermal/thermal_zone0/temp
 ```
 If it's not there in your case, you'll need to check where it's available on your system.
-
 Configured colors:
 
 - **< 35°C** → 🟢 Normal
@@ -115,7 +114,7 @@ Configured colors:
 
 ### 💾 Disk temperature:
 
-In my case, I have an drive **M.2 NVMe** and I get the temperature with the command:
+In my case, I have an **M.2 NVMe** disk and I get the temperature with the command psutil.sensors_temperatures / nvme (see script), you can also get it from the command:
 ```bash
 sensors
 ```
@@ -311,7 +310,7 @@ En mi caso, la frecuencia del procesador está ajustada con los siguientes color
 
 ### 🌡️ CPU temperature:
 
-La temperatura del CPU se obtiene leyendo el archivo:
+La temperatura del CPU usando psutil / coretemp, tambien la puedes obteener leyendo el archivo:
 ```bash
 /sys/class/thermal/thermal_zone0/temp
 ```
@@ -326,7 +325,7 @@ Colores configurados:
 
 ### 💾 Disk temperature:
 
-En mi caso, tengo un disco **M.2 NVMe** y obtengo la temperatura con el comando:
+En mi caso, tengo un disco **M.2 NVMe** y obtengo la temperatura con el comando psutil.sensors_temperatures / nvme (ver script), tambien la puedes obtener del comando:
 ```bash
 sensors
 ```
