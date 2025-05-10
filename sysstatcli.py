@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 1.37.20250409c
+# SysStatCLI (System Status CLI) Version 2.40.20250509c
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -21,17 +21,18 @@
 # Disk used: 43% (202.91GB / 467.91GB) - Read: 8.63MB/s - Write: 0.72MB/s
 # █████████████░░░░░░░░░░░░░░░░░░░
 # Disk temperature: 32°C
-# LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
+# LAN IP: 192.168.0.123 - Speed: 100Mb/s (Full) - Down: 0.01MB/s - Up: 0.01MB/s
 # WIFI lan: OBRIEN 5 - IP: 192.168.0.208
 # WIFI signal: 71% - Speed: 325.0Mb/s - Download: 4.57MB/s - Upload: 0.93MB/s
 # ██████████████████████░░░░░░░░░░
 # WIFI temperature: 42°C
-# Battery: 47% - Mode: Discharging
-# ██████████████░░░░░░░░░░░░░░░░░
-# Runs: 3384 / Next run in 10/60 seconds...
+# Battery: 35% - Time: 1h 6m 4s - Mode: Discharging
+# ███████████░░░░░░░░░░░░░░░░░░░░░
+# Run: 3 days, 4:52:51 (0.067s) / Cycles: 1313 / Next in 10/60 seconds...
 # 
 #
 
+import datetime
 import os
 import psutil
 import re
@@ -42,24 +43,100 @@ import time
 from datetime import timedelta # Linea agregada para el uptime
 
 # Letra normal, bold, amarilla y roja
-BOLD = "\033[1m" #
+BOLD = "\033[1m"
 ITALIC = "\033[3m"
-RESET = "\033[0m" #
-GREEN = "\033[92m" #
-# ORANGE = "\033[38;5;208m" #
+RESET = "\033[0m"
+UNDERLINE = "\033[4m"
+GREEN = "\033[92m"
+# ORANGE = "\033[38;5;208m"
 ORANGE = "\033[38;5;214m" # naranja intenso.
-YELLOW = "\033[33m" #
-RED = "\033[31m" #
+YELLOW = "\033[33m"
+RED = "\033[31m"
+
+# Argumentos para omitir funciones (ej: -cpu -ram -wifi)
+omit = set(arg[1:].lower() for arg in sys.argv[1:] if arg.startswith("-"))
+
+# Buscar si hay un número entre los argumentos para guardarlo en la variable "interval" que sera cada cuanto se repite el script
+interval = 0
+for arg in sys.argv[1:]:
+    if arg.isdigit():
+        interval = int(arg)
+        break  # Solo tomamos el primer número encontrad
+        
+# help_flags = {"-h", "--help", "-help"}
+
+# Argumentos válidos para omitir secciones o pedir ayuda
+valid_args = {"sys", "s", "up", "u", "cpu", "c", "ram", "r", "proc", "p", "load", "l", "disk", "d", "lan", "n", "wifi", "w", "bat", "b", "help", "h"}
+
+# HELP O AYUDA: sysstatcli.py -help
+# if any(arg in help_flags for arg in sys.argv):
+if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
+    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version 2.40.20250509c
+
+{BOLD}Repositorio:{RESET} {UNDERLINE}https://github.com/LiGNUxMan/SysStatCLI{RESET}
+    
+{BOLD}Autor:{RESET} Axel O'BRIEN ({ITALIC}LiGNUxMan{RESET}) · {UNDERLINE}axelobrien@gmail.com{RESET}
+{BOLD}Colaboradora:{RESET} ChatGPT · OpenAI
+
+{BOLD}Uso:{RESET}
+  python3 sysstatcli.py [tiempo] [opciones]
+  
+{BOLD}Tiempo:{RESET} Segundos que se repetira el script en bucle. Si se omite o es 0, se ejecuta una sola vez
+
+{BOLD}Opciones:{RESET} Argumentos disponibles para omitir secciones:
+  -sys, -s  → Info del sistema y uptime
+  -cpu, -c  → Uso, frecuencia y temperatura del CPU
+  -ram, -r  → Memoria RAM y SWAP
+  -proc, -p → Procesos y sus estados
+  -load, -l → Carga del sistema
+  -disk, -d → Disco y temperatura NVMe
+  -lan, -n  → Red cableada
+  -wifi, -w → Red WiFi y temperatura
+  -bat, -b  → Batería
+
+{BOLD}Ejemplos:{RESET}
+  python3 sysstatcli.py            → Ejecuta una sola vez
+  python3 sysstatcli.py 60         → Ejecuta cada 60 segundos
+  python3 sysstatcli.py -ram -wifi → Ejecuta una sola vez, omitiendo RAM y WiFi
+  python3 sysstatcli.py -s -b  10  → Ejecuta cada 10s, omitiendo datos del sistema y bateria
+
+{BOLD}Ayuda:{RESET}
+  -help, --help, -h → Muestra este mensaje y sale
+""")
+    sys.exit(0)
+
+# Detectar argumentos inválidos
+for arg in sys.argv[1:]:
+    # Si es un número, lo aceptamos
+    if arg.isdigit():
+        continue
+    # Si empieza con "-" y no es válido, error
+    if arg.startswith("-") and arg[1:].lower() not in valid_args:
+        print(f"\nArgumento no válido: {BOLD}{arg}{RESET}")
+        print("Usá -h, -help o --help para ver las opciones disponibles.\n")
+        sys.exit(1)
+    # Si NO empieza con "-" y NO es un número, también es inválido
+    if not arg.startswith("-") and not arg.isdigit():
+        print(f"\nArgumento no válido: {BOLD}{arg}{RESET}")
+        print("Usá -h, -help o --help para ver las opciones disponibles.\n")
+        sys.exit(1)
 
 # Variables globales inicializacion
 # Se toman estos valores al comienzo de scrpt porque luego seran tomados nuevamente para hacer comparativas
-cpu_times_start = psutil.cpu_times(percpu=True)
-cpu_time_start = time.time()
-disk_io_start = psutil.disk_io_counters()
-disk_time_start = time.time()
-wifi_interface = "wlp3s0" #Nombre de la interfaz WIFI
-wifi_io_start = psutil.net_io_counters(pernic=True).get(wifi_interface)
-wifi_time_start = time.time()
+if not ("cpu" in omit or "c" in omit):
+    cpu_times_start = psutil.cpu_times(percpu=True)
+    cpu_time_start = time.time()
+if not ("disk" in omit or "d" in omit):
+    disk_io_start = psutil.disk_io_counters()
+    disk_time_start = time.time()
+if not ("lan" in omit or "n" in omit):
+    lan_interface = "enxc025e92940b8" # Nombre de la placa de red
+    lan_io_start = psutil.net_io_counters(pernic=True).get(lan_interface)
+    lan_time_start = time.time()
+if not ("wifi" in omit or "w" in omit):
+    wifi_interface = "wlp3s0" # Nombre de la placa WIFI
+    wifi_io_start = psutil.net_io_counters(pernic=True).get(wifi_interface)
+    wifi_time_start = time.time()
 time.sleep(1)  # Pausa de 1 seg. Para mejorar la exactitud de los datos en una sola ejeucuion o la primera del bucle
 
 # Función para generar barra de progreso
@@ -176,12 +253,8 @@ def get_cpu_temperature():
     """Obtiene la temperatura del CPU usando psutil, con fallback a "/sys/class/thermal/thermal_zone0/temp"."""
     try:
         temps = psutil.sensors_temperatures()
-        if "coretemp" in temps:
-            temp = temps["coretemp"][0].current  # Obtiene la primera lectura de temperatura
-        else:
-            with open("/sys/class/thermal/thermal_zone0/temp") as f:
-                temp = int(f.read().strip()) / 1000
-        
+        temp = temps["coretemp"][0].current  # Obtiene la primera lectura de temperatura
+           
         color = RESET
         if temp > 60:
             color = RED
@@ -248,26 +321,31 @@ def get_process_count():
                         elif state == "S":
                             process_states["sleeping"] += 1
                         elif state == "D":
-                            process_states["other"] += 1  # D (espera ininterrumpible) no es "idle"
+                            process_states["other"] += 1
                         elif state == "T":
                             process_states["stopped"] += 1
                         elif state == "Z":
                             process_states["zombie"] += 1
                         elif state == "I":
-                            process_states["idle"] += 1  # Procesos en "I" son realmente idle
+                            process_states["idle"] += 1
                         else:
                             process_states["other"] += 1
-                except FileNotFoundError:
+                except (FileNotFoundError, ProcessLookupError):
+                    continue  # El proceso desapareció antes de que lo leyéramos
+                except Exception as e:
+                    # Podés imprimir esto en modo debug si querés más info
+                    # print(f"Error procesando PID {pid}: {e}")
                     continue
         print(f"Processes: {BOLD}{total_processes}{RESET} "
-              f"({ITALIC}running{RESET}={BOLD}{process_states['running']}{RESET}, "
-              f"{ITALIC}sleeping{RESET}={BOLD}{process_states['sleeping']}{RESET}, "
+              f"({ITALIC}run{RESET}={BOLD}{process_states['running']}{RESET}, "
+              f"{ITALIC}sleep{RESET}={BOLD}{process_states['sleeping']}{RESET}, "
               f"{ITALIC}idle{RESET}={BOLD}{process_states['idle']}{RESET}, "
-              f"{ITALIC}stopped{RESET}={BOLD}{process_states['stopped']}{RESET}, "
+              f"{ITALIC}stop{RESET}={BOLD}{process_states['stopped']}{RESET}, "
               f"{ITALIC}zombie{RESET}={BOLD}{process_states['zombie']}{RESET}, "
               f"{ITALIC}other{RESET}={BOLD}{process_states['other']}{RESET})")
-    except FileNotFoundError:
+    except Exception as e:
         print(f"Processes: {RED}{BOLD}Unknown{RESET}")
+        # print(f"Error general en get_process_count: {e}")
 
 # Load average: 1.97 1.22 0.98
 def get_load_average():
@@ -331,51 +409,45 @@ def get_disk_usage():
 
 # Disk temperature: 32°C
 def get_nvme_temperature():
-    """Obtiene la temperatura del NVMe desde el comando 'sensors' y la imprime con colores según el nivel."""
+    """Obtiene la temperatura del disco NVMe usando psutil y la imprime con colores según el nivel."""
     try:
-        # Ejecutar el comando 'sensors' y obtener la salida
-        output = subprocess.run(["sensors"], capture_output=True, text=True).stdout
-        
-        # Buscar la sección nvme-pci-0100
-        nvme_section = re.search(r"(nvme-pci-0100.*?)(\n\n|\Z)", output, re.S)
-        if not nvme_section:
-            print(f"Disk temperature: {RED}{BOLD}Unknown{RESET}")
-            return
-        
-        # Buscar la línea de temperatura 'Composite'
-        temp_match = re.search(r"Composite:\s+\+([\d.]+)°C", nvme_section.group(1))
-        if not temp_match:
-            print(f"Disk temperature: {RED}{BOLD}Unknown{RESET}")
-            return
-        
-        # Obtener el valor numérico de la temperatura
-        temp = float(temp_match.group(1))
-        
-        # Aplicar colores según la temperatura
-        if temp >= 70: #70
-            color = RED  # Alerta roja
-        elif temp >= 50: # 50
-            color = YELLOW  # Advertencia amarilla
-        else:
-            color = RESET  # Normal, sin color
+        temps = psutil.sensors_temperatures()
+        nvme_temps = temps.get("nvme")
 
-        # Imprimir la temperatura
-        print(f"Disk temperature: {color}{BOLD}{temp:.0f}°C{RESET}") # print(f"NVMe Temp: {color}{BOLD}{temp:.1f}°C{RESET}")
+        if not nvme_temps:
+            print(f"Disk temperature: {RED}{BOLD}Unknown{RESET}")
+            return
+
+        # Buscar la entrada con etiqueta 'Composite' (por convención)
+        composite_temp = next((t.current for t in nvme_temps if t.label == "Composite"), None)
+        if composite_temp is None:
+            print(f"Disk temperature: {RED}{BOLD}Unknown{RESET}")
+            return
+
+        # Aplicar colores según la temperatura
+        if composite_temp >= 70:
+            color = RED
+        elif composite_temp >= 50:
+            color = YELLOW
+        else:
+            color = RESET
+
+        print(f"Disk temperature: {color}{BOLD}{composite_temp:.0f}°C{RESET}")
 
     except Exception as e:
-        print(f"Disk temperature: {RED}{BOLD}Error: {str(e)}{RESET}") # print(f"NVMe Temp: {RED}{BOLD}Error: {str(e)}{RESET}")
+        print(f"Disk temperature: {RED}{BOLD}Error: {str(e)}{RESET}")
 
-# LAN speed: 100Mb/s (Full) - IP: 192.168.0.123
+# LAN IP: 192.168.0.123 - Speed: 100Mb/s (Full) - Down: 0.01MB/s - Up: 0.01MB/s
 def get_lan_info():
-    iface = "enxc025e92940b8"  # Nombre de tu interfaz de red cableada
+    iface = lan_interface  # Interfaz de red cableada
     stats = psutil.net_if_stats().get(iface)
     addrs = psutil.net_if_addrs().get(iface)
-    
-    # Si la interfaz no existe o no está activa, no mostrar nada
-    if not stats or not stats.isup:
-        return ""
-    
-    # Buscar una dirección IPv4 en la interfaz
+
+#    # Verificar si la interfaz está activa
+#    if not stats or not stats.isup:
+#        return
+
+    # Obtener IP
     ip_address = None
     if addrs:
         for addr in addrs:
@@ -383,65 +455,76 @@ def get_lan_info():
                 ip_address = addr.address
                 break
     if not ip_address:
-        return ""
-    
-    # Obtener velocidad (en Mb/s) y modo dúplex
-    speed = stats.speed  # En Mb/s
+        return
+
+    # Obtener velocidad y modo dúplex
+    speed = stats.speed
     duplex = stats.duplex
-    if duplex == psutil.NIC_DUPLEX_FULL:
-        duplex_str = "Full"
-    elif duplex == psutil.NIC_DUPLEX_HALF:
-        duplex_str = "Half"
-    else:
-        duplex_str = "Unknown"
-    
-    # Devolver la salida formateada
-    print(f"LAN speed: {BOLD}{speed}Mb/s{RESET} ({BOLD}{duplex_str}{RESET}) - IP: {BOLD}{ip_address}{RESET}")
+    duplex_str = "Full" if duplex == psutil.NIC_DUPLEX_FULL else "Half" if duplex == psutil.NIC_DUPLEX_HALF else "Unknown"
+
+    # Medir tráfico de red usando variables globales
+    global lan_io_start, lan_time_start
+    lan_io_end = psutil.net_io_counters(pernic=True).get(iface)
+    lan_time_end = time.time()
+
+#    if not lan_io_start or not lan_io_end:
+#        return
+
+    lan_time_interval = lan_time_end - lan_time_start
+#    if lan_time_interval == 0:
+#        return
+
+    lan_download = (lan_io_end.bytes_recv - lan_io_start.bytes_recv) / (1024 * 1024) / lan_time_interval
+    lan_upload = (lan_io_end.bytes_sent - lan_io_start.bytes_sent) / (1024 * 1024) / lan_time_interval
+
+    # Mostrar la salida formateada
+    print(f"LAN IP: {BOLD}{ip_address}{RESET} - Speed: {BOLD}{speed}Mb/s{RESET} ({BOLD}{duplex_str}{RESET}) - Down: {BOLD}{lan_download:.2f}MB/s{RESET} - Up: {BOLD}{lan_upload:.2f}MB/s{RESET}")
+
+    # Actualizar los valores para la próxima iteración
+    lan_io_start = lan_io_end
+    lan_time_start = lan_time_end
 
 # WIFI lan: OBRIEN 5 - IP: 192.168.0.208
-# WIFI signal: 71% - Speed: 325.0Mb/s - Download: 4.57MB/s - Upload: 0.93MB/s
+# WIFI signal: 71% - Speed: 325.0Mb/s - Down: 4.57MB/s - Up: 0.93MB/s
 # ██████████████████████░░░░░░░░░░
 # WIFI temperature: 42°C
 def get_wifi_info():
     """Obtiene la información de la red WiFi y tráfico."""
-    # time.sleep(10) # Pausa de 10 segundos
-    global wifi_io_start, wifi_time_start
+    global wifi_interface, wifi_io_start, wifi_time_start
     try:
-        # Obtener información de la red WiFi
-        output = subprocess.run(["iwconfig", wifi_interface], capture_output=True, text=True).stdout
-        if "no wireless extensions" in output or "Not-Associated" in output:
-            return  # No mostrar nada si no hay WiFi conectado
+        # Obtener información de la red WiFi usando "iw dev (wifi_interfac) link"
+        output = subprocess.run(["iw", "dev", wifi_interface, "link"], capture_output=True, text=True).stdout
+        if "Not connected" in output or not re.search(r'SSID: (.+)', output):
+            return  # No mostrar nada si el WIFI no está conectado
 
         # Extraer información relevante
-        ssid_match = re.search(r'ESSID:"(.*?)"', output)
-        quality_match = re.search(r'Link Quality=(\d+)/(\d+)', output)
-        speed_match = re.search(r'Bit Rate=(\d+\.?\d*) Mb/s', output)
-        ip_output = subprocess.run(["ip", "-4", "addr", "show", wifi_interface], capture_output=True, text=True).stdout
-        ip_match = re.search(r'inet\s(\d+\.\d+\.\d+\.\d+)', ip_output)
+        ssid_match = re.search(r'SSID: (.+)', output)
+        signal_match = re.search(r'signal: (-?\d+) dBm', output)
+        speed_match = re.search(r'(?:rx )?bitrate: ([\d\.]+) MBit/s', output)
 
-        # Procesar valores
-        ssid = ssid_match.group(1) if ssid_match else "Unknown"
-        quality = int(quality_match.group(1)) if quality_match else 0
-        max_quality = int(quality_match.group(2)) if quality_match else 70
-        signal_percent = (quality / max_quality) * 100 if quality_match else 0
+        ssid = ssid_match.group(1).strip() if ssid_match else "Unknown"
+        signal_dbm = int(signal_match.group(1)) if signal_match else -100
         speed = float(speed_match.group(1)) if speed_match else 0.0
-        ip = ip_match.group(1) if ip_match else "Unknown"
 
-        # Calcular tráfico de red WiFi
-        wifi_io_current = psutil.net_io_counters(pernic=True).get(wifi_interface)
-        wifi_time_current = time.time()
-        interval = wifi_time_current - wifi_time_start
+        # Verificar si hay IP asignada
+        ip_addrs = psutil.net_if_addrs().get(wifi_interface, [])
+        ip = next((addr.address for addr in ip_addrs if addr.family == socket.AF_INET), "N/A")
 
-        download_speed = upload_speed = 0
-        if wifi_io_start and wifi_io_current and interval > 0:
-            bytes_recv_diff = wifi_io_current.bytes_recv - wifi_io_start.bytes_recv
-            bytes_sent_diff = wifi_io_current.bytes_sent - wifi_io_start.bytes_sent
-            download_speed = bytes_recv_diff / (1024 * 1024 * interval)
-            upload_speed = bytes_sent_diff / (1024 * 1024 * interval)
+        # Convertir dBm a porcentaje aproximado
+        signal_percent = max(0, min(100, 2 * (signal_dbm + 100)))
 
-        # Guardar nuevos valores para la siguiente medición
-        wifi_io_start = wifi_io_current
-        wifi_time_start = wifi_time_current
+        # Calcular tráfico de red
+        io_current = psutil.net_io_counters(pernic=True).get(wifi_interface)
+        time_current = time.time()
+        interval = time_current - wifi_time_start
+
+        bytes_recv_diff = io_current.bytes_recv - wifi_io_start.bytes_recv
+        bytes_sent_diff = io_current.bytes_sent - wifi_io_start.bytes_sent
+        download_speed = bytes_recv_diff / (1024 * 1024 * interval)
+        upload_speed = bytes_sent_diff / (1024 * 1024 * interval)
+
+        wifi_io_start = io_current
+        wifi_time_start = time_current
 
         # Definir color de la señal WiFi
         if signal_percent < 40:
@@ -451,32 +534,34 @@ def get_wifi_info():
         else:
             color = RESET
 
-        print(f"WIFI lan: {BOLD}{ssid}{RESET} - IP: {BOLD}{ip}{RESET}")
-        print(f"WIFI signal: {color}{BOLD}{signal_percent:.0f}%{RESET} - Speed: {BOLD}{speed:.1f}Mb/s{RESET} - Download: {BOLD}{download_speed:.2f}MB/s{RESET} - Upload: {BOLD}{upload_speed:.2f}MB/s{RESET}")
+        print(f"WIFI IP: {BOLD}{ip}{RESET} - SSID: {BOLD}{ssid}{RESET}")
+        print(f"WIFI signal: {color}{BOLD}{signal_percent:.0f}%{RESET} - Speed: {BOLD}{speed:.1f}Mb/s{RESET} - Down: {BOLD}{download_speed:.2f}MB/s{RESET} - Up: {BOLD}{upload_speed:.2f}MB/s{RESET}")
         print(f"{barra_progreso(signal_percent, color=color)}")
 
-        # Obtener temperatura de la placa WiFi
-        temp_output = subprocess.run(["sensors"], capture_output=True, text=True).stdout
-        temp_match = re.search(r'iwlwifi_1-virtual-0.*?temp1:\s*\+(\d+\.\d+)°C', temp_output, re.DOTALL)
-        temperature = float(temp_match.group(1)) if temp_match else None
+        # Obtener temperatura de la placa WiFi desde psutil
+        temps = psutil.sensors_temperatures()
+        wifi_temp = None
+        if 'iwlwifi_1' in temps:
+            sensor = temps['iwlwifi_1'][0]
+            wifi_temp = sensor.current
 
-        if temperature is not None:
-            if temperature > 70:
+        if wifi_temp is not None:
+            if wifi_temp > 70:
                 temp_color = RED
-            elif temperature > 50:
+            elif wifi_temp > 50:
                 temp_color = YELLOW
             else:
                 temp_color = RESET
 
-            print(f"WIFI temperature: {temp_color}{BOLD}{temperature:.0f}°C{RESET}")
+            print(f"WIFI temperature: {temp_color}{BOLD}{wifi_temp:.0f}°C{RESET}")
 
     except Exception as e:
-        pass  # No mostrar nada en caso de error
+        print(f"{RED}Error inesperado: {e}{RESET}")
 
-# Battery: 47% - Mode: Discharging
-# ███████████████░░░░░░░░░░░░░░░░░
+# Battery: 37% - Time: 0h 58m 52s - Mode: Discharging
+# ███████████░░░░░░░░░░░░░░░░░░░░░
 def get_battery_info():
-    try:        
+    try:
         base_path = "/sys/class/power_supply/BAT0/"
 
         # Leer el estado de la batería
@@ -484,68 +569,114 @@ def get_battery_info():
             battery_mode = f.read().strip()
 
         if battery_mode == "Full":
-            return ""  # No hacer nada
+            return  # No mostrar nada si está al 100%
+
+        # Leer el porcentaje de batería
+        with open(os.path.join(base_path, "capacity"), "r") as f:
+            battery_percent = int(f.read().strip())
+
+        # Definir color según el nivel
+        if battery_percent > 25:
+            color = RESET
+        elif battery_percent > 10:
+            color = YELLOW
         else:
-            # Leer el porcentaje de batería
-            with open(os.path.join(base_path, "capacity"), "r") as f:
-                battery_percent = int(f.read().strip())
+            color = RED
 
-            # Aplicar color al porcentaje
-            if battery_percent > 25:
-                color = RESET  # Blanco
-            elif battery_percent > 10:
-                color = YELLOW  # Amarillo
-            else:
-                color = RED  # Rojo
+        # Obtener tiempo restante (si está disponible)
+        battery = psutil.sensors_battery()
+        time_part = ""
+        if battery and battery.secsleft not in (psutil.POWER_TIME_UNLIMITED, psutil.POWER_TIME_UNKNOWN):
+            h, m = divmod(battery.secsleft // 60, 60)
+            s = battery.secsleft % 60
+            time_part = f" - Time: {BOLD}{h}h {m}m {s}s{RESET}"
 
-            barra_battery = barra_progreso(battery_percent, color=color)
-
-            print(f"Battery: {color}{BOLD}{battery_percent}%{RESET} - Mode: {BOLD}{battery_mode}{RESET}")
-            print(barra_battery)
+        # Barra y salida
+        barra_battery = barra_progreso(battery_percent, color=color)
+        print(f"Battery: {color}{BOLD}{battery_percent}%{RESET}{time_part} - Mode: {BOLD}{battery_mode}{RESET}")
+        print(barra_battery)
 
     except Exception as e:
-        print(f"Battery: Error: {e}")
+        print(f"{RED}Battery error: {e}{RESET}")
+        
+# Run: 3 days, 4:52:51 (Esta funcion calcula el tiempo de ejecucion del script)
+def format_uptime(seconds):
+    """Convierte segundos en un formato legible estilo uptime."""
+    days, remainder = divmod(seconds, 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, secs = divmod(remainder, 60)
+
+    if days > 0:
+        return f"{days} day{'s' if days != 1 else ''}, {hours}:{minutes:02}:{secs:02}"
+    else:
+        return f"{hours:02}:{minutes:02}:{secs:02}"
 
 def main():
-    get_system_info()
-    get_uptime_and_time()
-    get_cpu_usage()
-    get_cpu_frequency()
-    get_cpu_temperature()
-    get_memory_usage()
-    get_process_count()
-    get_load_average()
-    get_disk_usage()
-    get_nvme_temperature()
-    get_lan_info()
-    get_wifi_info()
-    get_battery_info()
+    if not ("sys" in omit or "s" in omit):
+        get_system_info()
+        
+    if not ("up" in omit or "u" in omit):
+        get_uptime_and_time()
+
+    if not ("cpu" in omit or "c" in omit):
+        get_cpu_usage()
+        get_cpu_frequency()
+        get_cpu_temperature()
+
+    if not ("ram" in omit or "r" in omit):
+        get_memory_usage()
+
+    if not ("proc" in omit or "p" in omit):
+        get_process_count()
+
+    if not ("load" in omit or "l" in omit):
+        get_load_average()
+
+    if not ("disk" in omit or "d" in omit):
+        get_disk_usage()
+        get_nvme_temperature()
+
+    if not ("lan" in omit or "n" in omit):
+        get_lan_info()
+
+    if not ("wifi" in omit or "w" in omit):
+        get_wifi_info()
+
+    if not ("bat" in omit or "b" in omit):
+        get_battery_info()
+
 #    print("\a")
 #    subprocess.run(["beep"])
 
 # Repetición automática
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        try:
-            interval = int(sys.argv[1])
-            count = 1  # Inicializa el contador
-            while True:
-                os.system('clear') # Borra la pantalla
-                main()
-                
-                # Cuenta regresiva
-                for i in range(interval, 0, -1):
-                    # sys.stdout.write("\r" + " " * 40 + "\r") # Borra la línea
-                    sys.stdout.write(f"\rRuns: {count} / Next run in {i}/{interval} seconds... ")
-                    sys.stdout.flush()
-                    time.sleep(1)
+    if interval > 0:
+        start_time = time.time()
+        
+        count = 1
 
-                count += 1  # Aumenta el contador en cada iteración
-                
-        except ValueError:
-            print("Uso incorrecto: Debes proporcionar un número natural paralos segundos.")
-            sys.exit(1)
+        while True:
+            # Medir tiempo de ejecución de main(), borra la pantalla y le da tormato al uptime
+            exec_start = time.time()
+            
+            os.system('clear')
+            
+            main()
+            
+            # Tiempo total desde que arrancó el script
+            elapsed = int(time.time() - start_time)
+            uptime = format_uptime(elapsed)
+            
+            # Calcula el tiempo de ejecución de main()
+            exec_duration = time.time() - exec_start
+
+            for i in range(interval, 0, -1):
+                # Run: 3 days, 4:52:51 (0.067s) / Cycles: 1313 / Next in 10/60 seconds...
+                sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.3f}s) / Cycles: {count} / Next in {i}/{interval} seconds... ")
+                sys.stdout.flush()
+                time.sleep(1)
+
+            count += 1
     else:
         main()
-
 
