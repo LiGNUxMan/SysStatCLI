@@ -76,7 +76,7 @@ python3 sysstatcli.py -s -b 10
 ```
 > Runs every 10 seconds, ignoring system and battery data.
 ```
-
+```
 ## 🆘 Help
 
 ```bash
