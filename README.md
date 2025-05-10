@@ -1,4 +1,4 @@
-# SysStatCLI (System Status CLI) v1.37.20250409c
+# SysStatCLI (System Status CLI) v2.40.20250509c
 
 ## 🇺🇸🇬🇧 English
 
@@ -29,16 +29,59 @@
 - Python 3.x
 - Linux with support for `psutil`, `iwconfig`, `sensors`, and `/proc/`
 
-### Execution
-To run the script once:
+### 🚀 Run
+
+```bash
+python3 sysstatcli.py [time] [options]
+```
+
+- `time`: Interval in seconds to repeat the script in a loop. If omitted or `0`, it is executed **only once**.
+- `options`: Arguments to skip certain sections of the monitoring.
+
+### 🔧 Available Options
+| Section       | Arguments          | Description                               |
+|---------------|--------------------|-------------------------------------------|
+| System        | `-sys`, `-s`       | System information and uptime             |
+| CPU           | `-cpu`, `-c`       | Usage, frequency, and temperature         |
+| RAM           | `-ram`, `-r`       | RAM and swap memory usage                 |
+| Processes     | `-proc`, `-p`      | Process count and status                  |
+| Load          | `-load`, `-l`      | Average System Load                       |
+| Disk          | `-disk`, `-d`      | Disk usage, speed, and temperature        |
+| LAN           | `-lan`, `-n`       | Wired network status                      |
+| WiFi          | `-wifi`, `-w`      | WiFi status and motherboard temperature   |
+| Battery       | `-bat`, `-b`       | Power level, time remaining, and mode     |
+
+---
+
+## 🧪 Examples
+
 ```bash
 python3 sysstatcli.py
 ```
+> Runs once, displaying all information.
 
-To run it continuously every *X* seconds:
 ```bash
-python3 sysstatcli.py 60 # It will update every 60 seconds
+python3 sysstatcli.py 30
 ```
+> Runs monitoring every 30 seconds.
+
+```bash
+python3 sysstatcli.py -ram -wifi
+```
+> Runs once, ignoring RAM and WiFi.
+
+```bash
+python3 sysstatcli.py -s -b 10
+```
+> Runs every 10 seconds, ignoring system and battery data.
+```
+
+## 🆘 Help
+
+```bash
+python3 sysstatcli.py -h
+```
+Or also: `--help` or `-help`
 
 ---
 ## ⚠️ IMPORTANT NOTE
@@ -142,6 +185,8 @@ Any improvements, corrections, or suggestions are welcome. Add your contribution
 ## License
 This project is distributed under the **GPLv3** license. Feel free to use, modify, and share it!
 
+> Made with 💚 and a passion for free software.
+
 ## 🚀 Future Improvements and Features
 We're looking for contributors to continue improving SysStatCLI. Here are some ideas for future versions:
 
@@ -162,7 +207,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 
 ---
-# SysStatCLI (System Status CLI) v1.37.20250409c
+# SysStatCLI (System Status CLI) v2.40.20250509c
 
 ## 🇪🇸 Español
 
@@ -186,6 +231,8 @@ Compile the script into an executable so that it runs without the need for Pytho
 - **Temperatura de la tarjeta WiFi**: Reporta la temperatura del adaptador de red inalámbrico y cambia de color segun el nivel del la misma.
 - **Estado de la batería**: Indica el porcentaje de carga y si el equipo está conectado a la corriente o descargándose (solo si la batería no está al 100%).
 - **Ejecución automática**: Puede ejecutarse en modo continuo con una frecuencia determinada por el usuario.
+- **Información del script: Tiempo de ejecución, velocidad de ejecución, bucles o ciclos completados y tiempo para la próxima ejercicio.
+- **Script information: Execution time, execution speed, completed loops or cycles, and time to next exercise.
 
 ## Instalación y Uso
 
@@ -193,16 +240,59 @@ Compile the script into an executable so that it runs without the need for Pytho
 - Python 3.x
 - Linux con soporte para `psutil`, `iwconfig`, `sensors` y `/proc/`
 
-### Ejecución
-Para ejecutar el script una sola vez:
+### 🚀 Ejecución
+
+```bash
+python3 sysstatcli.py [tiempo] [opciones]
+```
+
+- `tiempo`: Intervalo en segundos para repetir el script en bucle. Si se omite o es `0`, se ejecuta **una sola vez**.
+- `opciones`: Argumentos para omitir ciertas secciones del monitoreo.
+
+### 🔧 Opciones disponibles
+| Sección       | Argumentos         | Descripción                               |
+|---------------|--------------------|-------------------------------------------|
+| Sistema       | `-sys`, `-s`       | Información del sistema y uptime          |
+| CPU           | `-cpu`, `-c`       | Uso, frecuencia y temperatura             |
+| RAM           | `-ram`, `-r`       | Uso de memoria RAM y SWAP                 |
+| Procesos      | `-proc`, `-p`      | Conteo y estados de procesos              |
+| Carga         | `-load`, `-l`      | Carga promedio del sistema                |
+| Disco         | `-disk`, `-d`      | Uso, velocidad y temperatura del disco    |
+| Red LAN       | `-lan`, `-n`       | Estado de la red cableada                 |
+| Red WiFi      | `-wifi`, `-w`      | Estado de WiFi y temperatura de la placa  |
+| Batería       | `-bat`, `-b`       | Nivel, tiempo restante y modo de energía  |
+
+---
+
+## 🧪 Ejemplos
+
 ```bash
 python3 sysstatcli.py
 ```
+> Ejecuta una sola vez mostrando toda la información.
 
-Para ejecutarlo de forma continua cada *X* segundos:
 ```bash
-python3 sysstatcli.py 60  # Se actualizará cada 60 segundos
+python3 sysstatcli.py 30
 ```
+> Ejecuta el monitoreo cada 30 segundos.
+
+```bash
+python3 sysstatcli.py -ram -wifi
+```
+> Ejecuta una sola vez, omitiendo RAM y WiFi.
+
+```bash
+python3 sysstatcli.py -s -b 10
+```
+> Ejecuta cada 10 segundos, omitiendo datos del sistema y batería.
+```
+
+## 🆘 Ayuda
+
+```bash
+python3 sysstatcli.py -h
+```
+O también: `--help` o `-help`
 
 ---
 ## ⚠️ NOTA IMPORTANTE
@@ -305,6 +395,8 @@ Cualquier mejora, corrección o sugerencia es bienvenida. ¡Suma tu aporte a est
 
 ## Licencia
 Este proyecto se distribuye bajo la licencia **GPLv3**. ¡Úsalo, modifícalo y compártelo libremente!
+
+> Hecho con 💚 y pasión por el software libre.
 
 ## 🚀 Mejoras y funcionalidades futuras
 Estamos buscando colaboradores para seguir mejorando SysStatCLI. Estas son algunas ideas para futuras versiones:
