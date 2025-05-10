@@ -151,28 +151,28 @@ In your case, it could be in **BAT1** or another location. Check and adjust as n
 
 ### Sample Output
 
-![Captura de pantalla de 2025-04-09 22-10-53](https://github.com/user-attachments/assets/45ef972c-49c5-4a3a-a7e0-6666315bb865)
+![Captura de pantalla de 2025-05-10 01-00-18](https://github.com/user-attachments/assets/dcfbb937-0d02-40cb-9eaf-5d6a0f0f2bb9)
 
 ```
-OS: Linux Mint 22.1 - Kernel version: 6.11.0-21-generic
+OS: Linux Mint 22.1 - Kernel version: 6.11.0-25-generic
 Hostname: hal9001c - User: axel
-Uptime: 14 days, 10:24:21 - Time and date: 22:10:35 09/04/2025
-CPU used: 39% (CPU0: 88% - CPU1: 19% - CPU2: 30% - CPU3: 18%)
-████████████░░░░░░░░░░░░░░░░░░░░
-CPU frequency: 3.10GHz - Scaling governor: powersave
-CPU temperature: 62°C
-RAM used: 37% (5.72GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
-███████████░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-Processes: 258 (running=2, sleeping=192, idle=63, stopped=0, zombie=0, other=1)
-Load average: 2.37 2.28 1.74
-Disk used: 43% (202.94GB / 467.91GB) - Read: 0.00MB/s - Write: 0.00MB/s
+Uptime: 7 days, 14:02:47 - Time and date: 00:59:42 10/05/2025
+CPU used: 8% (CPU0: 9% - CPU1: 7% - CPU2: 8% - CPU3: 6%)
+██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+CPU frequency: 0.90GHz - Scaling governor: powersave
+CPU temperature: 36°C
+RAM used: 41% (6.33GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
+█████████████░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+Processes: 281 (run=1, sleep=212, idle=68, stop=0, zombie=0, other=0)
+Load average: 0.65 0.71 0.61
+Disk used: 43% (202.07GB / 467.91GB) - Read: 0.00MB/s - Write: 0.08MB/s
 █████████████░░░░░░░░░░░░░░░░░░░
 Disk temperature: 32°C
-WIFI lan: OBRIEN 5 - IP: 192.168.0.208
-WIFI signal: 54% - Speed: 117.0Mb/s - Download: 0.00MB/s - Upload: 0.00MB/s
-█████████████████░░░░░░░░░░░░░░░
+WIFI IP: 192.168.0.208 - SSID: OBRIEN 5
+WIFI signal: 58% - Speed: 234.0Mb/s - Down: 0.00MB/s - Up: 0.00MB/s
+██████████████████░░░░░░░░░░░░░░
 WIFI temperature: 40°C
-Runs: 1 / Next run inin 42/60 seconds...
+Run: 00:51:04 (0.080s) / Cycles: 52 / Next in 42/60 seconds...
 ```
 
 ## Contributions
@@ -362,28 +362,28 @@ En tu caso, podría estar en **BAT1** u otra ubicación. Verifica y ajusta segú
 
 ### Ejemplo de salida
 
-![Captura de pantalla de 2025-04-09 22-10-53](https://github.com/user-attachments/assets/42b90bc9-e4cc-4c90-bcad-1ba8ef2024d3)
+![Captura de pantalla de 2025-05-10 01-00-18](https://github.com/user-attachments/assets/e39e1d79-0d9c-4f93-9718-871ea2ebd2b6)
 
 ```
-OS: Linux Mint 22.1 - Kernel version: 6.11.0-21-generic
+OS: Linux Mint 22.1 - Kernel version: 6.11.0-25-generic
 Hostname: hal9001c - User: axel
-Uptime: 14 days, 10:24:21 - Time and date: 22:10:35 09/04/2025
-CPU used: 39% (CPU0: 88% - CPU1: 19% - CPU2: 30% - CPU3: 18%)
-████████████░░░░░░░░░░░░░░░░░░░░
-CPU frequency: 3.10GHz - Scaling governor: powersave
-CPU temperature: 62°C
-RAM used: 37% (5.72GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
-███████████░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-Processes: 258 (running=2, sleeping=192, idle=63, stopped=0, zombie=0, other=1)
-Load average: 2.37 2.28 1.74
-Disk used: 43% (202.94GB / 467.91GB) - Read: 0.00MB/s - Write: 0.00MB/s
+Uptime: 7 days, 14:02:47 - Time and date: 00:59:42 10/05/2025
+CPU used: 8% (CPU0: 9% - CPU1: 7% - CPU2: 8% - CPU3: 6%)
+██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+CPU frequency: 0.90GHz - Scaling governor: powersave
+CPU temperature: 36°C
+RAM used: 41% (6.33GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
+█████████████░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+Processes: 281 (run=1, sleep=212, idle=68, stop=0, zombie=0, other=0)
+Load average: 0.65 0.71 0.61
+Disk used: 43% (202.07GB / 467.91GB) - Read: 0.00MB/s - Write: 0.08MB/s
 █████████████░░░░░░░░░░░░░░░░░░░
 Disk temperature: 32°C
-WIFI lan: OBRIEN 5 - IP: 192.168.0.208
-WIFI signal: 54% - Speed: 117.0Mb/s - Download: 0.00MB/s - Upload: 0.00MB/s
-█████████████████░░░░░░░░░░░░░░░
+WIFI IP: 192.168.0.208 - SSID: OBRIEN 5
+WIFI signal: 58% - Speed: 234.0Mb/s - Down: 0.00MB/s - Up: 0.00MB/s
+██████████████████░░░░░░░░░░░░░░
 WIFI temperature: 40°C
-Runs: 1 / Next run in 42/60 seconds...
+Run: 00:51:04 (0.080s) / Cycles: 52 / Next in 42/60 seconds...
 ```
 
 ## Contribuciones
