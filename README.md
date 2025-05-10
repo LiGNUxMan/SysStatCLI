@@ -172,7 +172,7 @@ WIFI IP: 192.168.0.208 - SSID: OBRIEN 5
 WIFI signal: 58% - Speed: 234.0Mb/s - Down: 0.00MB/s - Up: 0.00MB/s
 ██████████████████░░░░░░░░░░░░░░
 WIFI temperature: 40°C
-Run: 00:51:04 (0.080s) / Cycles: 52 / Next in 42/60 seconds...
+Run: 00:51:04 (0.080s) / Cycles: 52 / Next in 25/60 seconds...
 ```
 
 ## Contributions
@@ -383,7 +383,7 @@ WIFI IP: 192.168.0.208 - SSID: OBRIEN 5
 WIFI signal: 58% - Speed: 234.0Mb/s - Down: 0.00MB/s - Up: 0.00MB/s
 ██████████████████░░░░░░░░░░░░░░
 WIFI temperature: 40°C
-Run: 00:51:04 (0.080s) / Cycles: 52 / Next in 42/60 seconds...
+Run: 00:51:04 (0.080s) / Cycles: 52 / Next in 25/60 seconds...
 ```
 
 ## Contribuciones
