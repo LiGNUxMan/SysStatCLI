@@ -51,12 +51,12 @@ python3 sysstatcli.py [time] [options]
 | LAN           | `-lan`, `-a`       | Wired network status                      |
 | WiFi          | `-wifi`, `-w`      | WiFi status and motherboard temperature   |
 | Battery       | `-bat`, `-t`       | Power level, time remaining, and mode     |
-| Bar           | `-bar`, `-b` → Omit all slashes                                |
-|               | `-barc`, `-bc` → Omit the CPU bar                              |
-|               | `-barr`, `-br` → Omit the RAM bar                              |
-|               | `-bard`, `-bd` → Omit the Disk bar                             |
-|               | `-barw`, `-bw` → Omit the WIFI bar                             |
-|               | `-bara`, `-bt` → Omit the Battery bar                          |
+| Bar           | `-bar`, `-b`       | Omit all bars                             |
+|               | `-barc`, `-bc`     | Omit the CPU bar                          |
+|               | `-barr`, `-br`     | Omit the RAM bar                          |
+|               | `-bard`, `-bd`     | Omit the Disk bar                         |
+|               | `-barw`, `-bw`     | Omit the WIFI bar                         |
+|               | `-bara`, `-bt`     | Omit the Battery bar                      |
 
 ---
 
@@ -266,6 +266,12 @@ python3 sysstatcli.py [tiempo] [opciones]
 | Red LAN       | `-lan`, `-n`       | Estado de la red cableada                 |
 | Red WiFi      | `-wifi`, `-w`      | Estado de WiFi y temperatura de la placa  |
 | Batería       | `-bat`, `-b`       | Nivel, tiempo restante y modo de energía  |
+| Bar           | `-bar`, `-b`       | Omite todas las barras                    |
+|               | `-barc`, `-bc`     | Omite la barra de CPU                     |
+|               | `-barr`, `-br`     | Omite la barra de RAM                     |
+|               | `-bard`, `-bd`     | Omite la barra de Disco                   |
+|               | `-barw`, `-bw`     | Omite la barra de WiFi                    |
+|               | `-bara`, `-bt`     | Omite la barra de bateria                 |
 
 ---
 
