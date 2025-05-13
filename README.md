@@ -1,4 +1,4 @@
-# SysStatCLI (System Status CLI) v2.40.20250509c
+# SysStatCLI (System Status CLI) v2.40.20250513d
 
 ## 🇺🇸🇬🇧 English
 
@@ -48,9 +48,15 @@ python3 sysstatcli.py [time] [options]
 | Processes     | `-proc`, `-p`      | Process count and status                  |
 | Load          | `-load`, `-l`      | Average System Load                       |
 | Disk          | `-disk`, `-d`      | Disk usage, speed, and temperature        |
-| LAN           | `-lan`, `-n`       | Wired network status                      |
+| LAN           | `-lan`, `-a`       | Wired network status                      |
 | WiFi          | `-wifi`, `-w`      | WiFi status and motherboard temperature   |
-| Battery       | `-bat`, `-b`       | Power level, time remaining, and mode     |
+| Battery       | `-bat`, `-t`       | Power level, time remaining, and mode     |
+| Bar           | `-bar`, `-b` → Omit all slashes                                |
+|               | `-barc`, `-bc` → Omit the CPU bar                              |
+|               | `-barr`, `-br` → Omit the RAM bar                              |
+|               | `-bard`, `-bd` → Omit the Disk bar                             |
+|               | `-barw`, `-bw` → Omit the WIFI bar                             |
+|               | `-bara`, `-bt` → Omit the Battery bar                          |
 
 ---
 
@@ -207,7 +213,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 
 ---
-# SysStatCLI (System Status CLI) v2.40.20250509c
+# SysStatCLI (System Status CLI) v2.40.20250513d
 
 ## 🇪🇸 Español
 
