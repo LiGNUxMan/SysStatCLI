@@ -4,12 +4,12 @@
 Several options have been added to hide progress bars and output either text-only (old-school style) or a specific progress bar from the five available:
 
 Options: Available arguments to omit sections:
--bar, -b → Omit all bars
--barc, -bc → Omit the CPU bar
--barr", -br → Omit the RAM bar
--bard", -bd → Omit the Disk bar
--barw", -bw → Omit the WIFI bar
--bara", -bt → Omit the Battery bar
+ -bar, -b → Omit all bars
+ -barc, -bc → Omit the CPU bar
+ -barr", -br → Omit the RAM bar
+ -bard", -bd → Omit the Disk bar
+ -barw", -bw → Omit the WIFI bar
+ -bara", -bt → Omit the Battery bar
 
 # Changelog - SysStatCLI v2.40.20250513d
 
