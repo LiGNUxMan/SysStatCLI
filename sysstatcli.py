@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 2.40.20250509c
+# SysStatCLI (System Status CLI) Version 2.40.20250513d
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -62,11 +62,9 @@ for arg in sys.argv[1:]:
     if arg.isdigit():
         interval = int(arg)
         break  # Solo tomamos el primer número encontrad
-        
-# help_flags = {"-h", "--help", "-help"}
 
 # Argumentos válidos para omitir secciones o pedir ayuda
-valid_args = {"sys", "s", "up", "u", "cpu", "c", "ram", "r", "proc", "p", "load", "l", "disk", "d", "lan", "n", "wifi", "w", "bat", "b", "help", "h"}
+valid_args = {"sys", "s", "up", "u", "cpu", "c", "ram", "r", "proc", "p", "load", "l", "disk", "d", "lan", "a", "wifi", "w", "bat", "t", "help", "h", "bar", "b", "barc", "bc", "barr", "br", "bard", "bd", "barw", "bw", "bart", "bt"}
 
 # HELP O AYUDA: sysstatcli.py -help
 # if any(arg in help_flags for arg in sys.argv):
@@ -84,15 +82,21 @@ if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
 {BOLD}Tiempo:{RESET} Segundos que se repetira el script en bucle. Si se omite o es 0, se ejecuta una sola vez
 
 {BOLD}Opciones:{RESET} Argumentos disponibles para omitir secciones:
-  -sys, -s  → Info del sistema y uptime
-  -cpu, -c  → Uso, frecuencia y temperatura del CPU
-  -ram, -r  → Memoria RAM y SWAP
-  -proc, -p → Procesos y sus estados
-  -load, -l → Carga del sistema
-  -disk, -d → Disco y temperatura NVMe
-  -lan, -n  → Red cableada
-  -wifi, -w → Red WiFi y temperatura
-  -bat, -b  → Batería
+  -sys,  -s     → Info del sistema y uptime
+  -cpu,  -c     → Uso, frecuencia y temperatura del CPU
+  -ram,  -r     → Memoria RAM y SWAP
+  -proc, -p     → Procesos y sus estados
+  -load, -l     → Carga del sistema
+  -disk, -d     → Disco y temperatura NVMe
+  -lan,  -a     → Red cableada
+  -wifi, -w     → Red WiFi y temperatura
+  -bat,  -a     → Batería
+  -bar,  -t     → Omite todas las barras
+    -barc,  -bc → Omite la barra de CPU
+    -barr", -br → Omite la barra de RAM
+    -bard", -bd → Omite la barra de Disk
+    -barw", -bw → Omite la barra de WIFI
+    -bara", -bt → Omite la barra de Battery
 
 {BOLD}Ejemplos:{RESET}
   python3 sysstatcli.py            → Ejecuta una sola vez
@@ -215,7 +219,9 @@ def get_cpu_usage():
     uso_nucleos_str = " - ".join([f"{ITALIC}CPU{i}{RESET}: {get_colored_usage(uso)[0]}" for i, uso in enumerate(uso_nucleos)])
 
     print(f"CPU used: {uso_promedio_str} ({uso_nucleos_str})")
-    print(barra_progreso(promedio_uso, color=color_barra))
+    
+    if not ("bar" in omit or "b" in omit or "barc" in omit or "bc" in omit):
+        print(barra_progreso(promedio_uso, color=color_barra))
 
     # Actualizar para la siguiente lectura
     cpu_times_start = cpu_times_current
@@ -299,9 +305,10 @@ def get_memory_usage():
     print(f"RAM used: {BOLD}{mem_colored}{RESET} ({BOLD}{mem_used:.2f}GB / {mem_total:.2f}GB{RESET}) - "
           f"SWAP used: {BOLD}{swap_colored}{RESET} ({BOLD}{swap_used:.2f}GB / {swap_total:.2f}GB{RESET})")
     
-    barra_mem = barra_progreso(mem_percent, color=mem_color)
-    barra_swap = barra_progreso(swap_percent, color=swap_color)
-    print(f"{barra_mem} - {barra_swap}")
+    if not ("bar" in omit or "b" in omit or "barr" in omit or "br" in omit):
+        barra_mem = barra_progreso(mem_percent, color=mem_color)
+        barra_swap = barra_progreso(swap_percent, color=swap_color)
+        print(f"{barra_mem} - {barra_swap}")
 
 # Processes: 265 (running=1, sleeping=199, idle=65, stopped=0, zombie=0, other=0)
 def get_process_count():
@@ -402,10 +409,11 @@ def get_disk_usage():
     disk_io_start = disk_io_current
     disk_time_start = disk_time_current
 
-    barra_disk = barra_progreso(percent, color=color)
-
     print(f"Disk used: {color}{BOLD}{percent:.0f}%{RESET} ({BOLD}{used:.2f}GB / {total:.2f}GB{RESET}) - Read: {BOLD}{disk_read_speed:.2f}MB/s{RESET} - Write: {BOLD}{disk_write_speed:.2f}MB/s{RESET}")
-    print(barra_disk)
+    
+    if not ("bar" in omit or "b" in omit or "bard" in omit or "bd" in omit):
+        barra_disk = barra_progreso(percent, color=color)
+        print(barra_disk)
 
 # Disk temperature: 32°C
 def get_nvme_temperature():
@@ -534,9 +542,11 @@ def get_wifi_info():
         else:
             color = RESET
 
-        print(f"WIFI IP: {BOLD}{ip}{RESET} - SSID: {BOLD}{ssid}{RESET}")
-        print(f"WIFI signal: {color}{BOLD}{signal_percent:.0f}%{RESET} - Speed: {BOLD}{speed:.1f}Mb/s{RESET} - Down: {BOLD}{download_speed:.2f}MB/s{RESET} - Up: {BOLD}{upload_speed:.2f}MB/s{RESET}")
-        print(f"{barra_progreso(signal_percent, color=color)}")
+        print(f"WiFi IP: {BOLD}{ip}{RESET} - SSID: {BOLD}{ssid}{RESET}")
+        print(f"WiFi signal: {color}{BOLD}{signal_percent:.0f}%{RESET} - Speed: {BOLD}{speed:.1f}Mb/s{RESET} - Down: {BOLD}{download_speed:.2f}MB/s{RESET} - Up: {BOLD}{upload_speed:.2f}MB/s{RESET}")
+        
+        if not ("bar" in omit or "b" in omit or "barw" in omit or "bw" in omit):
+            print(f"{barra_progreso(signal_percent, color=color)}")
 
         # Obtener temperatura de la placa WiFi desde psutil
         temps = psutil.sensors_temperatures()
@@ -553,7 +563,7 @@ def get_wifi_info():
             else:
                 temp_color = RESET
 
-            print(f"WIFI temperature: {temp_color}{BOLD}{wifi_temp:.0f}°C{RESET}")
+            print(f"WiFi temperature: {temp_color}{BOLD}{wifi_temp:.0f}°C{RESET}")
 
     except Exception as e:
         print(f"{RED}Error inesperado: {e}{RESET}")
@@ -592,9 +602,11 @@ def get_battery_info():
             time_part = f" - Time: {BOLD}{h}h {m}m {s}s{RESET}"
 
         # Barra y salida
-        barra_battery = barra_progreso(battery_percent, color=color)
         print(f"Battery: {color}{BOLD}{battery_percent}%{RESET}{time_part} - Mode: {BOLD}{battery_mode}{RESET}")
-        print(barra_battery)
+        
+        if not ("bar" in omit or "b" in omit or "bart" in omit or "bt" in omit):
+            barra_battery = barra_progreso(battery_percent, color=color)
+            print(barra_battery)
 
     except Exception as e:
         print(f"{RED}Battery error: {e}{RESET}")
@@ -642,7 +654,7 @@ def main():
     if not ("wifi" in omit or "w" in omit):
         get_wifi_info()
 
-    if not ("bat" in omit or "b" in omit):
+    if not ("bat" in omit or "a" in omit):
         get_battery_info()
 
 #    print("\a")
