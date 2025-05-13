@@ -266,7 +266,7 @@ python3 sysstatcli.py [tiempo] [opciones]
 | Red LAN       | `-lan`, `-n`       | Estado de la red cableada                 |
 | Red WiFi      | `-wifi`, `-w`      | Estado de WiFi y temperatura de la placa  |
 | Batería       | `-bat`, `-b`       | Nivel, tiempo restante y modo de energía  |
-| Bar           | `-bar`, `-b`       | Omite todas las barras                    |
+| Barra         | `-bar`, `-b`       | Omite todas las barras                    |
 |               | `-barc`, `-bc`     | Omite la barra de CPU                     |
 |               | `-barr`, `-br`     | Omite la barra de RAM                     |
 |               | `-bard`, `-bd`     | Omite la barra de Disco                   |
