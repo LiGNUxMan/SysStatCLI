@@ -1,3 +1,29 @@
+# Changelog - SysStatCLI v2.40.20250513d
+
+## ✨ New Features
+Several options have been added to hide progress bars and output either text-only (old-school style) or a specific progress bar from the five available:
+
+Options: Available arguments to omit sections:
+-bar, -b → Omit all bars
+-barc, -bc → Omit the CPU bar
+-barr", -br → Omit the RAM bar
+-bard", -bd → Omit the Disk bar
+-barw", -bw → Omit the WIFI bar
+-bara", -bt → Omit the Battery bar
+
+# Changelog - SysStatCLI v2.40.20250513d
+
+## ✨ Nuevas funciones
+Se agregaron varias opción para ocultar las barras de progreso y que la salida sea solo texto (estilo old school) o alguna barra de progreso en particular de las cinco disponibles:
+
+Opciones: Argumentos disponibles para omitir secciones:
+-bar, -b → Omite todas las barras
+-barc, -bc → Omite la barra de CPU
+-barr", -br → Omite la barra de RAM
+-bard", -bd → Omite la barra de Disk
+-barw", -bw → Omite la barra de WIFI
+-bara", -bt → Omite la barra de Battery
+
 # Changelog - SysStatCLI v2.40.20250509c
 
 ## ✨ New Features
