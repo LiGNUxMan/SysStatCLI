@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 2.40.20250513d
+# SysStatCLI (System Status CLI) Version 2.40.20250514e
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -64,12 +64,12 @@ for arg in sys.argv[1:]:
         break  # Solo tomamos el primer número encontrad
 
 # Argumentos válidos para omitir secciones o pedir ayuda
-valid_args = {"sys", "s", "up", "u", "cpu", "c", "ram", "r", "proc", "p", "load", "l", "disk", "d", "lan", "a", "wifi", "w", "bat", "t", "help", "h", "bar", "b", "barc", "bc", "barr", "br", "bard", "bd", "barw", "bw", "bart", "bt"}
+valid_args = {"sys", "s", "host", "o", "up", "u", "cpu", "c", "ram", "r", "proc", "p", "load", "l", "disk", "d", "lan", "a", "wifi", "w", "bat", "t", "help", "h", "bar", "b", "barc", "bc", "barr", "br", "bard", "bd", "barw", "bw", "bart", "bt"}
 
 # HELP O AYUDA: sysstatcli.py -help
 # if any(arg in help_flags for arg in sys.argv):
 if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
-    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version 2.40.20250509c
+    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version v2.40.20250514e
 
 {BOLD}Repositorio:{RESET} {UNDERLINE}https://github.com/LiGNUxMan/SysStatCLI{RESET}
     
@@ -82,21 +82,23 @@ if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
 {BOLD}Tiempo:{RESET} Segundos que se repetira el script en bucle. Si se omite o es 0, se ejecuta una sola vez
 
 {BOLD}Opciones:{RESET} Argumentos disponibles para omitir secciones:
-  -sys,  -s     → Info del sistema y uptime
-  -cpu,  -c     → Uso, frecuencia y temperatura del CPU
-  -ram,  -r     → Memoria RAM y SWAP
-  -proc, -p     → Procesos y sus estados
-  -load, -l     → Carga del sistema
-  -disk, -d     → Disco y temperatura NVMe
-  -lan,  -a     → Red cableada
-  -wifi, -w     → Red WiFi y temperatura
-  -bat,  -a     → Batería
-  -bar,  -t     → Omite todas las barras
-    -barc,  -bc → Omite la barra de CPU
-    -barr", -br → Omite la barra de RAM
-    -bard", -bd → Omite la barra de Disk
-    -barw", -bw → Omite la barra de WIFI
-    -bara", -bt → Omite la barra de Battery
+  -sys,  -s → Nombre del sistema operativo y version del kernel
+  -host, -o → Nombre de la computadora y el usuario
+  -up,   -u → Tiempo de actividad y hora y dia del sistema
+  -cpu,  -c → Uso, frecuencia, modo y temperatura del CPU
+  -ram,  -r → Uso de memoria RAM y SWAP
+  -proc, -p → Procesos y sus estados
+  -load, -l → Carga del sistema
+  -disk, -d → Uso y temperatura del disco
+  -lan,  -a → Red cableada
+  -wifi, -w → Red WiFi y temperatura
+  -bat,  -t → Batería
+  -bar,  -b → Omite todas las barras
+    -barc, -bc → Omite la barra de CPU
+    -barr, -br → Omite la barra de RAM
+    -bard, -bd → Omite la barra de Disk
+    -barw, -bw → Omite la barra de WiFi
+    -bara, -bt → Omite la barra de Battery
 
 {BOLD}Ejemplos:{RESET}
   python3 sysstatcli.py            → Ejecuta una sola vez
@@ -150,7 +152,6 @@ def barra_progreso(valor, total=100, ancho=32, color=RESET):
     return f"{color}{barra}{RESET}" # return f"{color}[{barra}]{RESET}" # return f"{color}▕{barra}▏{RESET}" # return f"{color}[{barra}]{RESET}"
 
 # OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
-# Hostname: hal9001c - User: axel
 def get_system_info():
     """Obtiene el nombre del sistema operativo y la versión del kernel y los imprime."""
     try:
@@ -169,10 +170,13 @@ def get_system_info():
     with open("/proc/sys/kernel/osrelease") as f:
         kernel_version = f.read().strip()
 
+    print(f"OS: {BOLD}{os_name}{RESET} - Kernel version: {BOLD}{kernel_version}{RESET}")
+
+# Hostname: hal9001c - User: axel
+def get_host_user_info():
     hostname = socket.gethostname()
     username = os.getlogin()
 
-    print(f"OS: {BOLD}{os_name}{RESET} - Kernel version: {BOLD}{kernel_version}{RESET}")
     print(f"Hostname: {BOLD}{hostname}{RESET} - User: {BOLD}{username}{RESET}")
 
 # Uptime: 1 day, 3:37:09 - Time and date: 15:14:25 13/03/2025
@@ -273,10 +277,10 @@ def get_cpu_temperature():
     except Exception:
         print(f"CPU temperature: {RED}{BOLD}Unknown{RESET}")
 
-# RAM used: 32% (4.89GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
+# RAM used: 32% (4.89GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
 # ██████████░░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 def get_memory_usage():
-    """Obtiene el uso de RAM y SWAP y los imprime con colores según el nivel de uso."""
+    """Obtiene el uso de RAM y Swap y los imprime con colores según el nivel de uso."""
 
     def color_usage(value):
         if value >= 90: # 90
@@ -303,7 +307,7 @@ def get_memory_usage():
     swap_color, swap_colored = color_usage(swap_percent)
     
     print(f"RAM used: {BOLD}{mem_colored}{RESET} ({BOLD}{mem_used:.2f}GB / {mem_total:.2f}GB{RESET}) - "
-          f"SWAP used: {BOLD}{swap_colored}{RESET} ({BOLD}{swap_used:.2f}GB / {swap_total:.2f}GB{RESET})")
+          f"Swap used: {BOLD}{swap_colored}{RESET} ({BOLD}{swap_used:.2f}GB / {swap_total:.2f}GB{RESET})")
     
     if not ("bar" in omit or "b" in omit or "barr" in omit or "br" in omit):
         barra_mem = barra_progreso(mem_percent, color=mem_color)
@@ -626,7 +630,10 @@ def format_uptime(seconds):
 def main():
     if not ("sys" in omit or "s" in omit):
         get_system_info()
-        
+    
+    if not ("host" in omit or "o" in omit):
+        get_host_user_info()
+    
     if not ("up" in omit or "u" in omit):
         get_uptime_and_time()
 
