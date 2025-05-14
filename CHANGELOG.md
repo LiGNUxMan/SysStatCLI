@@ -1,3 +1,51 @@
+# Changelog - SysStatCLI v2.40.20250514e
+
+## 🇺🇸🇬🇧 English
+
+## New -host, -o option:
+
+The -sys, -s option, which was previously hidden, has been separated:
+
+OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
+Hostname: hal9001c - User: axel
+
+Into two separate options:
+
+-sys, -s
+
+OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
+
+-host, -o
+
+# Hostname: hal9001c - User: axel
+
+## I also updated, modified, and fixed (minor issues) the help: -help, -h, --help
+
+---
+
+## 🇪🇸 Español
+
+## Nueva opción -host, -o:
+
+Se separo la opción -sys, -s, que antes ocultaba:
+
+OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
+Hostname: hal9001c - User: axel
+
+En dos opciones distintas:
+
+-sys, -s
+
+OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
+
+-host, -o
+
+# Hostname: hal9001c - User: axel
+
+## Ademas me actualizo, modifico y arreglo (problemas menores) del help: -help, -h, --help
+
+---
+
 # Changelog - SysStatCLI v2.40.20250513d
 
 ## 🇺🇸🇬🇧 English
@@ -27,6 +75,8 @@ Opciones: Argumentos disponibles para omitir secciones:
 - -bard", -bd → Omite la barra de Disk
 - -barw", -bw → Omite la barra de WIFI
 - -bara", -bt → Omite la barra de Battery
+
+---
 
 # Changelog - SysStatCLI v2.40.20250509c
 
