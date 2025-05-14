@@ -17,7 +17,7 @@ OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
 
 -host, -o
 
-# Hostname: hal9001c - User: axel
+Hostname: hal9001c - User: axel
 
 ## I also updated, modified, and fixed (minor issues) the help: -help, -h, --help
 
@@ -40,7 +40,7 @@ OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
 
 -host, -o
 
-# Hostname: hal9001c - User: axel
+Hostname: hal9001c - User: axel
 
 ## Ademas me actualizo, modifico y arreglo (problemas menores) del help: -help, -h, --help
 
