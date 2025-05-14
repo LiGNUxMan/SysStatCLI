@@ -1,4 +1,4 @@
-# SysStatCLI (System Status CLI) v2.40.20250513d
+# SysStatCLI (System Status CLI) v2.40.20250514e
 
 ## 🇺🇸🇬🇧 English
 
@@ -40,23 +40,25 @@ python3 sysstatcli.py [time] [options]
 - `options`: Arguments to skip certain sections of the monitoring.
 
 ### 🔧 Available Options
-| Section       | Arguments          | Description                               |
-|---------------|--------------------|-------------------------------------------|
-| System        | `-sys`, `-s`       | System information and uptime             |
-| CPU           | `-cpu`, `-c`       | Usage, frequency, and temperature         |
-| RAM           | `-ram`, `-r`       | RAM and swap memory usage                 |
-| Processes     | `-proc`, `-p`      | Process count and status                  |
-| Load          | `-load`, `-l`      | Average System Load                       |
-| Disk          | `-disk`, `-d`      | Disk usage, speed, and temperature        |
-| LAN           | `-lan`, `-a`       | Wired network status                      |
-| WiFi          | `-wifi`, `-w`      | WiFi status and motherboard temperature   |
-| Battery       | `-bat`, `-t`       | Power level, time remaining, and mode     |
-| Bar           | `-bar`, `-b`       | Omit all bars                             |
-|               | `-barc`, `-bc`     | Omit the CPU bar                          |
-|               | `-barr`, `-br`     | Omit the RAM bar                          |
-|               | `-bard`, `-bd`     | Omit the Disk bar                         |
-|               | `-barw`, `-bw`     | Omit the WIFI bar                         |
-|               | `-bara`, `-bt`     | Omit the Battery bar                      |
+| Section       | Arguments          | Description                              |
+|---------------|--------------------|------------------------------------------|
+| System        | `-sys`, `-s`       | Operating system name and kernel version |
+| Hostname      | `-host`, `-o`      | Computer and user name                   |
+| Uptime        | `-up`, `-u`        | System uptime and time and day           |
+| CPU           | `-cpu`, `-c`       | Usage, frequency, and temperature        |
+| RAM           | `-ram`, `-r`       | RAM and swap memory usage                |
+| Processes     | `-proc`, `-p`      | Process count and status                 |
+| Load          | `-load`, `-l`      | Average System Load                      |
+| Disk          | `-disk`, `-d`      | Disk usage, speed, and temperature       |
+| LAN           | `-lan`, `-a`       | Wired network status                     |
+| WiFi          | `-wifi`, `-w`      | WiFi status and motherboard temperature  |
+| Battery       | `-bat`, `-t`       | Power level, time remaining, and mode    |
+| Bar           | `-bar`, `-b`       | Omit all bars                            |
+|               | `-barc`, `-bc`     | Omit the CPU bar                         |
+|               | `-barr`, `-br`     | Omit the RAM bar                         |
+|               | `-bard`, `-bd`     | Omit the Disk bar                        |
+|               | `-barw`, `-bw`     | Omit the WIFI bar                        |
+|               | `-bara`, `-bt`     | Omit the Battery bar                     |
 
 ---
 
@@ -81,8 +83,7 @@ python3 sysstatcli.py -ram -wifi
 python3 sysstatcli.py -s -b 10
 ```
 > Runs every 10 seconds, ignoring system and battery data.
-```
-```
+
 ## 🆘 Help
 
 ```bash
@@ -213,7 +214,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 
 ---
-# SysStatCLI (System Status CLI) v2.40.20250513d
+# SysStatCLI (System Status CLI) v2.40.20250514e
 
 ## 🇪🇸 Español
 
@@ -255,23 +256,25 @@ python3 sysstatcli.py [tiempo] [opciones]
 - `opciones`: Argumentos para omitir ciertas secciones del monitoreo.
 
 ### 🔧 Opciones disponibles
-| Sección       | Argumentos         | Descripción                               |
-|---------------|--------------------|-------------------------------------------|
-| Sistema       | `-sys`, `-s`       | Información del sistema y uptime          |
-| CPU           | `-cpu`, `-c`       | Uso, frecuencia y temperatura             |
-| RAM           | `-ram`, `-r`       | Uso de memoria RAM y SWAP                 |
-| Procesos      | `-proc`, `-p`      | Conteo y estados de procesos              |
-| Carga         | `-load`, `-l`      | Carga promedio del sistema                |
-| Disco         | `-disk`, `-d`      | Uso, velocidad y temperatura del disco    |
-| Red LAN       | `-lan`, `-n`       | Estado de la red cableada                 |
-| Red WiFi      | `-wifi`, `-w`      | Estado de WiFi y temperatura de la placa  |
-| Batería       | `-bat`, `-b`       | Nivel, tiempo restante y modo de energía  |
-| Barra         | `-bar`, `-b`       | Omite todas las barras                    |
-|               | `-barc`, `-bc`     | Omite la barra de CPU                     |
-|               | `-barr`, `-br`     | Omite la barra de RAM                     |
-|               | `-bard`, `-bd`     | Omite la barra de Disco                   |
-|               | `-barw`, `-bw`     | Omite la barra de WiFi                    |
-|               | `-bara`, `-bt`     | Omite la barra de bateria                 |
+| Sección       | Argumentos         | Descripción                                       |
+|---------------|--------------------|---------------------------------------------------|
+| Sistema       | `-sys`, `-s`       | Nombre del sistema operativo y version del kernel |
+| Hostname      | `-host`, `-o`      | Nombre de la computadora y el usuario             |
+| Uptime        | `-up`, `-u`        | Tiempo de actividad y hora y dia del sistema      |
+| CPU           | `-cpu`, `-c`       | Uso, frecuencia y temperatura                     |
+| RAM           | `-ram`, `-r`       | Uso de memoria RAM y SWAP                         |
+| Procesos      | `-proc`, `-p`      | Conteo y estados de procesos                      |
+| Carga         | `-load`, `-l`      | Carga promedio del sistema                        |
+| Disco         | `-disk`, `-d`      | Uso, velocidad y temperatura del disco            |
+| Red LAN       | `-lan`, `-n`       | Estado de la red cableada                         |
+| Red WiFi      | `-wifi`, `-w`      | Estado de WiFi y temperatura de la placa          |
+| Batería       | `-bat`, `-b`       | Nivel, tiempo restante y modo de energía          |
+| Barra         | `-bar`, `-b`       | Omite todas las barras                            |
+|               | `-barc`, `-bc`     | Omite la barra de CPU                             |
+|               | `-barr`, `-br`     | Omite la barra de RAM                             |
+|               | `-bard`, `-bd`     | Omite la barra de Disco                           |
+|               | `-barw`, `-bw`     | Omite la barra de WiFi                            |
+|               | `-bara`, `-bt`     | Omite la barra de bateria                         |
 
 ---
 
@@ -296,8 +299,7 @@ python3 sysstatcli.py -ram -wifi
 python3 sysstatcli.py -s -b 10
 ```
 > Ejecuta cada 10 segundos, omitiendo datos del sistema y batería.
-```
-```
+
 ## 🆘 Ayuda
 
 ```bash
