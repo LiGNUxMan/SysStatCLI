@@ -13,7 +13,7 @@
 - **CPU Utilization**: Displays the total percentage of processor utilization and individual core utilization.
 - **CPU Frequency**: Reports the CPU speed in GHz and the active scaling mode.
 - **CPU Temperature**: It reports the processor temperature and changes color depending on the level.
-- **RAM and SWAP Memory**: It shows the percentage of RAM and SWAP usage with colors and progress bars.
+- **RAM and Swap Memory**: It shows the percentage of RAM and Swap usage with colors and progress bars.
 - **Processes**: Reports the total number of processes and their status (running, suspended, inactive, etc.).
 - **System Load**: Displays the load average over 1, 5, and 15 minutes.
 - **Disk**: Indicates the percentage of storage occupied in % and GB and the total capacity in GB, as well as the data read and written in MB/s and the temperature.
@@ -46,7 +46,7 @@ python3 sysstatcli.py [time] [options]
 | Hostname      | `-host`, `-o`           | Computer and user name                   |
 | Uptime        | `-up`, `-u`             | System uptime and time and day           |
 | CPU           | `-cpu`, `-c`            | Usage, frequency, and temperature        |
-| RAM           | `-ram`, `-r`            | RAM and swap memory usage                |
+| RAM           | `-ram`, `-r`            | RAM and Swap memory usage                |
 | Processes     | `-proc`, `-p`           | Process count and status                 |
 | Load          | `-load`, `-l`           | Average System Load                      |
 | Disk          | `-disk`, `-d`           | Disk usage, speed, and temperature       |
@@ -169,7 +169,7 @@ CPU used: 8% (CPU0: 9% - CPU1: 7% - CPU2: 8% - CPU3: 6%)
 ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 CPU frequency: 0.90GHz - Scaling governor: powersave
 CPU temperature: 36°C
-RAM used: 41% (6.33GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
+RAM used: 41% (6.33GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
 █████████████░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 Processes: 281 (run=1, sleep=212, idle=68, stop=0, zombie=0, other=0)
 Load average: 0.65 0.71 0.61
@@ -230,7 +230,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 - **Uso del CPU**: Muestra el porcentaje total de uso del procesador y el uso individual de cada núcleo.
 - **Frecuencia del CPU**: Reporta la velocidad del CPU en GHz y el modo de escalado activo.
 - **Temperatura del CPU**: Informa la temperatura del procesador y cambia de color segun el nivel.
-- **Memoria RAM y SWAP**: Indica el porcentaje de uso de la RAM y la SWAP con colores y barras de progreso.
+- **Memoria RAM y Swap**: Indica el porcentaje de uso de la RAM y la Swap con colores y barras de progreso.
 - **Procesos**: Reporta la cantidad total de procesos y su estado (ejecución, suspensión, inactivos, etc.).
 - **Carga del sistema**: Muestra el promedio de carga en 1, 5 y 15 minutos.
 - **Disco**: Indica el porcentaje de almacenamiento ocupado en % y GB y la capacidad total en GB, ademas de los datos leidos y escritos en MB/s y la temperatura.
@@ -263,7 +263,7 @@ python3 sysstatcli.py [tiempo] [opciones]
 | Hostname      | `-host`, `-o`           | Nombre de la computadora y el usuario             |
 | Uptime        | `-up`, `-u`             | Tiempo de actividad y hora y dia del sistema      |
 | CPU           | `-cpu`, `-c`            | Uso, frecuencia y temperatura                     |
-| RAM           | `-ram`, `-r`            | Uso de memoria RAM y SWAP                         |
+| RAM           | `-ram`, `-r`            | Uso de memoria RAM y Swap                         |
 | Procesos      | `-proc`, `-p`           | Conteo y estados de procesos                      |
 | Carga         | `-load`, `-l`           | Carga promedio del sistema                        |
 | Disco         | `-disk`, `-d`           | Uso, velocidad y temperatura del disco            |
@@ -388,7 +388,7 @@ CPU used: 8% (CPU0: 9% - CPU1: 7% - CPU2: 8% - CPU3: 6%)
 ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 CPU frequency: 0.90GHz - Scaling governor: powersave
 CPU temperature: 36°C
-RAM used: 41% (6.33GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
+RAM used: 41% (6.33GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
 █████████████░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 Processes: 281 (run=1, sleep=212, idle=68, stop=0, zombie=0, other=0)
 Load average: 0.65 0.71 0.61
