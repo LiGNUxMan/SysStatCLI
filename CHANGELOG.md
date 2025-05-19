@@ -1,3 +1,24 @@
+# Changelog - SysStatCLI v2.41.20250519g
+
+## 🇺🇸🇬🇧 English
+
+## The RAM progress bar has been modified.
+It now displays memory used by applications "█" and memory used by the system (buffers + cache + slab) "▒" and free memory "░"
+
+## General optimizations to other, less significant parts of the code... A little here, a little there, and a little here :)
+Registro de cambios - SysStatCLI v2.41.20250519g
+
+---
+
+## 🇪🇸 Español
+
+## Se modifico la barra de progreso de la memoria RAM.
+Ahora muestra la memoria usada por las aplicaciones "█" y la usada por el sistema (buffers + cache + slab) "▒" y la memoria libre "░"
+
+## Optimización de otras partes del código en general sin mayor relevancia... Un poco por allí, un poco por allá y otro poco por acá :)
+
+---
+
 # Changelog - SysStatCLI v2.40.20250514e
 
 ## 🇺🇸🇬🇧 English
