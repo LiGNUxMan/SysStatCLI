@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 2.40.20250514e
+# SysStatCLI (System Status CLI) Version 2.41.20250519g
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -14,8 +14,8 @@
 # ████████████░░░░░░░░░░░░░░░░░░░░
 # CPU frequency: 0.8GHz - Scaling governor: powersave
 # CPU temperature: 39°C
-# RAM used: 32% (4.89GB / 15.49GB) - SWAP used: 0% (0.00GB / 0.00GB)
-# ██████████░░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+# RAM used: 39% (6.01GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
+# ████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 # Processes: 265 (running=1, sleeping=199, idle=65, stopped=0, zombie=0, other=0)
 # Load average: 1.97 1.22 0.98
 # Disk used: 43% (202.91GB / 467.91GB) - Read: 8.63MB/s - Write: 0.72MB/s
@@ -69,7 +69,7 @@ valid_args = {"sys", "s", "host", "o", "up", "u", "cpu", "c", "ram", "r", "proc"
 # HELP O AYUDA: sysstatcli.py -help
 # if any(arg in help_flags for arg in sys.argv):
 if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
-    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version v2.40.20250514e
+    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version 2.41.20250519g
 
 {BOLD}Repositorio:{RESET} {UNDERLINE}https://github.com/LiGNUxMan/SysStatCLI{RESET}
     
@@ -277,42 +277,76 @@ def get_cpu_temperature():
     except Exception:
         print(f"CPU temperature: {RED}{BOLD}Unknown{RESET}")
 
-# RAM used: 32% (4.89GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
-# ██████████░░░░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+# RAM used: 39% (6.01GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
+# ████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 def get_memory_usage():
     """Obtiene el uso de RAM y Swap y los imprime con colores según el nivel de uso."""
 
     def color_usage(value):
-        if value >= 90: # 90
+        if value >= 90:
             return RED, f"{RED}{value:.0f}%{RESET}"
-        elif value >= 75: # 75
+        elif value >= 75:
             return YELLOW, f"{YELLOW}{value:.0f}%{RESET}"
         else:
             return RESET, f"{value:.0f}%"
 
     with open("/proc/meminfo") as f:
         meminfo = f.readlines()
-    
-    mem_total = int(meminfo[0].split()[1]) / 1024 / 1024
-    mem_available = int(meminfo[2].split()[1]) / 1024 / 1024
+
+    # Parseo de /proc/meminfo
+    valores = {}
+    for linea in meminfo:
+        partes = linea.split(":")
+        clave = partes[0]
+        valor = int(partes[1].strip().split()[0]) / 1024 / 1024  # de kB a GB
+        valores[clave] = valor
+
+    mem_total = valores["MemTotal"]
+    mem_available = valores["MemAvailable"]
+    mem_free = valores["MemFree"]
+
+    # RAM real usada por apps
     mem_used = mem_total - mem_available
     mem_percent = (mem_used / mem_total) * 100
-    
-    swap_total = int(meminfo[14].split()[1]) / 1024 / 1024 if len(meminfo) > 14 else 0
-    swap_free = int(meminfo[15].split()[1]) / 1024 / 1024 if len(meminfo) > 15 else 0
+
+    # Proporciones
+    apps_ratio = mem_used / mem_total
+    free_ratio = mem_free / mem_total
+    sys_ratio = 1 - apps_ratio - free_ratio
+        
+    # Swap
+    swap_total = valores.get("SwapTotal", 0)
+    swap_free = valores.get("SwapFree", 0)
     swap_used = swap_total - swap_free
     swap_percent = (swap_used / swap_total) * 100 if swap_total > 0 else 0
-    
+
+    # Colores según uso
     mem_color, mem_colored = color_usage(mem_percent)
     swap_color, swap_colored = color_usage(swap_percent)
-    
+
+    # Salida principal
     print(f"RAM used: {BOLD}{mem_colored}{RESET} ({BOLD}{mem_used:.2f}GB / {mem_total:.2f}GB{RESET}) - "
           f"Swap used: {BOLD}{swap_colored}{RESET} ({BOLD}{swap_used:.2f}GB / {swap_total:.2f}GB{RESET})")
-    
+
+    # Barra personalizada para RAM
     if not ("bar" in omit or "b" in omit or "barr" in omit or "br" in omit):
-        barra_mem = barra_progreso(mem_percent, color=mem_color)
+        def barra_memoria(apps_ratio, sys_ratio, free_ratio, ancho=32):
+            apps_blocks = int(ancho * apps_ratio)
+            # sys_blocks = int(ancho * sys_ratio)
+            # free_blocks = ancho - apps_blocks - sys_blocks
+            free_blocks = int(ancho * free_ratio)
+            sys_blocks = ancho - apps_blocks - free_blocks
+            
+            barra = (
+                f"{mem_color}{'█' * apps_blocks}" +
+                f"{'▒' * sys_blocks}" +
+                f"{'░' * free_blocks}{RESET}"
+            )
+            return barra
+
+        barra_ram = barra_memoria(apps_ratio, sys_ratio, free_ratio)
         barra_swap = barra_progreso(swap_percent, color=swap_color)
-        print(f"{barra_mem} - {barra_swap}")
+        print(f"{barra_ram} - {barra_swap}")
 
 # Processes: 265 (running=1, sleeping=199, idle=65, stopped=0, zombie=0, other=0)
 def get_process_count():
