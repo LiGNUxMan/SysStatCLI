@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 2.41.20250519g
+# SysStatCLI (System Status CLI) Version 2.41.20250520h
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -36,6 +36,9 @@ import datetime
 import os
 import psutil
 import re
+import termios
+import tty
+import select
 import socket
 import subprocess
 import sys
@@ -43,13 +46,14 @@ import time
 from datetime import timedelta # Linea agregada para el uptime
 
 # Letra normal, bold, amarilla y roja
+RESET = "\033[0m"
+
 BOLD = "\033[1m"
 ITALIC = "\033[3m"
-RESET = "\033[0m"
 UNDERLINE = "\033[4m"
+
 GREEN = "\033[92m"
-# ORANGE = "\033[38;5;208m"
-ORANGE = "\033[38;5;214m" # naranja intenso.
+ORANGE = "\033[38;5;208m"
 YELLOW = "\033[33m"
 RED = "\033[31m"
 
@@ -69,7 +73,7 @@ valid_args = {"sys", "s", "host", "o", "up", "u", "cpu", "c", "ram", "r", "proc"
 # HELP O AYUDA: sysstatcli.py -help
 # if any(arg in help_flags for arg in sys.argv):
 if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
-    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version 2.41.20250519g
+    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version 2.41.20250520h
 
 {BOLD}Repositorio:{RESET} {UNDERLINE}https://github.com/LiGNUxMan/SysStatCLI{RESET}
     
@@ -80,6 +84,7 @@ if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
   python3 sysstatcli.py [tiempo] [opciones]
   
 {BOLD}Tiempo:{RESET} Segundos que se repetira el script en bucle. Si se omite o es 0, se ejecuta una sola vez
+  Durante la ejecución, puede presionar {BOLD}Q{RESET}, {BOLD}X{RESET} o {BOLD}ESC{RESET} para salir del bucle
 
 {BOLD}Opciones:{RESET} Argumentos disponibles para omitir secciones:
   -sys,  -s → Nombre del sistema operativo y version del kernel
@@ -332,11 +337,10 @@ def get_memory_usage():
     if not ("bar" in omit or "b" in omit or "barr" in omit or "br" in omit):
         def barra_memoria(apps_ratio, sys_ratio, free_ratio, ancho=32):
             apps_blocks = int(ancho * apps_ratio)
-            # sys_blocks = int(ancho * sys_ratio)
-            # free_blocks = ancho - apps_blocks - sys_blocks
             free_blocks = int(ancho * free_ratio)
             sys_blocks = ancho - apps_blocks - free_blocks
             
+            # ▁▂▃▄▅▆▇█ ░▒▓█
             barra = (
                 f"{mem_color}{'█' * apps_blocks}" +
                 f"{'▒' * sys_blocks}" +
@@ -661,6 +665,29 @@ def format_uptime(seconds):
     else:
         return f"{hours:02}:{minutes:02}:{secs:02}"
 
+################################
+
+def get_keypress(timeout=0):
+    """Devuelve una tecla presionada si hay una, o None si no hay input."""
+    dr, dw, de = select.select([sys.stdin], [], [], timeout)
+    if dr:
+        return sys.stdin.read(1)
+    return None
+
+def enable_raw_mode():
+    """Activa modo sin buffer para leer teclas sin Enter."""
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    tty.setcbreak(fd)
+    return old_settings
+
+def disable_raw_mode(old_settings):
+    """Restaura la configuración del terminal."""
+    fd = sys.stdin.fileno()
+    termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+################################
+
 def main():
     if not ("sys" in omit or "s" in omit):
         get_system_info()
@@ -708,28 +735,43 @@ if __name__ == "__main__":
         
         count = 1
 
-        while True:
-            # Medir tiempo de ejecución de main(), borra la pantalla y le da tormato al uptime
-            exec_start = time.time()
-            
-            os.system('clear')
-            
-            main()
-            
-            # Tiempo total desde que arrancó el script
-            elapsed = int(time.time() - start_time)
-            uptime = format_uptime(elapsed)
-            
-            # Calcula el tiempo de ejecución de main()
-            exec_duration = time.time() - exec_start
+        old_settings = enable_raw_mode()
+        
+        try:
+            while True:
+                # Medir tiempo de ejecución de main(), borra la pantalla y le da tormato al uptime
+                exec_start = time.time()
+                
+                os.system('clear')
+                
+                main()
+                
+                # Tiempo total desde que arrancó el script
+                elapsed = int(time.time() - start_time)
+                uptime = format_uptime(elapsed)
+                
+                # Calcula el tiempo de ejecución de main()
+                # exec_duration = time.time() - exec_start
+                exec_duration = (time.time() - exec_start) * 1000  # en milisegundos
 
-            for i in range(interval, 0, -1):
-                # Run: 3 days, 4:52:51 (0.067s) / Cycles: 1313 / Next in 10/60 seconds...
-                sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.3f}s) / Cycles: {count} / Next in {i}/{interval} seconds... ")
-                sys.stdout.flush()
-                time.sleep(1)
+                for i in range(interval, 0, -1):
+                    # Run: 3 days, 4:52:51 (0.067s) / Cycles: 1313 / Next in 10/60 seconds...
+                    # sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.3f}s) / Cycles: {count} / Next in {i}/{interval} seconds... [Q to quit] [Q/X/Esc]")
+                    # sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.3f}s) / Cycles: {count} / Next in {i}/{interval} seconds... ")
+                    # sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.0f}ms) | Cycles: {count} | Next in {i}/{interval} seconds... ")
+                    sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.0f}ms) | Cycles: {count} | Next: {i}/{interval}s... ")
+                    sys.stdout.flush()
+                    
+                    # El sistema monitorea la precion de Q, X, Esc
+                    key = get_keypress(timeout=1)
+                    if key and key.lower() in ['q', 'x', '\x1b']:  # 'q', 'x' o 'Esc'
+                        #print("\nExit.")
+                        print("")
+                        raise SystemExit
 
-            count += 1
+                count += 1
+        finally:
+            disable_raw_mode(old_settings)
     else:
         main()
 
