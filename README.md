@@ -1,6 +1,6 @@
 # SysStatCLI (System Status CLI) v2.40.20250514e
 
-![Captura de pantalla de 2025-05-19 01-24-58](https://github.com/user-attachments/assets/f39dba5b-db20-470d-99d3-56a07bdc61f4)
+![Captura de pantalla de 2025-05-21 11-31-12](https://github.com/user-attachments/assets/651b16f1-63b9-4f53-999e-590ac945e888)
 
 ## 🇺🇸🇬🇧 English
 
@@ -219,7 +219,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 ---
 # SysStatCLI (System Status CLI) v2.40.20250514e
 
-![Captura de pantalla de 2025-05-19 01-24-58](https://github.com/user-attachments/assets/f39dba5b-db20-470d-99d3-56a07bdc61f4)
+![Captura de pantalla de 2025-05-21 11-31-12](https://github.com/user-attachments/assets/651b16f1-63b9-4f53-999e-590ac945e888)
 
 ## 🇪🇸 Español
 
