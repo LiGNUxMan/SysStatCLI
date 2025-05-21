@@ -39,6 +39,9 @@ python3 sysstatcli.py [time] [options]
 ```
 
 - `time`: Interval in seconds to repeat the script in a loop. If omitted or `0`, it is executed **only once**.
+
+  During execution, you can press Q, X or ESC to exit.
+  
 - `options`: Arguments to skip certain sections of the monitoring.
 
 #### 🔧 Available Options
@@ -258,6 +261,9 @@ python3 sysstatcli.py [tiempo] [opciones]
 ```
 
 - `tiempo`: Intervalo en segundos para repetir el script en bucle. Si se omite o es `0`, se ejecuta **una sola vez**.
+
+  Durante la ejecución, puede presionar Q, X o ESC para salir.
+  
 - `opciones`: Argumentos para omitir ciertas secciones del monitoreo.
 
 #### 🔧 Opciones disponibles
