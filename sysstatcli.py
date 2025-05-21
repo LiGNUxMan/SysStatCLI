@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 2.41.20250520h
+# SysStatCLI (System Status CLI) Version 2.41.20250521i
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -28,7 +28,7 @@
 # WIFI temperature: 42°C
 # Battery: 35% - Time: 1h 6m 4s - Mode: Discharging
 # ███████████░░░░░░░░░░░░░░░░░░░░░
-# Run: 3 days, 4:52:51 (0.067s) / Cycles: 1313 / Next in 10/60 seconds...
+# # Run: 3 days, 4:52:51 (67ms) | Cycles: 1313 | Next: 10/60s...
 # 
 #
 
@@ -84,7 +84,7 @@ if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
   python3 sysstatcli.py [tiempo] [opciones]
   
 {BOLD}Tiempo:{RESET} Segundos que se repetira el script en bucle. Si se omite o es 0, se ejecuta una sola vez
-  Durante la ejecución, puede presionar {BOLD}Q{RESET}, {BOLD}X{RESET} o {BOLD}ESC{RESET} para salir del bucle
+  Durante la ejecución, puede presionar {BOLD}Q{RESET}, {BOLD}X{RESET} para salir
 
 {BOLD}Opciones:{RESET} Argumentos disponibles para omitir secciones:
   -sys,  -s → Nombre del sistema operativo y version del kernel
@@ -665,13 +665,14 @@ def format_uptime(seconds):
     else:
         return f"{hours:02}:{minutes:02}:{secs:02}"
 
-################################
-
-def get_keypress(timeout=0):
-    """Devuelve una tecla presionada si hay una, o None si no hay input."""
-    dr, dw, de = select.select([sys.stdin], [], [], timeout)
+### Funciones para detectar las teclas Q y X para salir
+def get_keypress(timeout=1):
+    dr, _, _ = select.select([sys.stdin], [], [], timeout)
     if dr:
-        return sys.stdin.read(1)
+        # Leer hasta 3 bytes (suficiente para teclas especiales como F1–F4)
+        raw = os.read(sys.stdin.fileno(), 3).decode(errors='ignore')
+        # Si es una sola letra simple, devolverla
+        return raw if len(raw) == 1 else None
     return None
 
 def enable_raw_mode():
@@ -686,7 +687,7 @@ def disable_raw_mode(old_settings):
     fd = sys.stdin.fileno()
     termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
-################################
+###
 
 def main():
     if not ("sys" in omit or "s" in omit):
@@ -732,46 +733,46 @@ def main():
 if __name__ == "__main__":
     if interval > 0:
         start_time = time.time()
-        
+
         count = 1
 
         old_settings = enable_raw_mode()
-        
+
         try:
             while True:
-                # Medir tiempo de ejecución de main(), borra la pantalla y le da tormato al uptime
                 exec_start = time.time()
                 
                 os.system('clear')
                 
                 main()
-                
-                # Tiempo total desde que arrancó el script
+
                 elapsed = int(time.time() - start_time)
                 uptime = format_uptime(elapsed)
                 
-                # Calcula el tiempo de ejecución de main()
-                # exec_duration = time.time() - exec_start
                 exec_duration = (time.time() - exec_start) * 1000  # en milisegundos
 
                 for i in range(interval, 0, -1):
-                    # Run: 3 days, 4:52:51 (0.067s) / Cycles: 1313 / Next in 10/60 seconds...
-                    # sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.3f}s) / Cycles: {count} / Next in {i}/{interval} seconds... [Q to quit] [Q/X/Esc]")
-                    # sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.3f}s) / Cycles: {count} / Next in {i}/{interval} seconds... ")
-                    # sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.0f}ms) | Cycles: {count} | Next in {i}/{interval} seconds... ")
+                
+                    # Mostrar la línea primero
                     sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.0f}ms) | Cycles: {count} | Next: {i}/{interval}s... ")
                     sys.stdout.flush()
-                    
-                    # El sistema monitorea la precion de Q, X, Esc
-                    key = get_keypress(timeout=1)
-                    if key and key.lower() in ['q', 'x', '\x1b']:  # 'q', 'x' o 'Esc'
-                        #print("\nExit.")
-                        print("")
-                        raise SystemExit
+
+                    tick_start = time.time()
+
+                    # Bucle interno que espera 1 segundo real, verificando teclas cada 0.1s
+                    while True:
+                        key = get_keypress(timeout=0.1)
+                        if key and key.lower() in ['q', 'x']:
+                            print("")
+                            raise SystemExit
+                        if time.time() - tick_start >= 1:
+                            break
+
 
                 count += 1
         finally:
             disable_raw_mode(old_settings)
     else:
         main()
+
 
