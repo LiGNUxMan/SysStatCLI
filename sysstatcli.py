@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 2.41.20250521i
+# SysStatCLI (System Status CLI) Version 2.41.20250521j
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -84,7 +84,7 @@ if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
   python3 sysstatcli.py [tiempo] [opciones]
   
 {BOLD}Tiempo:{RESET} Segundos que se repetira el script en bucle. Si se omite o es 0, se ejecuta una sola vez
-  Durante la ejecución, puede presionar {BOLD}Q{RESET}, {BOLD}X{RESET} para salir
+  Durante la ejecución, puede presionar {BOLD}Q{RESET} o {BOLD}X{RESET} para salir
 
 {BOLD}Opciones:{RESET} Argumentos disponibles para omitir secciones:
   -sys,  -s → Nombre del sistema operativo y version del kernel
@@ -139,13 +139,17 @@ if not ("cpu" in omit or "c" in omit):
     cpu_time_start = time.time()
 if not ("disk" in omit or "d" in omit):
     disk_io_start = psutil.disk_io_counters()
-    disk_time_start = time.time()
-if not ("lan" in omit or "n" in omit):
-    lan_interface = "enxc025e92940b8" # Nombre de la placa de red
-    lan_io_start = psutil.net_io_counters(pernic=True).get(lan_interface)
+    disk_time_start = time.time()   
+if not ("lan" in omit or "a" in omit):
+    lan_interface = "enxc025e92940b8"  # Nombre de la placa de red (MODIFICARLO SI TIENE OTRO NOMBRE)
+    lan_stats = psutil.net_io_counters(pernic=True)
+    if lan_interface in lan_stats:
+        lan_io_start = lan_stats[lan_interface]
+    else:
+        lan_io_start = None
     lan_time_start = time.time()
 if not ("wifi" in omit or "w" in omit):
-    wifi_interface = "wlp3s0" # Nombre de la placa WIFI
+    wifi_interface = "wlp3s0" # Nombre de la placa WiFi (MODIFICARLO SI TIENE OTRO NOMBRE)
     wifi_io_start = psutil.net_io_counters(pernic=True).get(wifi_interface)
     wifi_time_start = time.time()
 time.sleep(1)  # Pausa de 1 seg. Para mejorar la exactitud de los datos en una sola ejeucuion o la primera del bucle
@@ -489,22 +493,24 @@ def get_nvme_temperature():
 
 # LAN IP: 192.168.0.123 - Speed: 100Mb/s (Full) - Down: 0.01MB/s - Up: 0.01MB/s
 def get_lan_info():
-    iface = lan_interface  # Interfaz de red cableada
-    stats = psutil.net_if_stats().get(iface)
+    global lan_io_start, lan_time_start
+
+    iface = lan_interface
     addrs = psutil.net_if_addrs().get(iface)
+    if not addrs:
+        return
 
-#    # Verificar si la interfaz está activa
-#    if not stats or not stats.isup:
-#        return
-
-    # Obtener IP
+    # Verificar que tenga IP asignada
     ip_address = None
-    if addrs:
-        for addr in addrs:
-            if addr.family == socket.AF_INET:
-                ip_address = addr.address
-                break
+    for addr in addrs:
+        if addr.family == socket.AF_INET:
+            ip_address = addr.address
+            break
     if not ip_address:
+        return
+
+    stats = psutil.net_if_stats().get(iface)
+    if not stats or not stats.isup:
         return
 
     # Obtener velocidad y modo dúplex
@@ -512,27 +518,28 @@ def get_lan_info():
     duplex = stats.duplex
     duplex_str = "Full" if duplex == psutil.NIC_DUPLEX_FULL else "Half" if duplex == psutil.NIC_DUPLEX_HALF else "Unknown"
 
-    # Medir tráfico de red usando variables globales
-    global lan_io_start, lan_time_start
+    # Obtener datos actuales
     lan_io_end = psutil.net_io_counters(pernic=True).get(iface)
     lan_time_end = time.time()
 
-#    if not lan_io_start or not lan_io_end:
-#        return
+    # Primera vez: inicializar y salir
+    if lan_io_start is None or lan_time_start is None or lan_io_end is None:
+        lan_io_start = lan_io_end
+        lan_time_start = lan_time_end
+        return
 
     lan_time_interval = lan_time_end - lan_time_start
-#    if lan_time_interval == 0:
-#        return
+    if lan_time_interval == 0:
+        return
 
     lan_download = (lan_io_end.bytes_recv - lan_io_start.bytes_recv) / (1024 * 1024) / lan_time_interval
     lan_upload = (lan_io_end.bytes_sent - lan_io_start.bytes_sent) / (1024 * 1024) / lan_time_interval
 
-    # Mostrar la salida formateada
     print(f"LAN IP: {BOLD}{ip_address}{RESET} - Speed: {BOLD}{speed}Mb/s{RESET} ({BOLD}{duplex_str}{RESET}) - Down: {BOLD}{lan_download:.2f}MB/s{RESET} - Up: {BOLD}{lan_upload:.2f}MB/s{RESET}")
 
-    # Actualizar los valores para la próxima iteración
     lan_io_start = lan_io_end
     lan_time_start = lan_time_end
+
 
 # WIFI lan: OBRIEN 5 - IP: 192.168.0.208
 # WIFI signal: 71% - Speed: 325.0Mb/s - Down: 4.57MB/s - Up: 0.93MB/s
@@ -736,25 +743,36 @@ if __name__ == "__main__":
 
         count = 1
 
+        # Inicia varialbes de minimo y maximo (borrar si ya no se quiere mostar)
+        min_exec_duration = float('inf')
+        max_exec_duration = float('-inf')
+
         old_settings = enable_raw_mode()
 
         try:
             while True:
                 exec_start = time.time()
-                
+
                 os.system('clear')
-                
+
                 main()
 
                 elapsed = int(time.time() - start_time)
                 uptime = format_uptime(elapsed)
-                
+
                 exec_duration = (time.time() - exec_start) * 1000  # en milisegundos
 
+                # Actualizar valores mínimos y máximos (borrar si ya no se quiere mostar)
+                min_exec_duration = min(min_exec_duration, exec_duration)
+                max_exec_duration = max(max_exec_duration, exec_duration)
+
                 for i in range(interval, 0, -1):
-                
-                    # Mostrar la línea primero
-                    sys.stdout.write(f"\rRun: {uptime} ({exec_duration:.0f}ms) | Cycles: {count} | Next: {i}/{interval}s... ")
+
+                    # Mostrar primero la línea de estado
+                    sys.stdout.write(
+                        f"\rRun: {uptime} ({min_exec_duration:.0f}/{exec_duration:.0f}/{max_exec_duration:.0f}ms)"
+                        f" | Cycles: {count} | Next: {i}/{interval}s... "
+                    )
                     sys.stdout.flush()
 
                     tick_start = time.time()
@@ -767,7 +785,6 @@ if __name__ == "__main__":
                             raise SystemExit
                         if time.time() - tick_start >= 1:
                             break
-
 
                 count += 1
         finally:
