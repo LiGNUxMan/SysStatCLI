@@ -1,3 +1,55 @@
+# Changelog - SysStatCLI v2.41.20250523k
+
+## 🇺🇸🇬🇧 English
+
+### Much of the get_lan_info (Lan) code has been rewritten.
+
+### The argument conditions have been optimized, with simpler and cleaner code.
+
+Ex: before:
+
+```python
+if not ("bar" in omit or "b" in omit or "barc" in omit or "bc" in omit):
+```
+
+Now:
+
+```python
+if {"bar", "b", "barc", "bc"}.isdisjoint(omit):
+```
+Much clearer and easier to maintain.
+
+### The colors have been changed to brighter and purer colors.
+
+### The status line has been given a "DIM" style, making it more subdued and separating the data displayed by the program from the program's data.
+
+---
+
+## 🇪🇸 Español
+
+### Se reescribió gran parte del código de get_lan_info (Lan).
+
+### Se optimizo los condicionantes de los argumentos, con un código mas sencillo y limpio.
+
+Ej: antes:
+
+```python
+if not ("bar" in omit or "b" in omit or "barc" in omit or "bc" in omit):
+```
+
+Ahora: 
+
+```python
+if {"bar", "b", "barc", "bc"}.isdisjoint(omit):
+```
+Mucho mas claro y facil de mantener.
+
+### Se cambiaron los colores por unos mas vividos y puros.
+
+### Se puso el estilo "DIM" al statusline. Para que sea mas tenue y que quede separado de los datos que muestra el programa con los datos del programa.
+
+---
+
 # Changelog - SysStatCLI v2.41.20250520h
 
 ## 🇺🇸🇬🇧 English
