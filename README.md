@@ -142,6 +142,19 @@ Configured colors:
 - **40 - 60°C** → 🟠 Orange
 - **> 60°C** → 🔴 Red
 
+### 💾 RAM usage:
+
+- < 75% → 🟢 Normal
+- 75–89% → 🟡 Moderate
+- ≥ 90% → 🔴 Critical
+
+### 📈 Load average:
+Colors based on system load level:
+
+- -3.0 → 🟢 Normal
+- 3.0 – 4.0 → 🟡 High load (75%+)
+- +4.0 → 🔴 Saturated (more processes than cores)
+
 ### 💾 Disk temperature:
 
 In my case, I have an **M.2 NVMe** disk and I get the temperature with the command psutil.sensors_temperatures / nvme (see script), you can also get it from the command:
@@ -156,9 +169,9 @@ Composite: +31.9°C
 
 Configured Colors:
 
-- **< 50°C** → 🟢 Normal
-- **50 - 70°C** → 🟡 Yellow
-- **> 70°C** → 🔴 Red
+- -50°C → 🟢 Normal
+- 50 - 70°C → 🟡 Yellow
+- +70°C → 🔴 Red
 
 ### 📶 WiFi Card Configuration:
 
@@ -170,15 +183,15 @@ If it's named differently, you'll need to modify the script accordingly.
 
 🎯 Wi-Fi Signal:
 
-70–100% → 🟢 Excellent
-40–69% → 🟡 Average
-0–39% → 🔴 Poor
+- 70–100% → 🟢 Excellent
+- 40–69% → 🟡 Average
+- 0–39% → 🔴 Poor
 
 🌡️ Wi-Fi Temperature:
 
-<50°C → 🟢 Average
-50–70°C → 🟡 Moderate
-70°C → 🔴 High
+- -50°C → 🟢 Average
+- 50–70°C → 🟡 Moderate
+- +70°C → 🔴 High
 
 ### 🔋 Battery:
 
@@ -393,6 +406,19 @@ Colores configurados:
 - **40 - 60°C** → 🟠 Naranja
 - **> 60°C** → 🔴 Rojo
 
+### 💾 RAM usage:
+
+- < 75% → 🟢 Normal
+- 75–89% → 🟡 Moderado
+- ≥ 90% → 🔴 Crítico
+
+### 📈 Load average:
+Colores según el nivel de saturación del sistema:
+
+- -3.0 → 🟢 Normal
+- 3.0 – 4.0 → 🟡 Carga alta (75%+)
+- +4.0 → 🔴 Saturado (más procesos que núcleos)
+
 ### 💾 Disk temperature:
 
 En mi caso, tengo un disco **M.2 NVMe** y obtengo la temperatura con el comando psutil.sensors_temperatures / nvme (ver script), tambien la puedes obtener del comando:
@@ -421,15 +447,15 @@ Si se llama diferente, tendrás que modificar el script en consecuencia.
 
 🎯 Señal WiFi:
 
-70–100% → 🟢 Excelente
-40–69% → 🟡 Media
-0–39% → 🔴 Mala
+- 70–100% → 🟢 Excelente
+- 40–69% → 🟡 Media
+- 0–39% → 🔴 Mala
 
 🌡️ Temperatura del WiFi:
 
-< 50°C → 🟢 Normal
-50–70°C → 🟡 Moderada
-70°C → 🔴 Alta
+- -50°C → 🟢 Normal
+- 50–70°C → 🟡 Moderada
+- +70°C → 🔴 Alta
 
 ### 🔋 Battery:
 
