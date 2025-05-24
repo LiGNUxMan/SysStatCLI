@@ -1,9 +1,7 @@
 # SysStatCLI (System Status CLI) v2.41.20250521j
-
+![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
-![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
-
 
 ![Captura de pantalla de 2025-05-21 11-31-12](https://github.com/user-attachments/assets/651b16f1-63b9-4f53-999e-590ac945e888)
 
@@ -263,9 +261,9 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 ---
 # SysStatCLI (System Status CLI) v2.41.20250521j
+![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
-![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 
 ![Captura de pantalla de 2025-05-21 11-31-12](https://github.com/user-attachments/assets/651b16f1-63b9-4f53-999e-590ac945e888)
 
