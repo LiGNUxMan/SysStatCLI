@@ -1,5 +1,10 @@
 # SysStatCLI (System Status CLI) v2.41.20250521j
 
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![License](https://img.shields.io/badge/License-GPLv3-green)
+![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
+
+
 ![Captura de pantalla de 2025-05-21 11-31-12](https://github.com/user-attachments/assets/651b16f1-63b9-4f53-999e-590ac945e888)
 
 ## 🇺🇸🇬🇧 English
@@ -26,11 +31,21 @@
 - **Autorun**: Can run continuously at a frequency determined by the user.
 - **Script information**: Execution time, execution speed, completed loops or cycles, and time to next exercise.
 
+## 🗣️ Why use SysStatCLI?
+
+Because it's simple, lightweight, and gives you all the information you need without leaving the console. Ideal for modest rigs, headless servers, or total control freaks.
+
 ## Installation and Use
 
 ### Requirements
 - Python 3.x
 - Linux with support for `psutil`, `iwconfig`, `sensors`, and `/proc/`
+
+### 📏 80x24 Support
+
+🖥️ Optimized Layout for Classic 80x24 Terminals
+
+SysStatCLI is carefully designed to fit perfectly on standard terminals (80 columns x 24 rows), without unnecessary scrolling or wasted lines.
 
 ### 🚀 Run
 
@@ -151,6 +166,18 @@ iwconfig
 ```
 If it's named differently, you'll need to modify the script accordingly.
 
+🎯 Wi-Fi Signal:
+
+70–100% → 🟢 Excellent
+40–69% → 🟡 Average
+0–39% → 🔴 Poor
+
+🌡️ Wi-Fi Temperature:
+
+<50°C → 🟢 Average
+50–70°C → 🟡 Moderate
+70°C → 🔴 High
+
 ### 🔋 Battery:
 
 The battery data in my case is located at:
@@ -221,6 +248,9 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 ---
 # SysStatCLI (System Status CLI) v2.41.20250521j
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![License](https://img.shields.io/badge/License-GPLv3-green)
+![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 
 ![Captura de pantalla de 2025-05-21 11-31-12](https://github.com/user-attachments/assets/651b16f1-63b9-4f53-999e-590ac945e888)
 
@@ -248,11 +278,21 @@ Compile the script into an executable so that it runs without the need for Pytho
 - **Ejecución automática**: Puede ejecutarse en modo continuo con una frecuencia determinada por el usuario.
 - **Información del script**: Tiempo de ejecución, velocidad de ejecución, bucles o ciclos completados y tiempo para la próxima ejercicio.
 
+## 🗣️ ¿Por qué usar SysStatCLI?
+
+Porque es simple, liviano, y te da toda la información que necesitás sin salir de la consola. Ideal para equipos modestos, servidores headless o fanáticos del control total.
+
 ## Instalación y Uso
 
 ### Requisitos
 - Python 3.x
 - Linux con soporte para `psutil`, `iwconfig`, `sensors` y `/proc/`
+
+### 📏 Compatibilidad con 80x24
+
+🖥️ Diseño optimizado para terminales clásicas de 80x24
+
+SysStatCLI está cuidadosamente construido para caber perfectamente en terminales estándar (80 columnas x 24 filas), sin scroll innecesario ni líneas desperdiciadas.
 
 ### 🚀 Ejecución
 
@@ -374,6 +414,18 @@ En mi PC, el dispositivo WiFi se llama **"wlp3s0"**. Para obtener su nombre en t
 iwconfig
 ```
 Si se llama diferente, tendrás que modificar el script en consecuencia.
+
+🎯 Señal WiFi:
+
+70–100% → 🟢 Excelente
+40–69% → 🟡 Media
+0–39% → 🔴 Mala
+
+🌡️ Temperatura del WiFi:
+
+< 50°C → 🟢 Normal
+50–70°C → 🟡 Moderada
+70°C → 🔴 Alta
 
 ### 🔋 Battery:
 
