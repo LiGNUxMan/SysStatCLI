@@ -1,4 +1,4 @@
-Changelog - SysStatCLI v2.41.20250523l
+Changelog - SysStatCLI v2.41.20250525l
 
 Se soluciono problema en get_lan_info (Lan).
 
