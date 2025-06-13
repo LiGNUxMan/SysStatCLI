@@ -3,11 +3,11 @@
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
 
-![Captura de pantalla de 2025-05-25 23-58-53](https://github.com/user-attachments/assets/eb97f629-2467-4775-b015-799327e2b4e0)
+## 🇺🇸🇬🇧 English
+
+![Captura de pantalla de 2025-06-13 10-47-10](https://github.com/user-attachments/assets/eddccd0a-86d4-4e5b-90a7-a9f5dcc0bbfa)
 
 <sub>This screenshot shows all active modules: CPU, RAM, Disk, Network (LAN/WiFi), Temperatures, Battery, and Status Line. All on screen, no scrolling required, and optimized for 80x24 resolution devices.</small>
-
-## 🇺🇸🇬🇧 English
 
 ## Description
 
@@ -265,11 +265,11 @@ Compile the script into an executable so that it runs without the need for Pytho
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
 
-![Captura de pantalla de 2025-05-25 23-58-53](https://github.com/user-attachments/assets/eb97f629-2467-4775-b015-799327e2b4e0)
+## 🇪🇸 Español
+
+![Captura de pantalla de 2025-06-13 10-47-10](https://github.com/user-attachments/assets/eddccd0a-86d4-4e5b-90a7-a9f5dcc0bbfa)
 
 <sub>Esta captura muestra todos los módulos activos: CPU, RAM, Disco, Red (LAN/WiFi), Temperaturas, Batería y línea de estado. Todo en pantalla, sin necesidad de scroll y optimizado para terminales de 80x24.</small>
-
-## 🇪🇸 Español
 
 ## Descripción
 
