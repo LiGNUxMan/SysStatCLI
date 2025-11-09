@@ -1,17 +1,19 @@
-# SysStatCLI (System Status CLI) v2.41.20250525l
+# SysStatCLI (System Status CLI) Version 2.43.20251108a
 ![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
 
 ## 🇺🇸🇬🇧 English
 
-![Captura de pantalla de 2025-06-13 10-47-10](https://github.com/user-attachments/assets/eddccd0a-86d4-4e5b-90a7-a9f5dcc0bbfa)
+<img width="654" height="466" alt="Captura de pantalla de 2025-11-09 10-30-38" src="https://github.com/user-attachments/assets/1feb922f-9da9-4044-ab1c-2f65460edfe0" />
 
 <sub>This screenshot shows all active modules: CPU, RAM, Disk, Network (LAN/WiFi), Temperatures, Battery, and Status Line. All on screen, no scrolling required, and optimized for 80x24 resolution devices.</small>
 
 ## Description
 
 **SysStatCLI** is a command-line tool written in Python for real-time system status monitoring in Linux. It provides detailed information on CPU usage, RAM, disk temperature, and Wi-Fi, among other parameters, in a visually organized and color-coded manner for easy interpretation.
+
+Current version 2.43.20251108a: Added descriptive icons for each parameter and automatic Unicode detection (disables emojis on devices that don't support them), improvements to the status bar, and various other adjustments.
 
 ## Features
 
@@ -79,6 +81,7 @@ python3 sysstatcli.py [time] [options]
 |               | `-bard`, `-bd`          | Omit the Disk bar                        |
 |               | `-barw`, `-bw`          | Omit the WIFI bar                        |
 |               | `-bara`, `-bt`          | Omit the Battery bar                     |
+| Icons         | `-icon`, `-i`           | Omits descriptive icons                  |
 | Help          | `-help`, `-h`, `--help` | Show help and exit                       |
 
 ---
@@ -104,6 +107,11 @@ python3 sysstatcli.py -ram -wifi
 python3 sysstatcli.py -s -b 10
 ```
 > Runs every 10 seconds, ignoring system and battery data.
+
+```bash
+python3 sysstatcli.py -i 60
+```
+> Runs every 60 seconds, omitting descriptive icons.
 
 ## 🆘 Help
 
@@ -187,9 +195,10 @@ If it's named differently, you'll need to modify the script accordingly.
 
 🌡️ Wi-Fi Temperature:
 
-- -50°C → 🟢 Average
-- 50–70°C → 🟡 Moderate
-- +70°C → 🔴 High
+- 75–100% → 🟢 Excellent
+- 50–74% → 🟡 Good
+- 50–26% → 🟠 Fair
+- 25–0% → 🔴 Poor
 
 ### 🔋 Battery:
 
@@ -260,20 +269,22 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 
 ---
-# SysStatCLI (System Status CLI) v2.41.20250525l
+# SysStatCLI (System Status CLI) Version 2.43.20251108a
 ![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
 
 ## 🇪🇸 Español
 
-![Captura de pantalla de 2025-06-13 10-47-10](https://github.com/user-attachments/assets/eddccd0a-86d4-4e5b-90a7-a9f5dcc0bbfa)
+<img width="654" height="466" alt="Captura de pantalla de 2025-11-09 10-30-38" src="https://github.com/user-attachments/assets/7e1a135d-d06e-483d-a746-1d12fdb1bfe2" />
 
 <sub>Esta captura muestra todos los módulos activos: CPU, RAM, Disco, Red (LAN/WiFi), Temperaturas, Batería y línea de estado. Todo en pantalla, sin necesidad de scroll y optimizado para terminales de 80x24.</small>
 
 ## Descripción
 
 **SysStatCLI** es una herramienta de línea de comandos escrita en Python para monitorear en tiempo real el estado del sistema en Linux. Proporciona información detallada sobre el uso del CPU, memoria RAM, temperatura del disco y WiFi, entre otros parámetros, de una forma visualmente organizada y con colores para facilitar la interpretación de los datos.
+
+Actual versión 2.43.20251108a: Se agregaron iconos descriptivos en cada parametro y detección automática de Unicode (desactiva emojis en terminales que no los soportan), mejoras en la línea de estado y ajustes varios.
 
 ## Características
 
@@ -341,6 +352,7 @@ python3 sysstatcli.py [tiempo] [opciones]
 |               | `-bard`, `-bd`          | Omite la barra de Disco                           |
 |               | `-barw`, `-bw`          | Omite la barra de WiFi                            |
 |               | `-bara`, `-bt`          | Omite la barra de bateria                         |
+| Iconos        | `-icon`, `-i`           | Omite los iconos descrptivos                      |
 | Ayuda         | `-help`, `-h`, `--help` | Muestra la ayuda y sale                           |
 
 ---
@@ -366,6 +378,11 @@ python3 sysstatcli.py -ram -wifi
 python3 sysstatcli.py -s -b 10
 ```
 > Ejecuta cada 10 segundos, omitiendo datos del sistema y batería.
+
+```bash
+python3 sysstatcli.py -i 60
+```
+> Ejecuta cada 60 segundos, omitiendo iconos descriptivos.
 
 ## 🆘 Ayuda
 
@@ -445,9 +462,10 @@ Si se llama diferente, tendrás que modificar el script en consecuencia.
 
 🎯 Señal WiFi:
 
-- 70–100% → 🟢 Excelente
-- 40–69% → 🟡 Media
-- 0–39% → 🔴 Mala
+- 75–100% → 🟢 Excelente
+- 50-74% → 🟡 Buena
+- 50–26% → 🟠 Regular
+- 25–0% → 🔴 Mala
 
 🌡️ Temperatura del WiFi:
 
