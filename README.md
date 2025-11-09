@@ -213,28 +213,30 @@ In your case, it could be in **BAT1** or another location. Check and adjust as n
 
 ### Sample Output
 
-![Captura de pantalla de 2025-05-10 01-00-18](https://github.com/user-attachments/assets/dcfbb937-0d02-40cb-9eaf-5d6a0f0f2bb9)
+<img width="654" height="466" alt="Captura de pantalla de 2025-11-09 10-30-38" src="https://github.com/user-attachments/assets/f45005f2-b676-4112-a42b-7e23139c23d2" />
 
 ```
-OS: Linux Mint 22.1 - Kernel version: 6.11.0-25-generic
-Hostname: hal9001c - User: axel
-Uptime: 7 days, 14:02:47 - Time and date: 00:59:42 10/05/2025
-CPU used: 8% (CPU0: 9% - CPU1: 7% - CPU2: 8% - CPU3: 6%)
-██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-CPU frequency: 0.90GHz - Scaling governor: powersave
-CPU temperature: 36°C
-RAM used: 41% (6.33GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
-█████████████░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-Processes: 281 (run=1, sleep=212, idle=68, stop=0, zombie=0, other=0)
-Load average: 0.65 0.71 0.61
-Disk used: 43% (202.07GB / 467.91GB) - Read: 0.00MB/s - Write: 0.08MB/s
-█████████████░░░░░░░░░░░░░░░░░░░
-Disk temperature: 32°C
-WIFI IP: 192.168.0.208 - SSID: OBRIEN 5
-WIFI signal: 58% - Speed: 234.0Mb/s - Down: 0.00MB/s - Up: 0.00MB/s
-██████████████████░░░░░░░░░░░░░░
-WIFI temperature: 40°C
-Run: 00:51:04 (0.080s) / Cycles: 52 / Next in 25/60 seconds...
+🐧 OS: Linux Mint 22.2 - ⚙️ Kernel version: 6.14.0-35-generic
+🏠 Hostname: hal9001c - 👤 User: axel
+⏱️ Uptime: 2 days, 1:00:40 - 🕒 Time and date: 10:30:27 09/11/2025
+🤖 CPU used: 8% (CPU0: 8% - CPU1: 8% - CPU2: 8% - CPU3: 7%)
+   ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+⚡  CPU frequency: 1.00GHz - 🎚️ Scaling governor: powersave
+🌡️ CPU temperature: 25°C
+🧮 RAM used: 31% (4.80GB / 15.50GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
+   █████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+🧩 Processes: 258 (run=2, sleep=190, idle=66, stop=0, zombie=0, other=0)
+📊 Load average: 0.46 0.91 1.58
+🗄️ Disk used: 47% (222.05GB / 467.91GB) - Read: 0.36MB/s - Write: 0.08MB/s
+   ███████████████░░░░░░░░░░░░░░░░░
+🌡️ Disk temperature: 29°C
+📶 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
+📡 WiFi signal: 62% - Speed: 292.6Mb/s - Down: 0.00MB/s - Up: 0.00MB/s
+   ███████████████████░░░░░░░░░░░░░
+🌡️ WiFi temperature: 28°C
+🔋 Battery: 24% - Time: 0h 40m - Mode: Discharging
+   ███████░░░░░░░░░░░░░░░░░░░░░░░░░
+🔁 Run: 1 day, 0:11:43 (39/86/256ms) | Cycles: 531 | 16.34MB | Next: 49/60s
 ```
 
 ## Contributions
@@ -486,28 +488,30 @@ En tu caso, podría estar en **BAT1** u otra ubicación. Verifica y ajusta segú
 
 ### Ejemplo de salida
 
-![Captura de pantalla de 2025-05-10 01-00-18](https://github.com/user-attachments/assets/e39e1d79-0d9c-4f93-9718-871ea2ebd2b6)
+<img width="654" height="466" alt="Captura de pantalla de 2025-11-09 10-30-38" src="https://github.com/user-attachments/assets/4fa5ac41-d3fc-4770-a353-c62697cca6ad" />
 
 ```
-OS: Linux Mint 22.1 - Kernel version: 6.11.0-25-generic
-Hostname: hal9001c - User: axel
-Uptime: 7 days, 14:02:47 - Time and date: 00:59:42 10/05/2025
-CPU used: 8% (CPU0: 9% - CPU1: 7% - CPU2: 8% - CPU3: 6%)
-██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-CPU frequency: 0.90GHz - Scaling governor: powersave
-CPU temperature: 36°C
-RAM used: 41% (6.33GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
-█████████████░░░░░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-Processes: 281 (run=1, sleep=212, idle=68, stop=0, zombie=0, other=0)
-Load average: 0.65 0.71 0.61
-Disk used: 43% (202.07GB / 467.91GB) - Read: 0.00MB/s - Write: 0.08MB/s
-█████████████░░░░░░░░░░░░░░░░░░░
-Disk temperature: 32°C
-WIFI IP: 192.168.0.208 - SSID: OBRIEN 5
-WIFI signal: 58% - Speed: 234.0Mb/s - Down: 0.00MB/s - Up: 0.00MB/s
-██████████████████░░░░░░░░░░░░░░
-WIFI temperature: 40°C
-Run: 00:51:04 (0.080s) / Cycles: 52 / Next in 25/60 seconds...
+🐧 OS: Linux Mint 22.2 - ⚙️ Kernel version: 6.14.0-35-generic
+🏠 Hostname: hal9001c - 👤 User: axel
+⏱️ Uptime: 2 days, 1:00:40 - 🕒 Time and date: 10:30:27 09/11/2025
+🤖 CPU used: 8% (CPU0: 8% - CPU1: 8% - CPU2: 8% - CPU3: 7%)
+   ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+⚡  CPU frequency: 1.00GHz - 🎚️ Scaling governor: powersave
+🌡️ CPU temperature: 25°C
+🧮 RAM used: 31% (4.80GB / 15.50GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
+   █████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+🧩 Processes: 258 (run=2, sleep=190, idle=66, stop=0, zombie=0, other=0)
+📊 Load average: 0.46 0.91 1.58
+🗄️ Disk used: 47% (222.05GB / 467.91GB) - Read: 0.36MB/s - Write: 0.08MB/s
+   ███████████████░░░░░░░░░░░░░░░░░
+🌡️ Disk temperature: 29°C
+📶 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
+📡 WiFi signal: 62% - Speed: 292.6Mb/s - Down: 0.00MB/s - Up: 0.00MB/s
+   ███████████████████░░░░░░░░░░░░░
+🌡️ WiFi temperature: 28°C
+🔋 Battery: 24% - Time: 0h 40m - Mode: Discharging
+   ███████░░░░░░░░░░░░░░░░░░░░░░░░░
+🔁 Run: 1 day, 0:11:43 (39/86/256ms) | Cycles: 531 | 16.34MB | Next: 49/60s
 ```
 
 ## Contribuciones
