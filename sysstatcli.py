@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 2.41.20250525l
+# SysStatCLI (System Status CLI) Version 2.43.20251108a
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
 # axel@hal9001c:~$ python3 ~/Aplicaciones/sysstatcli.py
+#
+# 
+# Nota: En Linux Mint 22.2 (y también en Ubuntu recientes) ya no se instala el comando iw por defecto. Instalar con; sudo apt install iw
 # 
 # 
 # OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
@@ -28,7 +31,7 @@
 # WIFI temperature: 42°C
 # Battery: 35% - Time: 1h 6m 4s - Mode: Discharging
 # ███████████░░░░░░░░░░░░░░░░░░░░░
-# # Run: 3 days, 4:52:51 (67ms) | Cycles: 1313 | Next: 10/60s...
+# Run: 3 days, 4:52:51 (67ms) | Cycles: 1313 | 15.48MB | Next: 10/60s...
 # 
 #
 
@@ -43,61 +46,109 @@ import socket
 import subprocess
 import sys
 import time
-from datetime import timedelta # Linea agregada para el uptime
+from datetime import timedelta  # Línea agregada para el uptime
 
-# Letra normal, bold, amarilla y roja
+# =====================================================================
+# Colores y estilos ANSI
+# =====================================================================
 RESET      = "\033[0m"
-
 BOLD       = "\033[1m"
 DIM        = "\033[2m"
-ITALIC     = "\033[3m"
-UNDERLINE  = "\033[4m"
 
+if os.environ.get("TERM", "") in ("linux", "dumb"):
+    ITALIC = "\033[2m"  # En terminales simples, usamos DIM como alternativa
+else:
+    ITALIC = "\033[3m"
+
+UNDERLINE  = "\033[4m"
 # GREEN = "\033[32m"
-GREEN = "\033[92m"
+GREEN      = "\033[92m"
 # ORANGE = "\033[38;5;202m" # Naranja rojizo
-ORANGE = "\033[38;5;208m" # Naranja fuerte
+ORANGE     = "\033[38;5;208m"  # Naranja fuerte
 # ORANGE = "\033[38;5;214m" # Naranja más claro
 # YELLOW = "\033[33m"
 YELLOW     = "\033[93m"
 # RED = "\033[31m"
 RED        = "\033[91m"
+LIGHT_GRAY = "\033[37m"
 
-LIGHT_GRAY = "\033[37m"  # Blanco/gris claro
+# =====================================================================
+# Función para detectar soporte Unicode en la terminal
+# =====================================================================
+def terminal_supports_unicode() -> bool:
+    """
+    Devuelve True si la terminal soporta Unicode.
+    Si no, fuerza el modo sin íconos (-i).
+    """
+    term = os.environ.get("TERM", "").lower()
+    encoding = (sys.stdout.encoding or "").lower()
 
-# Argumentos para omitir funciones (ej: -cpu -ram -wifi)
+    # Terminales que casi nunca soportan Unicode
+    if any(x in term for x in ["linux", "vt100", "xterm-color", "dumb", "ansi"]):
+        return False
+
+    # Codificaciones que no son UTF
+    if not encoding.startswith("utf"):
+        return False
+
+    # Intentar una prueba real de escritura
+    try:
+        sys.stdout.write("🔁")
+        sys.stdout.flush()
+        # Borrar el símbolo impreso
+        sys.stdout.write("\r\033[K")
+        sys.stdout.flush()
+        return True
+    except Exception:
+        return False
+
+# =====================================================================
+# Procesar argumentos
+# =====================================================================
 omit = set(arg[1:].lower() for arg in sys.argv[1:] if arg.startswith("-"))
 
-# Buscar si hay un número entre los argumentos para guardarlo en la variable "interval" que sera cada cuanto se repite el script
+# Buscar si hay un número entre los argumentos (intervalo en segundos)
 interval = 0
 for arg in sys.argv[1:]:
     if arg.isdigit():
         interval = int(arg)
-        break  # Solo tomamos el primer número encontrad
+        break  # Solo tomamos el primer número encontrado
 
-# Argumentos válidos para omitir secciones o pedir ayuda
-valid_args = {"sys", "s", "host", "o", "up", "u", "cpu", "c", "ram", "r", "proc", "p", "load", "l", "disk", "d", "lan", "a", "wifi", "w", "bat", "t", "help", "h", "bar", "b", "barc", "bc", "barr", "br", "bard", "bd", "barw", "bw", "bart", "bt"}
+# Argumentos válidos
+valid_args = {
+    "sys", "s", "host", "o", "up", "u", "cpu", "c", "ram", "r",
+    "proc", "p", "load", "l", "disk", "d", "lan", "a", "wifi", "w",
+    "bat", "t", "help", "h",
+    "bar", "b", "barc", "bc", "barr", "br", "bard", "bd",
+    "barw", "bw", "bart", "bt",
+    "i", "icon"
+}
 
 # Detectar argumentos inválidos
 for arg in sys.argv[1:]:
-    # Si es un número, lo aceptamos
     if arg.isdigit():
         continue
-    # Si empieza con "-" y no es válido, error
     if arg.startswith("-") and arg[1:].lower() not in valid_args:
         print(f"\nArgumento no válido: {BOLD}{arg}{RESET}")
         print("Usá -h, -help o --help para ver las opciones disponibles.\n")
         sys.exit(1)
-    # Si NO empieza con "-" y NO es un número, también es inválido
     if not arg.startswith("-") and not arg.isdigit():
         print(f"\nArgumento no válido: {BOLD}{arg}{RESET}")
         print("Usá -h, -help o --help para ver las opciones disponibles.\n")
         sys.exit(1)
 
-# HELP O AYUDA: sysstatcli.py -help
-# if any(arg in help_flags for arg in sys.argv):
+# =====================================================================
+# Detección automática de soporte Unicode
+# =====================================================================
+if not terminal_supports_unicode():
+    # Si la terminal no soporta Unicode, actuamos como si el usuario hubiera pasado -i
+    omit.update({"i", "icon"})
+
+# =====================================================================
+# HELP / AYUDA
+# =====================================================================
 if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
-    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version 2.41.20250521j
+    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version 2.43.20251108a
 
 {BOLD}Repositorio:{RESET} {UNDERLINE}https://github.com/LiGNUxMan/SysStatCLI{RESET}
     
@@ -107,38 +158,40 @@ if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
 {BOLD}Uso:{RESET}
   python3 sysstatcli.py [tiempo] [opciones]
   
-{BOLD}Tiempo:{RESET} Segundos que se repetira el script en bucle. Si se omite o es 0, se ejecuta una sola vez
-  Durante la ejecución, puede presionar {BOLD}Q{RESET} o {BOLD}X{RESET} para salir
+{BOLD}Tiempo:{RESET} Segundos que se repetirá el script en bucle. Si se omite o es 0, se ejecuta una sola vez.
+  Durante la ejecución, puede presionar {BOLD}Q{RESET} o {BOLD}X{RESET} para salir.
 
 {BOLD}Opciones:{RESET} Argumentos disponibles para omitir secciones:
-  -sys,  -s → Nombre del sistema operativo y version del kernel
-  -host, -o → Nombre de la computadora y el usuario
-  -up,   -u → Tiempo de actividad y hora y dia del sistema
-  -cpu,  -c → Uso, frecuencia, modo y temperatura del CPU
-  -ram,  -r → Uso de memoria RAM y SWAP
-  -proc, -p → Procesos y sus estados
-  -load, -l → Carga del sistema
-  -disk, -d → Uso y temperatura del disco
-  -lan,  -a → Red cableada
-  -wifi, -w → Red WiFi y temperatura
-  -bat,  -t → Batería
-  -bar,  -b → Omite todas las barras
+  -{BOLD}s{RESET}ys,  -s → Nombre del sistema operativo y versión del kernel
+  -h{BOLD}o{RESET}st, -o → Nombre de la computadora y el usuario
+  -{BOLD}u{RESET}p,   -u → Tiempo de actividad, hora y día del sistema
+  -{BOLD}c{RESET}pu,  -c → Uso, frecuencia, modo y temperatura del CPU
+  -{BOLD}r{RESET}am,  -r → Uso de memoria RAM y SWAP
+  -{BOLD}p{RESET}roc, -p → Procesos y sus estados
+  -{BOLD}l{RESET}oad, -l → Carga del sistema
+  -{BOLD}d{RESET}isk, -d → Uso y temperatura del disco
+  -l{BOLD}a{RESET}n,  -a → Red cableada
+  -{BOLD}w{RESET}ifi, -w → Red WiFi y temperatura
+  -ba{BOLD}t{RESET},  -t → Batería
+  -{BOLD}b{RESET}ar,  -b → Omite todas las barras
     -barc, -bc → Omite la barra de CPU
     -barr, -br → Omite la barra de RAM
-    -bard, -bd → Omite la barra de Disk
+    -bard, -bd → Omite la barra de Disco
     -barw, -bw → Omite la barra de WiFi
-    -bara, -bt → Omite la barra de Battery
+    -bart, -bt → Omite la barra de Batería
+  -{BOLD}i{RESET}con, -i → Oculta los íconos decorativos (se muestran por defecto si la terminal los soporta)
 
 {BOLD}Ejemplos:{RESET}
   python3 sysstatcli.py            → Ejecuta una sola vez
   python3 sysstatcli.py 60         → Ejecuta cada 60 segundos
   python3 sysstatcli.py -ram -wifi → Ejecuta una sola vez, omitiendo RAM y WiFi
-  python3 sysstatcli.py -s -b  10  → Ejecuta cada 10s, omitiendo datos del sistema y bateria
+  python3 sysstatcli.py -s -b 10   → Ejecuta cada 10s, omitiendo datos del sistema y todas las barras
 
 {BOLD}Ayuda:{RESET}
   -help, --help, -h → Muestra este mensaje y sale
 """)
     sys.exit(0)
+
 
 # Variables globales inicializacion
 # Se toman estos valores al comienzo de scrpt porque luego seran tomados nuevamente para hacer comparativas
@@ -168,7 +221,7 @@ def barra_progreso(valor, total=100, ancho=32, color=RESET):
     barra = "█" * bloques_llenos + "░" * (ancho - bloques_llenos) # barra = "█" * bloques_llenos + " " * (ancho - bloques_llenos) ▁▂▃▄▅▆▇█ ░▒▓█
     return f"{color}{barra}{RESET}" # return f"{color}[{barra}]{RESET}" # return f"{color}▕{barra}▏{RESET}" # return f"{color}[{barra}]{RESET}"
 
-# OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
+# 🐧 OS: Linux Mint 22.1 - ⚙️  Kernel version: 6.11.0-19-generic
 def get_system_info():
     """Obtiene el nombre del sistema operativo y la versión del kernel y los imprime."""
     try:
@@ -187,25 +240,38 @@ def get_system_info():
     with open("/proc/sys/kernel/osrelease") as f:
         kernel_version = f.read().strip()
 
-    print(f"OS: {BOLD}{os_name}{RESET} - Kernel version: {BOLD}{kernel_version}{RESET}")
+#     print(f"🐧 OS: {BOLD}{os_name}{RESET} - ⚙️  Kernel version: {BOLD}{kernel_version}{RESET}")
 
-# Hostname: hal9001c - User: axel
+    if {"icon", "i"}.isdisjoint(omit):
+        print(f"🐧 OS: {BOLD}{os_name}{RESET} - ⚙️  Kernel version: {BOLD}{kernel_version}{RESET}")
+    else:
+        print(f"OS: {BOLD}{os_name}{RESET} - Kernel version: {BOLD}{kernel_version}{RESET}")
+
+
+# 🏠 Hostname: hal9001c - User: axel
 def get_host_user_info():
     hostname = socket.gethostname()
     username = os.getlogin()
 
-    print(f"Hostname: {BOLD}{hostname}{RESET} - User: {BOLD}{username}{RESET}")
+    if {"icon", "i"}.isdisjoint(omit):
+        print(f"🏠 Hostname: {BOLD}{hostname}{RESET} - 👤 User: {BOLD}{username}{RESET}")
+    else:
+       print(f"Hostname: {BOLD}{hostname}{RESET} - User: {BOLD}{username}{RESET}") 
 
-# Uptime: 1 day, 3:37:09 - Time and date: 15:14:25 13/03/2025
+# ⏱️ Uptime: 1 day, 3:37:09 - 🕒 Time and date: 15:14:25 13/03/2025
 def get_uptime_and_time():
     """Obtiene el uptime desde /proc/uptime, hora y fecha y los imprime."""
     uptime_seconds = time.time() - psutil.boot_time() # Linea agregada para el uptime de mem_info3_root
     uptime_str = str(timedelta(seconds=int(uptime_seconds))) # Linea agregada para el uptime de mem_info3_root
     current_time = time.strftime("%H:%M:%S %d/%m/%Y")
-    print(f"Uptime: {BOLD}{uptime_str}{RESET} - Time and date: {BOLD}{current_time}{RESET}")
 
-# CPU used: 39% (CPU0: 38% - CPU1: 36% - CPU2: 41% - CPU3: 40%)
-# ████████████░░░░░░░░░░░░░░░░░░░░
+    if {"icon", "i"}.isdisjoint(omit):
+        print(f"⏱️  Uptime: {BOLD}{uptime_str}{RESET} - 🕒 Time and date: {BOLD}{current_time}{RESET}")
+    else:
+        print(f"Uptime: {BOLD}{uptime_str}{RESET} - Time and date: {BOLD}{current_time}{RESET}")
+
+# 🤖 CPU used: 39% (CPU0: 38% - CPU1: 36% - CPU2: 41% - CPU3: 40%)
+#    ████████████░░░░░░░░░░░░░░░░░░░░
 def get_cpu_usage():
     global cpu_times_start, cpu_time_start
 
@@ -217,11 +283,11 @@ def get_cpu_usage():
 #        return
   
     def get_colored_usage(usage):
-        if usage < 33:
+        if usage <= 33:  # cambiamos de <33 a <=33
             color = RESET
-        elif usage < 66:
+        elif usage <= 66:
             color = YELLOW
-        elif usage < 99:
+        elif usage <= 99:
             color = ORANGE
         else:
             color = RED
@@ -239,16 +305,22 @@ def get_cpu_usage():
 
     uso_nucleos_str = " - ".join([f"{ITALIC}CPU{i}{RESET}: {get_colored_usage(uso)[0]}" for i, uso in enumerate(uso_nucleos)])
 
-    print(f"CPU used: {uso_promedio_str} ({uso_nucleos_str})")
+    if {"icon", "i"}.isdisjoint(omit):
+        print(f"🤖 CPU used: {uso_promedio_str} ({uso_nucleos_str})")
+    else:
+        print(f"CPU used: {uso_promedio_str} ({uso_nucleos_str})")
     
     if {"bar", "b", "barc", "bc"}.isdisjoint(omit):
-        print(barra_progreso(promedio_uso, color=color_barra))
+        if {"icon", "i"}.isdisjoint(omit):
+            print("   " + barra_progreso(promedio_uso, color=color_barra))
+        else:
+            print(barra_progreso(promedio_uso, color=color_barra))
 
     # Actualizar para la siguiente lectura
     cpu_times_start = cpu_times_current
     cpu_time_start = cpu_time_current
  
-# CPU frequency: 0.8GHz - Scaling governor: powersave
+# ⚡ CPU frequency: 0.8GHz - 🎚️ Scaling governor: powersave
 def get_cpu_frequency():
     """Obtiene la frecuencia del CPU y el scaling_governor y los imprime con colores según el nivel de uso."""
     try:
@@ -271,11 +343,18 @@ def get_cpu_frequency():
         elif cur_freq > 0.8: # elif cur_freq > min_freq:
             color = YELLOW
         
-        print(f"CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
-    except FileNotFoundError:
-        print(f"CPU frequency: {RED}{BOLD}Unknown{RESET} - Scaling governor: {BOLD}{scaling_governor}{RESET}")
+        if {"icon", "i"}.isdisjoint(omit):
+             print(f"⚡ CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - 🎚️  Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
+        else:
+             print(f"CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
 
-# CPU temperature: 39°C
+    except FileNotFoundError:
+        if {"icon", "i"}.isdisjoint(omit):
+             print(f"⚡ CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - 🎚️  Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
+        else:
+             print(f"CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
+
+# 🌡️ CPU temperature: 39°C
 def get_cpu_temperature():
     """Obtiene la temperatura del CPU usando psutil, con fallback a "/sys/class/thermal/thermal_zone0/temp"."""
     try:
@@ -289,13 +368,20 @@ def get_cpu_temperature():
             color = ORANGE
         elif temp > 35:
             color = YELLOW
-        
-        print(f"CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
-    except Exception:
-        print(f"CPU temperature: {RED}{BOLD}Unknown{RESET}")
 
-# RAM used: 39% (6.01GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
-# ████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        if {"icon", "i"}.isdisjoint(omit):
+             print(f"🌡️  CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
+        else:
+             print(f"CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
+
+    except Exception:
+        if {"icon", "i"}.isdisjoint(omit):
+             print(f"🌡️  CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
+        else:
+             print(f"CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
+
+# 🧮 RAM used: 39% (6.01GB / 15.49GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
+#    ████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 def get_memory_usage():
     """Obtiene el uso de RAM y Swap y los imprime con colores según el nivel de uso."""
 
@@ -342,8 +428,13 @@ def get_memory_usage():
     swap_color, swap_colored = color_usage(swap_percent)
 
     # Salida principal
-    print(f"RAM used: {BOLD}{mem_colored}{RESET} ({BOLD}{mem_used:.2f}GB / {mem_total:.2f}GB{RESET}) - "
-          f"Swap used: {BOLD}{swap_colored}{RESET} ({BOLD}{swap_used:.2f}GB / {swap_total:.2f}GB{RESET})")
+
+    if {"icon", "i"}.isdisjoint(omit):
+        print(f"🧮 RAM used: {BOLD}{mem_colored}{RESET} ({BOLD}{mem_used:.2f}GB / {mem_total:.2f}GB{RESET}) - "
+            f"💾 Swap used: {BOLD}{swap_colored}{RESET} ({BOLD}{swap_used:.2f}GB / {swap_total:.2f}GB{RESET})")
+    else:
+        print(f"RAM used: {BOLD}{mem_colored}{RESET} ({BOLD}{mem_used:.2f}GB / {mem_total:.2f}GB{RESET}) - "
+            f"Swap used: {BOLD}{swap_colored}{RESET} ({BOLD}{swap_used:.2f}GB / {swap_total:.2f}GB{RESET})")
 
     # Barra personalizada para RAM
     if {"bar", "b", "barr", "br"}.isdisjoint(omit):
@@ -362,9 +453,13 @@ def get_memory_usage():
 
         barra_ram = barra_memoria(apps_ratio, sys_ratio, free_ratio)
         barra_swap = barra_progreso(swap_percent, color=swap_color)
-        print(f"{barra_ram} - {barra_swap}")
 
-# Processes: 265 (running=1, sleeping=199, idle=65, stopped=0, zombie=0, other=0)
+        if {"icon", "i"}.isdisjoint(omit):
+             print(f"   {barra_ram} - {barra_swap}")
+        else:
+            print(f"{barra_ram} - {barra_swap}")
+
+# 🧩 Processes: 265 (running=1, sleeping=199, idle=65, stopped=0, zombie=0, other=0)
 def get_process_count():
     """Obtiene la cantidad total de procesos y el desglose por estados y los imprime."""
     try:
@@ -391,24 +486,40 @@ def get_process_count():
                             process_states["idle"] += 1
                         else:
                             process_states["other"] += 1
+
                 except (FileNotFoundError, ProcessLookupError):
                     continue  # El proceso desapareció antes de que lo leyéramos
                 except Exception as e:
                     # Podés imprimir esto en modo debug si querés más info
                     # print(f"Error procesando PID {pid}: {e}")
                     continue
-        print(f"Processes: {BOLD}{total_processes}{RESET} "
+
+        if {"icon", "i"}.isdisjoint(omit):
+            print(f"🧩 Processes: {BOLD}{total_processes}{RESET} "
               f"({ITALIC}run{RESET}={BOLD}{process_states['running']}{RESET}, "
               f"{ITALIC}sleep{RESET}={BOLD}{process_states['sleeping']}{RESET}, "
               f"{ITALIC}idle{RESET}={BOLD}{process_states['idle']}{RESET}, "
               f"{ITALIC}stop{RESET}={BOLD}{process_states['stopped']}{RESET}, "
               f"{ITALIC}zombie{RESET}={BOLD}{process_states['zombie']}{RESET}, "
               f"{ITALIC}other{RESET}={BOLD}{process_states['other']}{RESET})")
+        else:
+            print(f"Processes: {BOLD}{total_processes}{RESET} "
+              f"({ITALIC}run{RESET}={BOLD}{process_states['running']}{RESET}, "
+              f"{ITALIC}sleep{RESET}={BOLD}{process_states['sleeping']}{RESET}, "
+              f"{ITALIC}idle{RESET}={BOLD}{process_states['idle']}{RESET}, "
+              f"{ITALIC}stop{RESET}={BOLD}{process_states['stopped']}{RESET}, "
+              f"{ITALIC}zombie{RESET}={BOLD}{process_states['zombie']}{RESET}, "
+              f"{ITALIC}other{RESET}={BOLD}{process_states['other']}{RESET})")
+        
     except Exception as e:
-        print(f"Processes: {RED}{BOLD}Unknown{RESET}")
-        # print(f"Error general en get_process_count: {e}")
+        if {"icon", "i"}.isdisjoint(omit):
+            print(f"🧩 Processes: {RED}{BOLD}Unknown{RESET}")
+            # print(f"Error general en get_process_count: {e}")
+        else:
+            print(f"Processes: {RED}{BOLD}Unknown{RESET}")
+            # print(f"Error general en get_process_count: {e}")
 
-# Load average: 1.97 1.22 0.98
+# 📊 Load average: 1.97 1.22 0.98
 def get_load_average():
     """Obtiene el Load Average y lo imprime con colores según la cantidad de núcleos."""
     cpu_count = os.cpu_count()
@@ -426,10 +537,13 @@ def get_load_average():
     load5_str = color_load(load5)
     load15_str = color_load(load15)
     
-    print(f"Load average: {BOLD}{load1_str}{RESET} {BOLD}{load5_str}{RESET} {BOLD}{load15_str}{RESET}")
+    if {"icon", "i"}.isdisjoint(omit):
+        print(f"📊 Load average: {BOLD}{load1_str}{RESET} {BOLD}{load5_str}{RESET} {BOLD}{load15_str}{RESET}")
+    else:        
+        print(f"Load average: {BOLD}{load1_str}{RESET} {BOLD}{load5_str}{RESET} {BOLD}{load15_str}{RESET}")
 
-# Disk used: 43% (202.91GB / 467.91GB) - Read: 8.63MB/s - Write: 0.72MB/s
-# █████████████░░░░░░░░░░░░░░░░░░░
+# 🗄️ Disk used: 43% (202.91GB / 467.91GB) - Read: 8.63MB/s - Write: 0.72MB/s
+#    █████████████░░░░░░░░░░░░░░░░░░░
 def get_disk_usage():
     """Obtiene el uso del disco y lo imprime con  con colores según el nivel."""
     st = os.statvfs("/")
@@ -463,13 +577,19 @@ def get_disk_usage():
     disk_io_start = disk_io_current
     disk_time_start = disk_time_current
 
-    print(f"Disk used: {color}{BOLD}{percent:.0f}%{RESET} ({BOLD}{used:.2f}GB / {total:.2f}GB{RESET}) - Read: {BOLD}{disk_read_speed:.2f}MB/s{RESET} - Write: {BOLD}{disk_write_speed:.2f}MB/s{RESET}")
+    if {"icon", "i"}.isdisjoint(omit):
+        print(f"🗄️  Disk used: {color}{BOLD}{percent:.0f}%{RESET} ({BOLD}{used:.2f}GB / {total:.2f}GB{RESET}) - Read: {BOLD}{disk_read_speed:.2f}MB/s{RESET} - Write: {BOLD}{disk_write_speed:.2f}MB/s{RESET}")
+    else:
+        print(f"Disk used: {color}{BOLD}{percent:.0f}%{RESET} ({BOLD}{used:.2f}GB / {total:.2f}GB{RESET}) - Read: {BOLD}{disk_read_speed:.2f}MB/s{RESET} - Write: {BOLD}{disk_write_speed:.2f}MB/s{RESET}")
     
     if {"bar", "b", "bard", "bd"}.isdisjoint(omit):
         barra_disk = barra_progreso(percent, color=color)
-        print(barra_disk)
+        if {"icon", "i"}.isdisjoint(omit):            
+            print("   " + barra_disk)        
+        else:
+            print(barra_disk)
 
-# Disk temperature: 32°C
+# 🌡️ Disk temperature: 32°C
 def get_nvme_temperature():
     """Obtiene la temperatura del disco NVMe usando psutil y la imprime con colores según el nivel."""
     try:
@@ -494,12 +614,19 @@ def get_nvme_temperature():
         else:
             color = RESET
 
-        print(f"Disk temperature: {color}{BOLD}{composite_temp:.0f}°C{RESET}")
+        if {"icon", "i"}.isdisjoint(omit):
+            print(f"🌡️  Disk temperature: {color}{BOLD}{composite_temp:.0f}°C{RESET}")
+        else:        
+            print(f"Disk temperature: {color}{BOLD}{composite_temp:.0f}°C{RESET}")
 
     except Exception as e:
-        print(f"Disk temperature: {RED}{BOLD}Error: {str(e)}{RESET}")
 
-# LAN IP: 192.168.0.123 - Speed: 100Mb/s (Full) - Down: 0.01MB/s - Up: 0.01MB/s
+        if {"icon", "i"}.isdisjoint(omit):
+            print(f"🌡️  Disk temperature: {RED}{BOLD}Error: {str(e)}{RESET}")
+        else:        
+            print(f"Disk temperature: {RED}{BOLD}Error: {str(e)}{RESET}")
+
+# 🌐 LAN IP: 192.168.0.123 - Speed: 100Mb/s (Full) - Down: 0.01MB/s - Up: 0.01MB/s
 def get_lan_info():
     global lan_io_start, lan_time_start
 
@@ -541,16 +668,19 @@ def get_lan_info():
     lan_download = (lan_io_end.bytes_recv - lan_io_start.bytes_recv) / (1024 * 1024) / lan_time_interval
     lan_upload = (lan_io_end.bytes_sent - lan_io_start.bytes_sent) / (1024 * 1024) / lan_time_interval
 
-    print(f"LAN IP: {BOLD}{ip_address}{RESET} - Speed: {BOLD}{speed}Mb/s{RESET} ({BOLD}{duplex_str}{RESET}) - Down: {BOLD}{lan_download:.2f}MB/s{RESET} - Up: {BOLD}{lan_upload:.2f}MB/s{RESET}")
+    if {"icon", "i"}.isdisjoint(omit):
+       print(f"🌐 LAN IP: {BOLD}{ip_address}{RESET} - Speed: {BOLD}{speed}Mb/s{RESET} ({BOLD}{duplex_str}{RESET}) - Down: {BOLD}{lan_download:.2f}MB/s{RESET} - Up: {BOLD}{lan_upload:.2f}MB/s{RESET}") 
+    else:
+        print(f"LAN IP: {BOLD}{ip_address}{RESET} - Speed: {BOLD}{speed}Mb/s{RESET} ({BOLD}{duplex_str}{RESET}) - Down: {BOLD}{lan_download:.2f}MB/s{RESET} - Up: {BOLD}{lan_upload:.2f}MB/s{RESET}")
 
     # Guardar valores para próxima llamada
     lan_io_start = lan_io_end
     lan_time_start = lan_time_end
 
-# WIFI lan: OBRIEN 5 - IP: 192.168.0.208
-# WIFI signal: 71% - Speed: 325.0Mb/s - Down: 4.57MB/s - Up: 0.93MB/s
+# 📶 WIFI lan: OBRIEN 5 - IP: 192.168.0.208
+# 📡 WIFI signal: 71% - Speed: 325.0Mb/s - Down: 4.57MB/s - Up: 0.93MB/s
 # ██████████████████████░░░░░░░░░░
-# WIFI temperature: 42°C
+# 🌡️ WIFI temperature: 42°C
 def get_wifi_info():
     """Obtiene la información de la red WiFi y tráfico."""
     global wifi_interface, wifi_io_start, wifi_time_start
@@ -590,18 +720,27 @@ def get_wifi_info():
         wifi_time_start = time_current
 
         # Definir color de la señal WiFi
-        if signal_percent < 40:
+        if signal_percent < 25:
             color = RED
-        elif signal_percent < 70:
+        elif signal_percent < 50:
+            color = ORANGE
+        elif signal_percent < 75:
             color = YELLOW
         else:
             color = RESET
 
-        print(f"WiFi IP: {BOLD}{ip}{RESET} - SSID: {BOLD}{ssid}{RESET}")
-        print(f"WiFi signal: {color}{BOLD}{signal_percent:.0f}%{RESET} - Speed: {BOLD}{speed:.1f}Mb/s{RESET} - Down: {BOLD}{download_speed:.2f}MB/s{RESET} - Up: {BOLD}{upload_speed:.2f}MB/s{RESET}")
+        if {"icon", "i"}.isdisjoint(omit):
+            print(f"📶 WiFi IP: {BOLD}{ip}{RESET} - SSID: {BOLD}{ssid}{RESET}")
+            print(f"📡 WiFi signal: {color}{BOLD}{signal_percent:.0f}%{RESET} - Speed: {BOLD}{speed:.1f}Mb/s{RESET} - Down: {BOLD}{download_speed:.2f}MB/s{RESET} - Up: {BOLD}{upload_speed:.2f}MB/s{RESET}")       
+        else:
+            print(f"WiFi IP: {BOLD}{ip}{RESET} - SSID: {BOLD}{ssid}{RESET}")
+            print(f"WiFi signal: {color}{BOLD}{signal_percent:.0f}%{RESET} - Speed: {BOLD}{speed:.1f}Mb/s{RESET} - Down: {BOLD}{download_speed:.2f}MB/s{RESET} - Up: {BOLD}{upload_speed:.2f}MB/s{RESET}")
         
         if {"bar", "b", "barw", "bw"}.isdisjoint(omit):
-            print(f"{barra_progreso(signal_percent, color=color)}")
+            if {"icon", "i"}.isdisjoint(omit):
+                print(f"   {barra_progreso(signal_percent, color=color)}")
+            else:
+                print(f"{barra_progreso(signal_percent, color=color)}")
 
         # Obtener temperatura de la placa WiFi desde psutil
         temps = psutil.sensors_temperatures()
@@ -618,12 +757,15 @@ def get_wifi_info():
             else:
                 temp_color = RESET
 
-            print(f"WiFi temperature: {temp_color}{BOLD}{wifi_temp:.0f}°C{RESET}")
+            if {"icon", "i"}.isdisjoint(omit):
+                print(f"🌡️  WiFi temperature: {temp_color}{BOLD}{wifi_temp:.0f}°C{RESET}")
+            else:
+                print(f"WiFi temperature: {temp_color}{BOLD}{wifi_temp:.0f}°C{RESET}")
 
     except Exception as e:
         print(f"{RED}Error inesperado: {e}{RESET}")
 
-# Battery: 37% - Time: 0h 58m 52s - Mode: Discharging
+# 🔋 Battery: 37% - Time: 0h 58m 52s - Mode: Discharging
 # ███████████░░░░░░░░░░░░░░░░░░░░░
 def get_battery_info():
     try:
@@ -633,35 +775,76 @@ def get_battery_info():
         with open(os.path.join(base_path, "status"), "r") as f:
             battery_mode = f.read().strip()
 
-        if battery_mode == "Full":
-            return  # No mostrar nada si está al 100%
+        # if battery_mode == "Full":
+        #     return  # No mostrar nada si está al 100%
+        if battery_mode not in ("Charging", "Discharging"):
+            return  # No mostrar nada si no está cargando o descargando
 
         # Leer el porcentaje de batería
         with open(os.path.join(base_path, "capacity"), "r") as f:
             battery_percent = int(f.read().strip())
 
         # Definir color según el nivel
-        if battery_percent > 25:
+        if battery_percent > 50:
             color = RESET
-        elif battery_percent > 10:
+        elif battery_percent > 25:
             color = YELLOW
+        elif battery_percent > 10:
+            color = ORANGE
         else:
             color = RED
 
-        # Obtener tiempo restante (si está disponible)
+        # Obtener tiempo restante con psutil o fallback con upower
         battery = psutil.sensors_battery()
         time_part = ""
-        if battery and battery.secsleft not in (psutil.POWER_TIME_UNLIMITED, psutil.POWER_TIME_UNKNOWN):
+        if battery and battery.secsleft not in (
+            psutil.POWER_TIME_UNLIMITED, psutil.POWER_TIME_UNKNOWN, -2, -1
+        ):
             h, m = divmod(battery.secsleft // 60, 60)
-            s = battery.secsleft % 60
-            time_part = f" - Time: {BOLD}{h}h {m}m {s}s{RESET}"
+            #s = battery.secsleft % 60
+            #time_part = f" - Time: {BOLD}{h}h {m}m {s}s{RESET}"
+            #s = battery.secsleft % 60
+            time_part = f" - Time: {BOLD}{h}h {m}m{RESET}"
+        else:
+            try:
+                output = subprocess.check_output(
+                    ["upower", "-i", "/org/freedesktop/UPower/devices/battery_BAT0"],
+                    text=True
+                )
+                for line in output.splitlines():
+                    if "time to full" in line or "time to empty" in line:
+                        tiempo = line.split(":")[1].strip()
+                        if "hour" in tiempo or "minute" in tiempo:
+                            # Unificar formato "17,3 minutes" a algo más natural
+                            tiempo = tiempo.replace(",", ".")
+                            if "minute" in tiempo:
+                                mins = float(tiempo.split()[0])
+                                h = int(mins // 60)
+                                m = int(mins % 60)
+                                time_part = f" - Time: {BOLD}{h}h {m}m{RESET}"
+                            elif "hour" in tiempo:
+                                h = float(tiempo.split()[0])
+                                h_int = int(h)
+                                m = int((h - h_int) * 60)
+                                time_part = f" - Time: {BOLD}{h_int}h {m}m{RESET}"
+                        else:
+                            time_part = f" - Time: {BOLD}{tiempo}{RESET}"
+                        break
+            except Exception:
+                pass
 
-        # Barra y salida
-        print(f"Battery: {color}{BOLD}{battery_percent}%{RESET}{time_part} - Mode: {BOLD}{battery_mode}{RESET}")
-        
+        # Mostrar datos de batería
+        if {"icon", "i"}.isdisjoint(omit):
+            print(f"🔋 Battery: {color}{BOLD}{battery_percent}%{RESET}{time_part} - Mode: {BOLD}{battery_mode}{RESET}")
+        else:        
+            print(f"Battery: {color}{BOLD}{battery_percent}%{RESET}{time_part} - Mode: {BOLD}{battery_mode}{RESET}")
+
         if {"bar", "b", "bart", "bt"}.isdisjoint(omit):
             barra_battery = barra_progreso(battery_percent, color=color)
-            print(barra_battery)
+            if {"icon", "i"}.isdisjoint(omit):
+                print("   " + barra_battery)
+            else:
+                print(barra_battery)
 
     except Exception as e:
         print(f"{RED}Battery error: {e}{RESET}")
@@ -736,7 +919,7 @@ def main():
     if {"wifi", "w"}.isdisjoint(omit):
         get_wifi_info()
 
-    if {"bat", "a"}.isdisjoint(omit):
+    if {"bat", "t"}.isdisjoint(omit):
         get_battery_info()
 
 #    print("\a")
@@ -772,13 +955,25 @@ if __name__ == "__main__":
                 min_exec_duration = min(min_exec_duration, exec_duration)
                 max_exec_duration = max(max_exec_duration, exec_duration)
 
+                # actualiza la cantidad de RAM que consume este proceso                 
+                proceso = psutil.Process(os.getpid())
+                mem_proc_mb = proceso.memory_info().rss / 1024 / 1024
+
                 for i in range(interval, 0, -1):
 
                     # Mostrar primero la línea de estado
-                    sys.stdout.write(
-                        f"\r{DIM}Run: {uptime} ({min_exec_duration:.0f}/{exec_duration:.0f}/{max_exec_duration:.0f}ms)"
-                        f" | Cycles: {count} | Next: {i}/{interval}s... {RESET}"
-                    )
+                    # Mostrar primero la línea de estado
+                    if {"icon", "i"}.isdisjoint(omit):
+                        sys.stdout.write(
+                            f"\r🔁 {DIM}Run: {uptime} ({min_exec_duration:.0f}/{exec_duration:.0f}/{max_exec_duration:.0f}ms)"
+                            f" | Cycles: {count} | {mem_proc_mb:.2f}MB | Next: {i}/{interval}s {RESET}"
+                        )
+                    else:
+                        sys.stdout.write(
+                            f"\r{DIM}Run: {uptime} ({min_exec_duration:.0f}/{exec_duration:.0f}/{max_exec_duration:.0f}ms)"
+                            f" | Cycles: {count} | {mem_proc_mb:.2f}MB | Next: {i}/{interval}s {RESET}"
+                        )
+
                     sys.stdout.flush()
 
                     tick_start = time.time()
