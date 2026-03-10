@@ -13,7 +13,7 @@
 
 **SysStatCLI** is a command-line tool written in Python for real-time system status monitoring in Linux. It provides detailed information on CPU usage, RAM, disk temperature, and Wi-Fi, among other parameters, in a visually organized and color-coded manner for easy interpretation.
 
-Current version 2.43.20251108a: Added descriptive icons for each parameter and automatic Unicode detection (disables emojis on devices that don't support them), improvements to the status bar, and various other adjustments.
+Current version 2.44.20260310a: A progress bar for CPU frequency was added. The help function was fixed and improved. Minor details and bugs were corrected elsewhere in the code.
 
 ## Features
 
@@ -77,6 +77,7 @@ python3 sysstatcli.py [time] [options]
 | Battery       | `-bat`, `-t`            | Power level, time remaining, and mode    |
 | Bar           | `-bar`, `-b`            | Omit all bars                            |
 |               | `-barc`, `-bc`          | Omit the CPU bar                         |
+|               | `-barf`, `-bf`          | Ignores CPU frequency bar                |
 |               | `-barr`, `-br`          | Omit the RAM bar                         |
 |               | `-bard`, `-bd`          | Omit the Disk bar                        |
 |               | `-barw`, `-bw`          | Omit the WIFI bar                        |
@@ -222,6 +223,7 @@ In your case, it could be in **BAT1** or another location. Check and adjust as n
 🤖 CPU used: 8% (CPU0: 8% - CPU1: 8% - CPU2: 8% - CPU3: 7%)
    ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 ⚡  CPU frequency: 1.00GHz - 🎚️ Scaling governor: powersave
+   ██████████░░░░░░░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 25°C
 🧮 RAM used: 31% (4.80GB / 15.50GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
    █████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -286,7 +288,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 **SysStatCLI** es una herramienta de línea de comandos escrita en Python para monitorear en tiempo real el estado del sistema en Linux. Proporciona información detallada sobre el uso del CPU, memoria RAM, temperatura del disco y WiFi, entre otros parámetros, de una forma visualmente organizada y con colores para facilitar la interpretación de los datos.
 
-Actual versión 2.43.20251108a: Se agregaron iconos descriptivos en cada parametro y detección automática de Unicode (desactiva emojis en terminales que no los soportan), mejoras en la línea de estado y ajustes varios.
+Actual versión 2.44.20260310a: Se agregó una barra de progreso para la frecuencia de la CPU. Se corrigió y mejoró el help. Se corrigieron detalles y errores menores en otras partes del código.
 
 ## Características
 
@@ -350,6 +352,7 @@ python3 sysstatcli.py [tiempo] [opciones]
 | Batería       | `-bat`, `-b`            | Nivel, tiempo restante y modo de energía          |
 | Barra         | `-bar`, `-b`            | Omite todas las barras                            |
 |               | `-barc`, `-bc`          | Omite la barra de CPU                             |
+|               | `-barf`, `-bf`          | Omite la barra de frecuencia del CPU              |
 |               | `-barr`, `-br`          | Omite la barra de RAM                             |
 |               | `-bard`, `-bd`          | Omite la barra de Disco                           |
 |               | `-barw`, `-bw`          | Omite la barra de WiFi                            |
@@ -497,6 +500,7 @@ En tu caso, podría estar en **BAT1** u otra ubicación. Verifica y ajusta segú
 🤖 CPU used: 8% (CPU0: 8% - CPU1: 8% - CPU2: 8% - CPU3: 7%)
    ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 ⚡  CPU frequency: 1.00GHz - 🎚️ Scaling governor: powersave
+   ██████████░░░░░░░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 25°C
 🧮 RAM used: 31% (4.80GB / 15.50GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
    █████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
