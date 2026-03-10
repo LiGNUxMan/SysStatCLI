@@ -1,4 +1,4 @@
-# SysStatCLI (System Status CLI) Version 2.44.20260310a
+# SysStatCLI (System Status CLI) v2.44.20260310a
 ![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
@@ -273,7 +273,7 @@ Compile the script into an executable so that it runs without the need for Pytho
 
 
 ---
-# SysStatCLI (System Status CLI) Version 2.43.20251108a
+# SysStatCLI (System Status CLI) v2.43.20251108a
 ![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
