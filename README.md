@@ -223,7 +223,6 @@ In your case, it could be in **BAT1** or another location. Check and adjust as n
 🤖 CPU used: 8% (CPU0: 8% - CPU1: 8% - CPU2: 8% - CPU3: 7%)
    ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 ⚡  CPU frequency: 1.00GHz - 🎚️ Scaling governor: powersave
-   ██████████░░░░░░░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 25°C
 🧮 RAM used: 31% (4.80GB / 15.50GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
    █████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -500,7 +499,6 @@ En tu caso, podría estar en **BAT1** u otra ubicación. Verifica y ajusta segú
 🤖 CPU used: 8% (CPU0: 8% - CPU1: 8% - CPU2: 8% - CPU3: 7%)
    ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 ⚡  CPU frequency: 1.00GHz - 🎚️ Scaling governor: powersave
-   ██████████░░░░░░░░░░░░░░░░░░░░░░
 🌡️ CPU temperature: 25°C
 🧮 RAM used: 31% (4.80GB / 15.50GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
    █████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
