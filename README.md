@@ -77,7 +77,7 @@ python3 sysstatcli.py [time] [options]
 | Battery       | `-bat`, `-t`            | Power level, time remaining, and mode    |
 | Bar           | `-bar`, `-b`            | Omit all bars                            |
 |               | `-barc`, `-bc`          | Omit the CPU bar                         |
-|               | `-barf`, `-bf`          | Ignores CPU frequency bar                |
+|               | `-barf`, `-bf`          | Omit the CPU frequency bar               |
 |               | `-barr`, `-br`          | Omit the RAM bar                         |
 |               | `-bard`, `-bd`          | Omit the Disk bar                        |
 |               | `-barw`, `-bw`          | Omit the WIFI bar                        |
