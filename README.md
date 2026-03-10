@@ -1,5 +1,5 @@
 # SysStatCLI v2.44.20260310a
-(System Status CLI)
+# (System Status CLI)
 ![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey?style=flat-square&logo=linux)
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![License](https://img.shields.io/badge/License-GPLv3-green)
