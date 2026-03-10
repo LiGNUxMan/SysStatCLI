@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # 
-# SysStatCLI (System Status CLI) Version 2.43.20251108a
+# SysStatCLI (System Status CLI) Version 2.44.20260310a
 # 
 # Autor: Axel O'BRIEN (LiGNUxMan) axelobrien@gmail.com y ChatGPT
 # 
@@ -10,28 +10,26 @@
 # Nota: En Linux Mint 22.2 (y también en Ubuntu recientes) ya no se instala el comando iw por defecto. Instalar con; sudo apt install iw
 # 
 # 
-# OS: Linux Mint 22.1 - Kernel version: 6.11.0-19-generic
-# Hostname: hal9001c - User: axel
-# Uptime: 1 day, 3:37:09 - Time and date: 15:14:25 13/03/2025
-# CPU used: 39% (CPU0: 38% - CPU1: 36% - CPU2: 41% - CPU3: 40%)
-# ████████████░░░░░░░░░░░░░░░░░░░░
-# CPU frequency: 0.8GHz - Scaling governor: powersave
-# CPU temperature: 39°C
-# RAM used: 39% (6.01GB / 15.49GB) - Swap used: 0% (0.00GB / 0.00GB)
-# ████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-# Processes: 265 (running=1, sleeping=199, idle=65, stopped=0, zombie=0, other=0)
-# Load average: 1.97 1.22 0.98
-# Disk used: 43% (202.91GB / 467.91GB) - Read: 8.63MB/s - Write: 0.72MB/s
-# █████████████░░░░░░░░░░░░░░░░░░░
-# Disk temperature: 32°C
-# LAN IP: 192.168.0.123 - Speed: 100Mb/s (Full) - Down: 0.01MB/s - Up: 0.01MB/s
-# WIFI lan: OBRIEN 5 - IP: 192.168.0.208
-# WIFI signal: 71% - Speed: 325.0Mb/s - Download: 4.57MB/s - Upload: 0.93MB/s
-# ██████████████████████░░░░░░░░░░
-# WIFI temperature: 42°C
-# Battery: 35% - Time: 1h 6m 4s - Mode: Discharging
-# ███████████░░░░░░░░░░░░░░░░░░░░░
-# Run: 3 days, 4:52:51 (67ms) | Cycles: 1313 | 15.48MB | Next: 10/60s...
+# 🐧 OS: Linux Mint 22.2 - ⚙️ Kernel version: 6.14.0-37-generic
+# 🏠 Hostname: hal9001c - 👤 User: axel
+# ⏱️ Uptime: 1 day, 13:25:28 - 🕒 Time and date: 01:37:33 02/01/2026
+# 🤖 CPU used: 22% (CPU0: 20% - CPU1: 22% - CPU2: 24% - CPU3: 21%)
+#    ██████░░░░░░░░░░░░░░░░░░░░░░░░░░
+# ⚡  CPU frequency: 1.10GHz - 🎚️  Scaling governor: powersave
+#    ███████████░░░░░░░░░░░░░░░░░░░░░
+# 🌡️ CPU temperature: 39°C
+# 🧮 RAM used: 33% (5.10GB / 15.49GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
+#    ██████████▒▒▒▒▒▒▒░░░░░░░░░░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+# 🧩 Processes: 265 (run=2, sleep=197, idle=65, stop=0, zombie=0, other=1)
+# 📊 Load average: 1.11 1.70 1.83
+# 🗄️ Disk used: 48% (225.80GB / 467.91GB) - Read: 0.00MB/s - Write: 0.26MB/s
+#    ███████████████░░░░░░░░░░░░░░░░░
+# 🌡️ Disk temperature: 33°C
+# 📶 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
+# 📡 WiFi signal: 66% - Speed: 195.0Mb/s - Down: 0.04MB/s - Up: 0.00MB/s
+#    █████████████████████░░░░░░░░░░░
+# 🌡️ WiFi temperature: 41°C
+# 🔁 Run: 1 day, 13:24:20 (53ms) | Cycles: 564 | 16.31MB | Next: 10/60s 
 # 
 #
 
@@ -47,6 +45,157 @@ import subprocess
 import sys
 import time
 from datetime import timedelta  # Línea agregada para el uptime
+
+# ==========================================================
+# CONFIGURACIÓN DE HARDWARE / SISTEMA
+# (BUSCAR Y MODIFICAR SOLO ACÁ SI CAMBIA EL HARDWARE)
+# ==========================================================
+
+# ─── OS ────────────────────────────────────────────────
+
+# Kernel / sistema
+
+OS_INFO_PATH = "/etc/os-release"
+OS_RELEASE_PATH = "/proc/sys/kernel/osrelease"
+
+# ─── CPU ───────────────────────────────────────────────
+
+# Frecuencia CPU (sysfs)
+
+# CPU_FREQ_MIN_PATH = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq"
+# CPU_FREQ_MAX_PATH = "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq"
+# CPU_FREQ_CUR_PATH = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
+# CPU_GOVERNOR_PATH = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
+
+CPU_FREQ_PATH = None
+
+CPU_SYS_PATH = "/sys/devices/system/cpu"
+if os.path.isdir(CPU_SYS_PATH):
+    for cpu in os.listdir(CPU_SYS_PATH):
+        if not cpu.startswith("cpu"):
+            continue
+
+        path = os.path.join(CPU_SYS_PATH, cpu, "cpufreq")
+        if os.path.isdir(path):
+            CPU_FREQ_PATH = path
+            break
+
+if CPU_FREQ_PATH:
+    CPU_FREQ_MIN_PATH = os.path.join(CPU_FREQ_PATH, "cpuinfo_min_freq")
+    CPU_FREQ_MAX_PATH = os.path.join(CPU_FREQ_PATH, "cpuinfo_max_freq")
+    CPU_FREQ_CUR_PATH = os.path.join(CPU_FREQ_PATH, "scaling_cur_freq")
+    CPU_GOVERNOR_PATH = os.path.join(CPU_FREQ_PATH, "scaling_governor")
+else:
+    CPU_FREQ_MIN_PATH = None
+    CPU_FREQ_MAX_PATH = None
+    CPU_FREQ_CUR_PATH = None
+    CPU_GOVERNOR_PATH = None
+
+# ─── Interfaces de red ────────────────────────────────────
+
+# LAN
+
+LAN_INTERFACE = "enxc025e92940b8"
+
+# LAN_INTERFACE = None
+
+# LAN activa
+# for iface, stats in psutil.net_if_stats().items():
+#     if stats.isup and iface.startswith(("en", "eth")):
+#         LAN_INTERFACE = iface
+#         break
+
+# WiFi (sysfs)
+
+WIFI_INTERFACE = "wlp3s0"
+
+# NET_PATH = "/sys/class/net"
+# if os.path.isdir(NET_PATH):
+#     for iface in os.listdir(NET_PATH):
+#         if os.path.isdir(os.path.join(NET_PATH, iface, "wireless")):
+#             WIFI_INTERFACE = iface
+#             break
+
+# ─── Batería ──────────────────────────────────────────────
+
+# BATTERY_NAME = "BAT0"
+# BATTERY_PATH = "/sys/class/power_supply/BAT0/"
+# UPOWER_BATTERY_PATH = f"/org/freedesktop/UPower/devices/battery_{BATTERY_NAME}"
+
+POWER_SUPPLY_PATH = "/sys/class/power_supply"
+
+BATTERY_NAME = None
+BATTERY_PATH = None
+UPOWER_BATTERY_PATH = None
+
+POWER_SUPPLY_PATH = "/sys/class/power_supply"
+
+BATTERY_NAME = None
+BATTERY_PATH = None
+UPOWER_BATTERY_PATH = None
+
+if os.path.isdir(POWER_SUPPLY_PATH):
+    for dev in os.listdir(POWER_SUPPLY_PATH):
+        dev_path = os.path.join(POWER_SUPPLY_PATH, dev)
+
+        try:
+            with open(os.path.join(dev_path, "type")) as f:
+                if f.read().strip() != "Battery":
+                    continue
+
+            with open(os.path.join(dev_path, "scope")) as f:
+                if f.read().strip() != "System":
+                    continue
+
+            BATTERY_NAME = dev
+            BATTERY_PATH = dev_path
+            UPOWER_BATTERY_PATH = f"/org/freedesktop/UPower/devices/battery_{dev}"
+            break
+
+        except FileNotFoundError:
+            continue
+
+# ─── SENSORES DE TEMPERATURA (psutil) ────────────────────
+
+# CPU
+
+# CPU_TEMP_SENSOR = "coretemp"
+# CPU_TEMP_INDEX = 0
+
+temps = psutil.sensors_temperatures()
+
+CPU_TEMP_SENSOR = None
+CPU_TEMP_INDEX = 0
+
+for name in ("coretemp", "k10temp", "acpitz"):
+    if name in temps:
+        CPU_TEMP_SENSOR = name
+        break
+
+# NVMe
+
+# NVME_TEMP_SENSOR = "nvme"     # clave en psutil.sensors_temperatures()
+# NVME_TEMP_LABEL = "Composite" # label del sensor NVMe
+
+NVME_TEMP_SENSOR = None
+NVME_TEMP_LABEL = None
+
+if "nvme" in temps:
+    for entry in temps["nvme"]:
+        if entry.current is not None:
+            NVME_TEMP_SENSOR = "nvme"
+            NVME_TEMP_LABEL = entry.label
+            break
+
+# WiFi
+
+#  WIFI_TEMP_SENSOR = "iwlwifi_1" # clave en psutil.sensors_temperatures()
+
+WIFI_TEMP_SENSOR = None
+for name in temps:
+    if "iwlwifi" in name:
+        WIFI_TEMP_SENSOR = name
+        break
 
 # =====================================================================
 # Colores y estilos ANSI
@@ -73,36 +222,6 @@ RED        = "\033[91m"
 LIGHT_GRAY = "\033[37m"
 
 # =====================================================================
-# Función para detectar soporte Unicode en la terminal
-# =====================================================================
-def terminal_supports_unicode() -> bool:
-    """
-    Devuelve True si la terminal soporta Unicode.
-    Si no, fuerza el modo sin íconos (-i).
-    """
-    term = os.environ.get("TERM", "").lower()
-    encoding = (sys.stdout.encoding or "").lower()
-
-    # Terminales que casi nunca soportan Unicode
-    if any(x in term for x in ["linux", "vt100", "xterm-color", "dumb", "ansi"]):
-        return False
-
-    # Codificaciones que no son UTF
-    if not encoding.startswith("utf"):
-        return False
-
-    # Intentar una prueba real de escritura
-    try:
-        sys.stdout.write("🔁")
-        sys.stdout.flush()
-        # Borrar el símbolo impreso
-        sys.stdout.write("\r\033[K")
-        sys.stdout.flush()
-        return True
-    except Exception:
-        return False
-
-# =====================================================================
 # Procesar argumentos
 # =====================================================================
 omit = set(arg[1:].lower() for arg in sys.argv[1:] if arg.startswith("-"))
@@ -119,7 +238,7 @@ valid_args = {
     "sys", "s", "host", "o", "up", "u", "cpu", "c", "ram", "r",
     "proc", "p", "load", "l", "disk", "d", "lan", "a", "wifi", "w",
     "bat", "t", "help", "h",
-    "bar", "b", "barc", "bc", "barr", "br", "bard", "bd",
+    "bar", "b", "barc", "bc", "barf", "bf", "barr", "br", "bard", "bd",
     "barw", "bw", "bart", "bt",
     "i", "icon"
 }
@@ -137,29 +256,94 @@ for arg in sys.argv[1:]:
         print("Usá -h, -help o --help para ver las opciones disponibles.\n")
         sys.exit(1)
 
+# Variables globales inicializacion
+# Se toman estos valores al comienzo de scrpt porque luego seran tomados nuevamente para hacer comparativas
+if {"cpu", "c"}.isdisjoint(omit):
+    cpu_times_start = psutil.cpu_times(percpu=True)
+    cpu_time_start = time.time()
+
+if {"disk", "d"}.isdisjoint(omit):
+    disk_io_start = psutil.disk_io_counters()
+    disk_time_start = time.time()
+
+if {"lan", "a"}.isdisjoint(omit):
+    lan_stats = psutil.net_io_counters(pernic=True)
+    if LAN_INTERFACE in lan_stats:
+        lan_io_start = lan_stats[LAN_INTERFACE]
+    else:
+        lan_io_start = None
+    lan_time_start = time.time()
+
+if {"wifi", "w"}.isdisjoint(omit):
+    wifi_io_start = psutil.net_io_counters(pernic=True).get(WIFI_INTERFACE)
+    wifi_time_start = time.time()
+
+time.sleep(1)  # Pausa de 1 seg. Para mejorar la exactitud de los datos en una sola ejeucuion o la primera del bucle
+
+# =====================================================================
+# Función para detectar soporte Unicode en la terminal
+# =====================================================================
+def terminal_supports_unicode() -> bool:
+    """
+    Devuelve True si la terminal soporta Unicode.
+    Si el usuario pasó -i / -icon, se salta completamente.
+    """
+
+    # --- RESPETAR EXPLICITAMENTE -i / -icon ---
+    if {"icon", "i"}.intersection(
+        arg[1:].lower() for arg in sys.argv[1:] if arg.startswith("-")
+    ):
+        return False
+
+    term = os.environ.get("TERM", "").lower()
+    encoding = (sys.stdout.encoding or "").lower()
+
+    # Terminales que casi nunca soportan Unicode
+    if any(x in term for x in ["linux", "vt100", "xterm-color", "dumb", "ansi"]):
+        return False
+
+    # Codificaciones que no son UTF
+    if not encoding.startswith("utf"):
+        return False
+
+    # Intentar una prueba real de escritura
+    try:
+        sys.stdout.write("🔁")
+        sys.stdout.flush()
+        sys.stdout.write("\r\033[K")
+        sys.stdout.flush()
+        return True
+    except Exception:
+        return False
+
 # =====================================================================
 # Detección automática de soporte Unicode
 # =====================================================================
-if not terminal_supports_unicode():
+if {"icon", "i"}.isdisjoint(omit) and not terminal_supports_unicode():
     # Si la terminal no soporta Unicode, actuamos como si el usuario hubiera pasado -i
     omit.update({"i", "icon"})
+
+# Función para generar barra de progreso
+def barra_progreso(valor, total=100, ancho=32, color=RESET):
+    bloques_llenos = int((valor / total) * ancho)
+    barra = "█" * bloques_llenos + "░" * (ancho - bloques_llenos) # barra = "█" * bloques_llenos + " " * (ancho - bloques_llenos) ▁▂▃▄▅▆▇█ ░▒▓█
+    return f"{color}{barra}{RESET}" # return f"{color}[{barra}]{RESET}" # return f"{color}▕{barra}▏{RESET}" # return f"{color}[{barra}]{RESET}"
 
 # =====================================================================
 # HELP / AYUDA
 # =====================================================================
 if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
-    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version 2.43.20251108a
+    print(f"""{BOLD}SysStatCLI{RESET} (System Status CLI) - Version 2.44.20260310a
 
 {BOLD}Repositorio:{RESET} {UNDERLINE}https://github.com/LiGNUxMan/SysStatCLI{RESET}
     
 {BOLD}Autor:{RESET} Axel O'BRIEN ({ITALIC}LiGNUxMan{RESET}) · {UNDERLINE}axelobrien@gmail.com{RESET}
 {BOLD}Colaboradora:{RESET} ChatGPT · OpenAI
 
-{BOLD}Uso:{RESET}
-  python3 sysstatcli.py [tiempo] [opciones]
+{BOLD}Uso:{RESET} python3 sysstatcli.py [tiempo] [opciones]
   
-{BOLD}Tiempo:{RESET} Segundos que se repetirá el script en bucle. Si se omite o es 0, se ejecuta una sola vez.
-  Durante la ejecución, puede presionar {BOLD}Q{RESET} o {BOLD}X{RESET} para salir.
+{BOLD}Tiempo:{RESET} Intervalo en segundos para repetir el script.
+        Durante la ejecución, puede presionar {BOLD}Q{RESET} o {BOLD}X{RESET} para salir.
 
 {BOLD}Opciones:{RESET} Argumentos disponibles para omitir secciones:
   -{BOLD}s{RESET}ys,  -s → Nombre del sistema operativo y versión del kernel
@@ -174,79 +358,67 @@ if any(arg in ("-h", "--help", "-help") for arg in sys.argv):
   -{BOLD}w{RESET}ifi, -w → Red WiFi y temperatura
   -ba{BOLD}t{RESET},  -t → Batería
   -{BOLD}b{RESET}ar,  -b → Omite todas las barras
-    -barc, -bc → Omite la barra de CPU
-    -barr, -br → Omite la barra de RAM
-    -bard, -bd → Omite la barra de Disco
-    -barw, -bw → Omite la barra de WiFi
-    -bart, -bt → Omite la barra de Batería
+    -barc, -bc → Omite la barra de uso de CPU
+    -barf, -bf → Omite la barra de frecuencia del CPU
+    -barr, -br → Omite la barra de uso de RAM
+    -bard, -bd → Omite la barra de uso de Disco
+    -barw, -bw → Omite la barra de % de la señal WiFi
+    -bart, -bt → Omite la barra de % de Batería
   -{BOLD}i{RESET}con, -i → Oculta los íconos decorativos (se muestran por defecto si la terminal los soporta)
 
-{BOLD}Ejemplos:{RESET}
-  python3 sysstatcli.py            → Ejecuta una sola vez
-  python3 sysstatcli.py 60         → Ejecuta cada 60 segundos
-  python3 sysstatcli.py -ram -wifi → Ejecuta una sola vez, omitiendo RAM y WiFi
-  python3 sysstatcli.py -s -b 10   → Ejecuta cada 10s, omitiendo datos del sistema y todas las barras
+{BOLD}Consejo:{RESET} Use -b -i para ocultar las barras de progreso e iconos
+         (útil en terminales antiguas o sin soporte Unicode).
 
-{BOLD}Ayuda:{RESET}
-  -help, --help, -h → Muestra este mensaje y sale
+{BOLD}Ejemplos:{RESET}
+python3 sysstatcli.py            → Ejecuta una sola vez
+python3 sysstatcli.py 60         → Ejecuta cada 60 segundos
+python3 sysstatcli.py -ram -wifi → Ejecuta una sola vez, omitiendo RAM y WiFi
+python3 sysstatcli.py -s -b 10   → Ejecuta cada 10s, omitiendo datos del sistema y todas las barras
+
+python3 sysstatcli.py -s -o -u -p -l -a -t 60
+🤖 CPU used: 2% (CPU0: 1% - CPU1: 4% - CPU2: 1% - CPU3: 2%)
+   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+⚡ CPU frequency: {YELLOW}0.90GHz{RESET} - 🎚️  Scaling governor: powersave
+   {YELLOW}█████████░░░░░░░░░░░░░░░░░░░░░░░{RESET}
+🌡️  CPU temperature: 35°C
+🧮 RAM used: 53% (8.16GB / 15.49GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
+   ████████████████▒▒▒▒▒▒▒▒▒▒░░░░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+🗄️  Disk used: 49% (229.43GB / 467.91GB) - Read: 0.00MB/s - Write: 0.00MB/s
+   ███████████████░░░░░░░░░░░░░░░░░
+🌡️  Disk temperature: 32°C
+📶 WiFi IP: 192.168.0.208 - SSID: OBRIEN 5
+📡 WiFi signal: {YELLOW}58%{RESET} - Speed: 234.0Mb/s - Down: 0.00MB/s - Up: 0.00MB/s
+   {YELLOW}██████████████████░░░░░░░░░░░░░░{RESET}
+🌡️  WiFi temperature: 40°C
+🔁 {DIM}Run: 1 day, 13:24:20 (53ms) | Cycles: 564 | 16.31MB | Next: 10/60s {RESET}
+
+{BOLD}Ayuda:{RESET} -help, --help, -h → Muestra este mensaje y sale
 """)
     sys.exit(0)
 
-
-# Variables globales inicializacion
-# Se toman estos valores al comienzo de scrpt porque luego seran tomados nuevamente para hacer comparativas
-if {"cpu", "c"}.isdisjoint(omit):
-    cpu_times_start = psutil.cpu_times(percpu=True)
-    cpu_time_start = time.time()
-if {"disk", "d"}.isdisjoint(omit):
-    disk_io_start = psutil.disk_io_counters()
-    disk_time_start = time.time()   
-if {"lan", "a"}.isdisjoint(omit):
-    lan_interface = "enxc025e92940b8"  # Nombre de la placa de red (MODIFICARLO SI TIENE OTRO NOMBRE)
-    lan_stats = psutil.net_io_counters(pernic=True)
-    if lan_interface in lan_stats:
-        lan_io_start = lan_stats[lan_interface]
-    else:
-        lan_io_start = None
-    lan_time_start = time.time()
-if {"wifi", "w"}.isdisjoint(omit):
-    wifi_interface = "wlp3s0" # Nombre de la placa WiFi (MODIFICARLO SI TIENE OTRO NOMBRE)
-    wifi_io_start = psutil.net_io_counters(pernic=True).get(wifi_interface)
-    wifi_time_start = time.time()
-time.sleep(1)  # Pausa de 1 seg. Para mejorar la exactitud de los datos en una sola ejeucuion o la primera del bucle
-
-# Función para generar barra de progreso
-def barra_progreso(valor, total=100, ancho=32, color=RESET):
-    bloques_llenos = int((valor / total) * ancho)
-    barra = "█" * bloques_llenos + "░" * (ancho - bloques_llenos) # barra = "█" * bloques_llenos + " " * (ancho - bloques_llenos) ▁▂▃▄▅▆▇█ ░▒▓█
-    return f"{color}{barra}{RESET}" # return f"{color}[{barra}]{RESET}" # return f"{color}▕{barra}▏{RESET}" # return f"{color}[{barra}]{RESET}"
-
 # 🐧 OS: Linux Mint 22.1 - ⚙️  Kernel version: 6.11.0-19-generic
 def get_system_info():
-    """Obtiene el nombre del sistema operativo y la versión del kernel y los imprime."""
+    """Obtiene el nombre del sistema operativo y la versión del kernel."""
     try:
-        with open("/etc/os-release") as f:
+        with open(OS_INFO_PATH) as f:
             os_name = None
             for line in f:
                 if line.startswith("PRETTY_NAME="):
                     os_name = line.strip().split("=")[1].strip('"')
                     break
     except FileNotFoundError:
-        os_name = None
-
-    if os_name is None:
         os_name = f"{RED}Unknown{RESET}"
 
-    with open("/proc/sys/kernel/osrelease") as f:
-        kernel_version = f.read().strip()
-
-#     print(f"🐧 OS: {BOLD}{os_name}{RESET} - ⚙️  Kernel version: {BOLD}{kernel_version}{RESET}")
+    try:
+        with open(OS_RELEASE_PATH) as f:
+            kernel_version = f.read().strip()
+    except FileNotFoundError:
+        kernel_version = f"{RED}Unknown{RESET}"
 
     if {"icon", "i"}.isdisjoint(omit):
         print(f"🐧 OS: {BOLD}{os_name}{RESET} - ⚙️  Kernel version: {BOLD}{kernel_version}{RESET}")
     else:
         print(f"OS: {BOLD}{os_name}{RESET} - Kernel version: {BOLD}{kernel_version}{RESET}")
-
 
 # 🏠 Hostname: hal9001c - User: axel
 def get_host_user_info():
@@ -320,19 +492,20 @@ def get_cpu_usage():
     cpu_times_start = cpu_times_current
     cpu_time_start = cpu_time_current
  
-# ⚡ CPU frequency: 0.8GHz - 🎚️ Scaling governor: powersave
+# ⚡ CPU frequency: 1.10GHz - 🎚️  Scaling governor: powersave
+#   ███████████░░░░░░░░░░░░░░░░░░░░░
 def get_cpu_frequency():
-    """Obtiene la frecuencia del CPU y el scaling_governor y los imprime con colores según el nivel de uso."""
+    """Obtiene la frecuencia del CPU y el scaling_governor y los imprime con colores."""
     try:
-        with open("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq") as f:
-            min_freq = int(f.read().strip()) / 1000 / 1000
-        with open("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq") as f:
-            max_freq = int(f.read().strip()) / 1000 / 1000
-        with open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq") as f:
-            cur_freq = int(f.read().strip()) / 1000 / 1000
-        with open("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor") as f:
+        with open(CPU_FREQ_MIN_PATH) as f:
+            min_freq = int(f.read().strip()) / 1_000_000
+        with open(CPU_FREQ_MAX_PATH) as f:
+            max_freq = int(f.read().strip()) / 1_000_000
+        with open(CPU_FREQ_CUR_PATH) as f:
+            cur_freq = int(f.read().strip()) / 1_000_000
+        with open(CPU_GOVERNOR_PATH) as f:
             scaling_governor = f.read().strip()
-        
+
         cur_freq = round(cur_freq, 2)
 
         color = RESET
@@ -340,27 +513,49 @@ def get_cpu_frequency():
             color = RED
         elif cur_freq > 2.5:
             color = ORANGE
-        elif cur_freq > 0.8: # elif cur_freq > min_freq:
+        elif cur_freq > 0.8:
             color = YELLOW
-        
+
         if {"icon", "i"}.isdisjoint(omit):
-             print(f"⚡ CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - 🎚️  Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
+            print(
+                f"⚡ CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} "
+                f"- 🎚️  Scaling governor: {BOLD}{scaling_governor}{RESET}"
+            )
         else:
-             print(f"CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
+            print(
+                f"CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} "
+                f"- Scaling governor: {BOLD}{scaling_governor}{RESET}"
+            )
+
+        percent = (cur_freq / max_freq) * 100
+
+        if {"bar", "b", "barf", "bf"}.isdisjoint(omit):
+            barra = barra_progreso(percent, color=color)
+
+            if {"icon", "i"}.isdisjoint(omit):
+                print("   " + barra)
+            else:
+                print(barra)
 
     except FileNotFoundError:
         if {"icon", "i"}.isdisjoint(omit):
-             print(f"⚡ CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - 🎚️  Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
+            print(
+                f"⚡ CPU frequency: {RED}{BOLD}Unknown{RESET} "
+                f"- 🎚️  Scaling governor: {RED}{BOLD}Unknown{RESET}"
+            )
         else:
-             print(f"CPU frequency: {color}{BOLD}{cur_freq:.2f}GHz{RESET} - Scaling governor: {BOLD}{scaling_governor}{RESET}") # {cur_freq:.2f}
+            print(
+                f"CPU frequency: {RED}{BOLD}Unknown{RESET} "
+                f"- Scaling governor: {RED}{BOLD}Unknown{RESET}"
+            )
 
 # 🌡️ CPU temperature: 39°C
 def get_cpu_temperature():
-    """Obtiene la temperatura del CPU usando psutil, con fallback a "/sys/class/thermal/thermal_zone0/temp"."""
+    """Obtiene la temperatura del CPU usando psutil"""
     try:
         temps = psutil.sensors_temperatures()
-        temp = temps["coretemp"][0].current  # Obtiene la primera lectura de temperatura
-           
+        temp = temps[CPU_TEMP_SENSOR][CPU_TEMP_INDEX].current
+    
         color = RESET
         if temp > 60:
             color = RED
@@ -370,15 +565,15 @@ def get_cpu_temperature():
             color = YELLOW
 
         if {"icon", "i"}.isdisjoint(omit):
-             print(f"🌡️  CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
+            print(f"🌡️  CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
         else:
-             print(f"CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
+            print(f"CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
 
     except Exception:
         if {"icon", "i"}.isdisjoint(omit):
-             print(f"🌡️  CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
+            print(f"🌡️  CPU temperature: {RED}{BOLD}Unknown{RESET}")
         else:
-             print(f"CPU temperature: {color}{BOLD}{temp:.0f}°C{RESET}")
+            print(f"CPU temperature: {RED}{BOLD}Unknown{RESET}")
 
 # 🧮 RAM used: 39% (6.01GB / 15.49GB) - 💾 Swap used: 0% (0.00GB / 0.00GB)
 #    ████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░ - ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -594,14 +789,16 @@ def get_nvme_temperature():
     """Obtiene la temperatura del disco NVMe usando psutil y la imprime con colores según el nivel."""
     try:
         temps = psutil.sensors_temperatures()
-        nvme_temps = temps.get("nvme")
+        nvme_temps = temps.get(NVME_TEMP_SENSOR)
 
         if not nvme_temps:
             print(f"Disk temperature: {RED}{BOLD}Unknown{RESET}")
             return
 
         # Buscar la entrada con etiqueta 'Composite' (por convención)
-        composite_temp = next((t.current for t in nvme_temps if t.label == "Composite"), None)
+        composite_temp = next((t.current for t in nvme_temps if t.label == NVME_TEMP_LABEL),None)
+
+
         if composite_temp is None:
             print(f"Disk temperature: {RED}{BOLD}Unknown{RESET}")
             return
@@ -620,17 +817,17 @@ def get_nvme_temperature():
             print(f"Disk temperature: {color}{BOLD}{composite_temp:.0f}°C{RESET}")
 
     except Exception as e:
-
         if {"icon", "i"}.isdisjoint(omit):
-            print(f"🌡️  Disk temperature: {RED}{BOLD}Error: {str(e)}{RESET}")
-        else:        
-            print(f"Disk temperature: {RED}{BOLD}Error: {str(e)}{RESET}")
+            print(f"🌡️  Disk temperature: {RED}{BOLD}Unknown{RESET}")
+        else:
+            print(f"Disk temperature: {RED}{BOLD}Unknown{RESET}")
 
 # 🌐 LAN IP: 192.168.0.123 - Speed: 100Mb/s (Full) - Down: 0.01MB/s - Up: 0.01MB/s
 def get_lan_info():
     global lan_io_start, lan_time_start
 
-    iface = lan_interface
+    iface = LAN_INTERFACE
+
     addrs = psutil.net_if_addrs().get(iface)
     if not addrs:
         return
@@ -683,10 +880,13 @@ def get_lan_info():
 # 🌡️ WIFI temperature: 42°C
 def get_wifi_info():
     """Obtiene la información de la red WiFi y tráfico."""
-    global wifi_interface, wifi_io_start, wifi_time_start
+    global wifi_io_start, wifi_time_start
+
+    iface = WIFI_INTERFACE
+
     try:
         # Obtener información de la red WiFi usando "iw dev (wifi_interfac) link"
-        output = subprocess.run(["iw", "dev", wifi_interface, "link"], capture_output=True, text=True).stdout
+        output = subprocess.run(["iw", "dev", iface, "link"], capture_output=True, text=True).stdout
         if "Not connected" in output or not re.search(r'SSID: (.+)', output):
             return  # No mostrar nada si el WIFI no está conectado
 
@@ -700,14 +900,14 @@ def get_wifi_info():
         speed = float(speed_match.group(1)) if speed_match else 0.0
 
         # Verificar si hay IP asignada
-        ip_addrs = psutil.net_if_addrs().get(wifi_interface, [])
+        ip_addrs = psutil.net_if_addrs().get(iface, [])
         ip = next((addr.address for addr in ip_addrs if addr.family == socket.AF_INET), "N/A")
 
         # Convertir dBm a porcentaje aproximado
         signal_percent = max(0, min(100, 2 * (signal_dbm + 100)))
 
         # Calcular tráfico de red
-        io_current = psutil.net_io_counters(pernic=True).get(wifi_interface)
+        io_current = psutil.net_io_counters(pernic=True).get(iface)
         time_current = time.time()
         interval = time_current - wifi_time_start
 
@@ -745,8 +945,9 @@ def get_wifi_info():
         # Obtener temperatura de la placa WiFi desde psutil
         temps = psutil.sensors_temperatures()
         wifi_temp = None
-        if 'iwlwifi_1' in temps:
-            sensor = temps['iwlwifi_1'][0]
+
+        if WIFI_TEMP_SENSOR in temps:
+            sensor = temps[WIFI_TEMP_SENSOR][0]
             wifi_temp = sensor.current
 
         if wifi_temp is not None:
@@ -768,9 +969,17 @@ def get_wifi_info():
 # 🔋 Battery: 37% - Time: 0h 58m 52s - Mode: Discharging
 # ███████████░░░░░░░░░░░░░░░░░░░░░
 def get_battery_info():
-    try:
-        base_path = "/sys/class/power_supply/BAT0/"
 
+    # print("DEBUG BATTERY_PATH =", BATTERY_PATH)
+
+    # No hay batería física
+    if not BATTERY_PATH or not os.path.isdir(BATTERY_PATH):
+        # print("DEBUG: saliendo porque no hay batería")
+        return
+
+    try:
+        base_path = BATTERY_PATH
+        
         # Leer el estado de la batería
         with open(os.path.join(base_path, "status"), "r") as f:
             battery_mode = f.read().strip()
@@ -808,7 +1017,7 @@ def get_battery_info():
         else:
             try:
                 output = subprocess.check_output(
-                    ["upower", "-i", "/org/freedesktop/UPower/devices/battery_BAT0"],
+                    ["upower", "-i", UPOWER_BATTERY_PATH],
                     text=True
                 )
                 for line in output.splitlines():
@@ -846,6 +1055,9 @@ def get_battery_info():
             else:
                 print(barra_battery)
 
+    except FileNotFoundError:
+        # Batería no presente / removida
+        return
     except Exception as e:
         print(f"{RED}Battery error: {e}{RESET}")
         
@@ -933,8 +1145,8 @@ if __name__ == "__main__":
         count = 1
 
         # Inicia varialbes de minimo y maximo (borrar si ya no se quiere mostar)
-        min_exec_duration = float('inf')
-        max_exec_duration = float('-inf')
+        # min_exec_duration = float('inf')
+        # max_exec_duration = float('-inf')
 
         old_settings = enable_raw_mode()
 
@@ -952,8 +1164,8 @@ if __name__ == "__main__":
                 exec_duration = (time.time() - exec_start) * 1000  # en milisegundos
 
                 # Actualizar valores mínimos y máximos (borrar si ya no se quiere mostar)
-                min_exec_duration = min(min_exec_duration, exec_duration)
-                max_exec_duration = max(max_exec_duration, exec_duration)
+                # min_exec_duration = min(min_exec_duration, exec_duration)
+                # max_exec_duration = max(max_exec_duration, exec_duration)
 
                 # actualiza la cantidad de RAM que consume este proceso                 
                 proceso = psutil.Process(os.getpid())
@@ -962,17 +1174,21 @@ if __name__ == "__main__":
                 for i in range(interval, 0, -1):
 
                     # Mostrar primero la línea de estado
-                    # Mostrar primero la línea de estado
                     if {"icon", "i"}.isdisjoint(omit):
                         sys.stdout.write(
-                            f"\r🔁 {DIM}Run: {uptime} ({min_exec_duration:.0f}/{exec_duration:.0f}/{max_exec_duration:.0f}ms)"
+                            # f"\r🔁 {DIM}Run: {uptime} ({min_exec_duration:.0f}/{exec_duration:.0f}/{max_exec_duration:.0f}ms)"
+                            # f" | Cycles: {count} | {mem_proc_mb:.2f}MB | Next: {i}/{interval}s {RESET}"
+                            f"\r🔁 {DIM}Run: {uptime} ({exec_duration:.0f}ms)"
                             f" | Cycles: {count} | {mem_proc_mb:.2f}MB | Next: {i}/{interval}s {RESET}"
                         )
                     else:
                         sys.stdout.write(
-                            f"\r{DIM}Run: {uptime} ({min_exec_duration:.0f}/{exec_duration:.0f}/{max_exec_duration:.0f}ms)"
+                            # f"\r{DIM}Run: {uptime} ({min_exec_duration:.0f}/{exec_duration:.0f}/{max_exec_duration:.0f}ms)"
+                            # f" | Cycles: {count} | {mem_proc_mb:.2f}MB | Next: {i}/{interval}s {RESET}"
+                            f"\r{DIM}Run: {uptime} ({exec_duration:.0f}ms)"
                             f" | Cycles: {count} | {mem_proc_mb:.2f}MB | Next: {i}/{interval}s {RESET}"
                         )
+
 
                     sys.stdout.flush()
 
@@ -992,5 +1208,3 @@ if __name__ == "__main__":
             disable_raw_mode(old_settings)
     else:
         main()
-
-
