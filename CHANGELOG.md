@@ -1,3 +1,47 @@
+# Changelog - SysStatCLI v2.44.20260315c
+
+## 🇺🇸🇬🇧 English
+
+- 🛠️ **Complete Help System Overhaul:** The help interface was rewritten from scratch using `argparse`. It now provides professional, standardized, and automatic documentation via `-h`, `--help`, or `-help`.
+- 🚀 **Migration to Argparse:** Manual `sys.argv` logic was removed. The new engine allows for robust input validation, type handling, and the use of direct boolean flags (`args.sys`, `args.cpu`), eliminating the old set-based validation.
+- 🏗️ **Modular Architecture & Cleanup:** Total code refactor into specialized functions:
+  - `detect_hardware()`: Centralizes interface and sensor detection at startup.
+  - `init_metrics()`: Calibrates network and disk counters to prevent erroneous measurements.
+  - `print_all_stats()`: Decouples data visualization from the main loop logic.
+- 🛡️ **Metric Robustness:** Added `try-except` blocks in hardware data capture to prevent the script from crashing due to permission issues or unavailable sensors.
+- ⌨️ **Terminal Control (Raw Mode):** Implemented `termios` and `tty` to capture exit keys (`q`/`x`) silently, with guaranteed terminal restoration via `try...finally` blocks.
+
+---
+
+## 🇪🇸 Español
+
+- 🛠️ **Reescritura Total del Sistema de Ayuda:** Se rediseñó la ayuda desde cero utilizando `argparse`. Ahora genera documentación profesional, estandarizada y automática mediante `-h`, `--help` o `-help`.
+- 🚀 **Migración a Argparse:** Se eliminó la lógica manual de `sys.argv`. El nuevo motor permite validación robusta de entradas, manejo de tipos y el uso de flags booleanos directos (`args.sys`, `args.cpu`), eliminando la vieja validación por conjuntos.
+- 🏗️ **Arquitectura Modular y Limpieza:** Refactorización total del código en funciones especializadas:
+  - `detect_hardware()`: Centraliza la detección de interfaces y sensores al inicio.
+  - `init_metrics()`: Calibra contadores de red y disco para evitar mediciones erróneas.
+  - `print_all_stats()`: Separa la visualización de los datos de la lógica del bucle principal.
+- 🛡️ **Robustez en Métricas:** Se añadieron bloques `try-except` en la captura de datos de hardware para evitar que el script falle ante problemas de permisos o sensores no disponibles.
+- ⌨️ **Control de Terminal (Raw Mode):** Implementación de `termios` y `tty` para capturar teclas de salida (`q`/`x`) de forma silenciosa, con restauración garantizada de la terminal mediante `try...finally`.
+
+---
+
+# Changelog - SysStatCLI v2.44.20260310a
+
+## 🇺🇸🇬🇧 English
+
+- ✨ **New Feature:** Added a progress bar for CPU frequency to visually represent processor scaling.
+- 🐞 **Fixes:** Initial improvements to documentation and basic help logic.
+
+---
+
+## 🇪🇸 Español
+
+- ✨ **Nueva función:** Se agregó una barra de progreso para la frecuencia del CPU para representar visualmente el escalado del procesador.
+- 🐞 **Correcciones:** Mejoras iniciales en la documentación y la lógica básica de ayuda.
+
+---
+
 # Changelog - SysStatCLI v2.41.20250525l
 
 ## 🇺🇸🇬🇧 English
